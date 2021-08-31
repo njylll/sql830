@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface CourseInfoMapper extends BaseMapper<CourseInfo> {
-
+        分支测试
 }
 
 
