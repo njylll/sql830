@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.StudentGradeMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.StudentGrade">
+            <id property="gradeID" column="gradeID" jdbcType="INTEGER"/>
+            <result property="claName" column="claName" jdbcType="VARCHAR"/>
+            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="score" column="score" jdbcType="INTEGER"/>
+            <result property="stuID" column="stuID" jdbcType="INTEGER"/>
+            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        gradeID,claName,createTime,
+        score,stuID,updateTime
+    </sql>
+</mapper>

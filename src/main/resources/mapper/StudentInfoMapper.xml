@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.StudentInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.StudentInfo">
+            <id property="UUID" column="UUID" jdbcType="VARCHAR"/>
+            <result property="student_id" column="student_id" jdbcType="VARCHAR"/>
+            <result property="student_name" column="student_name" jdbcType="VARCHAR"/>
+            <result property="gender" column="gender" jdbcType="CHAR"/>
+            <result property="birthday" column="birthday" jdbcType="DATE"/>
+            <result property="class_id" column="class_id" jdbcType="VARCHAR"/>
+            <result property="college_id" column="college_id" jdbcType="VARCHAR"/>
+            <result property="major_id" column="major_id" jdbcType="VARCHAR"/>
+            <result property="admission_date" column="admission_date" jdbcType="DATE"/>
+            <result property="schooling_period" column="schooling_period" jdbcType="TINYINT"/>
+            <result property="student_status" column="student_status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        UUID,student_id,student_name,
+        gender,birthday,class_id,
+        college_id,major_id,admission_date,
+        schooling_period,student_status
+    </sql>
+</mapper>

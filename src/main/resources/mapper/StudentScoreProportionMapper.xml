@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.StudentScoreProportionMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.StudentScoreProportion">
+            <result property="course_id" column="course_id" jdbcType="VARCHAR"/>
+            <result property="usual_proportion" column="usual_proportion" jdbcType="TINYINT"/>
+            <result property="mid_term_proportion" column="mid_term_proportion" jdbcType="TINYINT"/>
+            <result property="final_term_proportion" column="final_term_proportion" jdbcType="TINYINT"/>
+            <result property="extra_proportion" column="extra_proportion" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        course_id,usual_proportion,mid_term_proportion,
+        final_term_proportion,extra_proportion
+    </sql>
+</mapper>

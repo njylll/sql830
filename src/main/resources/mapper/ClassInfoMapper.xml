@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.ClassInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.ClassInfo">
+            <id property="UUID" column="UUID" jdbcType="VARCHAR"/>
+            <result property="class_id" column="class_id" jdbcType="VARCHAR"/>
+            <result property="college_id" column="college_id" jdbcType="VARCHAR"/>
+            <result property="major_id" column="major_id" jdbcType="VARCHAR"/>
+            <result property="counselor_name" column="counselor_name" jdbcType="VARCHAR"/>
+            <result property="class_teacher_name" column="class_teacher_name" jdbcType="VARCHAR"/>
+            <result property="monitor_student_id" column="monitor_student_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        UUID,class_id,college_id,
+        major_id,counselor_name,class_teacher_name,
+        monitor_student_id
+    </sql>
+</mapper>

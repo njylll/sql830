@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.CourseInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.CourseInfo">
+            <id property="UUID" column="UUID" jdbcType="VARCHAR"/>
+            <result property="course_id" column="course_id" jdbcType="VARCHAR"/>
+            <result property="course_name" column="course_name" jdbcType="VARCHAR"/>
+            <result property="responsible_college_id" column="responsible_college_id" jdbcType="VARCHAR"/>
+            <result property="credit_hours" column="credit_hours" jdbcType="TINYINT"/>
+            <result property="credit" column="credit" jdbcType="FLOAT"/>
+            <result property="course_type" column="course_type" jdbcType="VARCHAR"/>
+            <result property="course_type_2" column="course_type_2" jdbcType="VARCHAR"/>
+            <result property="teaching_way" column="teaching_way" jdbcType="VARCHAR"/>
+            <result property="assessment_method" column="assessment_method" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        UUID,course_id,course_name,
+        responsible_college_id,credit_hours,credit,
+        course_type,course_type_2,teaching_way,
+        assessment_method
+    </sql>
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.StudentScoreMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.StudentScore">
+            <result property="student_id" column="student_id" jdbcType="VARCHAR"/>
+            <result property="course_id" column="course_id" jdbcType="VARCHAR"/>
+            <result property="usual_score" column="usual_score" jdbcType="FLOAT"/>
+            <result property="mid_term_score" column="mid_term_score" jdbcType="FLOAT"/>
+            <result property="final_term_score" column="final_term_score" jdbcType="FLOAT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        student_id,course_id,usual_score,
+        mid_term_score,final_term_score
+    </sql>
+</mapper>

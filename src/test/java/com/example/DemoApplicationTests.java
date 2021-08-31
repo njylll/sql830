@@ -1,6 +1,7 @@
 package com.example;
 
-import com.example.StudentDomain.StudentBean;
+import com.example.dao.StudentInfoMapper;
+import com.example.entity.StudentInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,10 @@ import java.util.Calendar;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DemoApplicationTests {
+
+    @Autowired
+    public StudentInfoMapper studentInfoMapper;
+
 Calendar calendar=Calendar.getInstance();
     @Test
     public void contextLoads() {
@@ -35,6 +40,13 @@ Calendar calendar=Calendar.getInstance();
     public void existStudengtBean() {
         boolean b=ioc.containsBean("StudentBean");
         System.out.println("存在数据bean："+b);
+    }
+
+    @Test
+    public void t1()
+    {
+       StudentInfo info= studentInfoMapper.selectById("412");
+        System.out.println(info);
     }
 //@Test
 //public void getController{
