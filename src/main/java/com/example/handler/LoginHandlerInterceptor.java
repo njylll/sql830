@@ -36,8 +36,6 @@ public class LoginHandlerInterceptor extends HandlerInterceptorAdapter {
 
                 response.sendRedirect(request.getContextPath() + "/login");  //重定向到登录界面            return false;
             } else {
-                //已登陆，放行请求
-                System.out.println("\n已登陆，放行请求");
                 return true;
             }
 return  false;

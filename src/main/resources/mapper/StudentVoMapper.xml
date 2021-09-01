@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.StudentVoMapper">
+
+    <insert id="insertStudentInfo">
+        select @college_id:=(select college_id from college_info where college_name=#{vo.collegeName}),
+        @major_id:=(select major_id from major_info where major_name=#{vo.majorName});
+
+        insert into student_info (UUID, student_id, student_name,gender, birthday, class_id, college_id, major_id, admission_date,schooling_period,student_status)
+        value (#{UUID},#{vo.studentId},#{vo.studentName},#{vo.gender},#{vo.birthday},#{vo.classId},@college_id,@major_id,#{vo.admissionDate},#{vo.schoolingPeriod},#{vo.studentStatus});
+
+    </insert>
+
+    <resultMap id="BaseResultMap" type="com.example.entity.StudentVo">
+            <result property="studentId" column="student_id" jdbcType="VARCHAR"/>
+            <result property="studentName" column="student_name" jdbcType="VARCHAR"/>
+            <result property="gender" column="gender" jdbcType="CHAR"/>
+            <result property="birthday" column="birthday" jdbcType="DATE"/>
+            <result property="classId" column="class_id" jdbcType="VARCHAR"/>
+            <result property="collegeName" column="college_name" jdbcType="VARCHAR"/>
+            <result property="majorName" column="major_name" jdbcType="VARCHAR"/>
+            <result property="admissionDate" column="admission_date" jdbcType="DATE"/>
+            <result property="schoolingPeriod" column="schooling_period" jdbcType="TINYINT"/>
+            <result property="studentStatus" column="student_status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        student_id,student_name,gender,
+        birthday,class_id,college_name,
+        major_name,admission_date,schooling_period,
+        student_status
+    </sql>
+</mapper>

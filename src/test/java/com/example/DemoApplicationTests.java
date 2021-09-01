@@ -46,7 +46,7 @@ Calendar calendar=Calendar.getInstance();
     public void t1()
     {
        StudentInfo info= studentInfoMapper.selectById("412");
-        System.out.println(info);
+        System.out.println(info.getStudentName());
     }
 //@Test
 //public void getController{
