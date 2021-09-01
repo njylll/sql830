@@ -5,9 +5,9 @@
 <mapper namespace="com.example.dao.MajorInfoMapper">
 
     <resultMap id="BaseResultMap" type="com.example.entity.MajorInfo">
-            <id property="UUID" column="UUID" jdbcType="VARCHAR"/>
-            <result property="major_id" column="major_id" jdbcType="VARCHAR"/>
-            <result property="major_name" column="major_name" jdbcType="VARCHAR"/>
+            <id property="uuid" column="UUID" jdbcType="VARCHAR"/>
+            <result property="majorId" column="major_id" jdbcType="VARCHAR"/>
+            <result property="majorName" column="major_name" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">

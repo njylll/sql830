@@ -3,9 +3,10 @@ package com.example.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 
@@ -18,19 +19,19 @@ public class StudentGrade implements Serializable {
      * 
      */
     @TableId(value = "gradeID")
-    private Integer gradeID;
+    private Integer gradeid;
 
     /**
      * 
      */
     @TableField(value = "claName")
-    private String claName;
+    private String claname;
 
     /**
      * 
      */
     @TableField(value = "createTime")
-    private Date createTime;
+    private Date createtime;
 
     /**
      * 
@@ -42,13 +43,13 @@ public class StudentGrade implements Serializable {
      * 
      */
     @TableField(value = "stuID")
-    private Integer stuID;
+    private Integer stuid;
 
     /**
      * 
      */
     @TableField(value = "updateTime")
-    private Date updateTime;
+    private Date updatetime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -65,24 +66,24 @@ public class StudentGrade implements Serializable {
             return false;
         }
         StudentGrade other = (StudentGrade) that;
-        return (this.getGradeID() == null ? other.getGradeID() == null : this.getGradeID().equals(other.getGradeID()))
-            && (this.getClaName() == null ? other.getClaName() == null : this.getClaName().equals(other.getClaName()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
+        return (this.getGradeid() == null ? other.getGradeid() == null : this.getGradeid().equals(other.getGradeid()))
+            && (this.getClaname() == null ? other.getClaname() == null : this.getClaname().equals(other.getClaname()))
+            && (this.getCreatetime() == null ? other.getCreatetime() == null : this.getCreatetime().equals(other.getCreatetime()))
             && (this.getScore() == null ? other.getScore() == null : this.getScore().equals(other.getScore()))
-            && (this.getStuID() == null ? other.getStuID() == null : this.getStuID().equals(other.getStuID()))
-            && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
+            && (this.getStuid() == null ? other.getStuid() == null : this.getStuid().equals(other.getStuid()))
+            && (this.getUpdatetime() == null ? other.getUpdatetime() == null : this.getUpdatetime().equals(other.getUpdatetime()));
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getGradeID() == null) ? 0 : getGradeID().hashCode());
-        result = prime * result + ((getClaName() == null) ? 0 : getClaName().hashCode());
-        result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
+        result = prime * result + ((getGradeid() == null) ? 0 : getGradeid().hashCode());
+        result = prime * result + ((getClaname() == null) ? 0 : getClaname().hashCode());
+        result = prime * result + ((getCreatetime() == null) ? 0 : getCreatetime().hashCode());
         result = prime * result + ((getScore() == null) ? 0 : getScore().hashCode());
-        result = prime * result + ((getStuID() == null) ? 0 : getStuID().hashCode());
-        result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
+        result = prime * result + ((getStuid() == null) ? 0 : getStuid().hashCode());
+        result = prime * result + ((getUpdatetime() == null) ? 0 : getUpdatetime().hashCode());
         return result;
     }
 
@@ -92,12 +93,12 @@ public class StudentGrade implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", gradeID=").append(gradeID);
-        sb.append(", claName=").append(claName);
-        sb.append(", createTime=").append(createTime);
+        sb.append(", gradeid=").append(gradeid);
+        sb.append(", claname=").append(claname);
+        sb.append(", createtime=").append(createtime);
         sb.append(", score=").append(score);
-        sb.append(", stuID=").append(stuID);
-        sb.append(", updateTime=").append(updateTime);
+        sb.append(", stuid=").append(stuid);
+        sb.append(", updatetime=").append(updatetime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

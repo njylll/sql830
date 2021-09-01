@@ -5,13 +5,13 @@
 <mapper namespace="com.example.dao.CourseDetailMapper">
 
     <resultMap id="BaseResultMap" type="com.example.entity.CourseDetail">
-            <result property="course_id" column="course_id" jdbcType="VARCHAR"/>
-            <result property="start_school_year" column="start_school_year" jdbcType="OTHER"/>
-            <result property="end_school_year" column="end_school_year" jdbcType="OTHER"/>
-            <result property="start_term" column="start_term" jdbcType="TINYINT"/>
-            <result property="course_condition" column="course_condition" jdbcType="VARCHAR"/>
-            <result property="teacher_name" column="teacher_name" jdbcType="VARCHAR"/>
-            <result property="teaching_location" column="teaching_location" jdbcType="VARCHAR"/>
+            <result property="courseId" column="course_id" jdbcType="VARCHAR"/>
+            <result property="startSchoolYear" column="start_school_year" jdbcType="OTHER"/>
+            <result property="endSchoolYear" column="end_school_year" jdbcType="OTHER"/>
+            <result property="startTerm" column="start_term" jdbcType="TINYINT"/>
+            <result property="courseCondition" column="course_condition" jdbcType="VARCHAR"/>
+            <result property="teacherName" column="teacher_name" jdbcType="VARCHAR"/>
+            <result property="teachingLocation" column="teaching_location" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">

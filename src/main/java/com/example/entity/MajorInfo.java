@@ -3,8 +3,9 @@ package com.example.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 专业信息
@@ -17,19 +18,19 @@ public class MajorInfo implements Serializable {
      * 
      */
     @TableId(value = "UUID")
-    private String UUID;
+    private String uuid;
 
     /**
      * 专业号
      */
     @TableField(value = "major_id")
-    private String major_id;
+    private String majorId;
 
     /**
      * 专业名称
      */
     @TableField(value = "major_name")
-    private String major_name;
+    private String majorName;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -46,18 +47,18 @@ public class MajorInfo implements Serializable {
             return false;
         }
         MajorInfo other = (MajorInfo) that;
-        return (this.getUUID() == null ? other.getUUID() == null : this.getUUID().equals(other.getUUID()))
-            && (this.getMajor_id() == null ? other.getMajor_id() == null : this.getMajor_id().equals(other.getMajor_id()))
-            && (this.getMajor_name() == null ? other.getMajor_name() == null : this.getMajor_name().equals(other.getMajor_name()));
+        return (this.getUuid() == null ? other.getUuid() == null : this.getUuid().equals(other.getUuid()))
+            && (this.getMajorId() == null ? other.getMajorId() == null : this.getMajorId().equals(other.getMajorId()))
+            && (this.getMajorName() == null ? other.getMajorName() == null : this.getMajorName().equals(other.getMajorName()));
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getUUID() == null) ? 0 : getUUID().hashCode());
-        result = prime * result + ((getMajor_id() == null) ? 0 : getMajor_id().hashCode());
-        result = prime * result + ((getMajor_name() == null) ? 0 : getMajor_name().hashCode());
+        result = prime * result + ((getUuid() == null) ? 0 : getUuid().hashCode());
+        result = prime * result + ((getMajorId() == null) ? 0 : getMajorId().hashCode());
+        result = prime * result + ((getMajorName() == null) ? 0 : getMajorName().hashCode());
         return result;
     }
 
@@ -67,9 +68,9 @@ public class MajorInfo implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", UUID=").append(UUID);
-        sb.append(", major_id=").append(major_id);
-        sb.append(", major_name=").append(major_name);
+        sb.append(", uuid=").append(uuid);
+        sb.append(", majorId=").append(majorId);
+        sb.append(", majorName=").append(majorName);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

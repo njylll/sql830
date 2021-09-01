@@ -1,10 +1,9 @@
 package com.example.controller;
 
 import com.example.DemoApplication;
-import com.example.StudentDAO.ClassRepository;
-import com.example.StudentDAO.StudentRepository;
+import com.example.StudentDAO.CourseInfoDAO;
 import com.example.StudentDomain.ClassBean;
-import com.example.StudentDomain.StudentBean;
+import com.example.service.CourseInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +17,16 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller
-public class ClassController {
+public class CourseController {
     public static final Logger log = LoggerFactory.getLogger(DemoApplication.class);
 
     @Autowired
-    ClassRepository classRepository;
+    CourseInfoService courseInfoService;
 
     //查询所有课程返回列表页面
     @GetMapping("/classes")
     public ModelAndView getClasses() {
-        List<ClassBean> classInfo = classRepository.findAll();
+        List<ClassBean> classInfo = courseInfoDAO.findAll();
         ModelAndView classMo = new ModelAndView();
         log.info("\n成功跳转到列表方法getClasses()");
 //        log.info("\n首个课程信息"+classInfo.get(1));
@@ -35,13 +34,6 @@ public class ClassController {
 
         classMo.addObject("claViewInfo", classInfo);
 
-//分页传数据未完成
-    	/*int page=1,size=2;
-
-    	Sort sort = new Sort(Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(page, size, sort);
-        model.addAttribute("users", pageable);*/
-//        return "/class/classlist";
         return classMo;
     }
 
@@ -54,11 +46,11 @@ public class ClassController {
         ModelAndView claSearModel = new ModelAndView();
         claSearModel.setViewName("/class/classlist");
         if (searText.matches("[\\u4e00-\\u9fa5]+")) {
-            List<ClassBean> classInfo = classRepository.findAllClaByChinese(searText);
+            List<ClassBean> classInfo = courseInfoDAO.findAllClaByChinese(searText);
             log.info("\n成功跳转到查询方法()");
             claSearModel.addObject("claViewInfo", classInfo);
         } else if (searText.matches("[a-zA-Z]+") || searText.matches("[0-9]+")) {
-            List<ClassBean> classInfo = classRepository.findAllClaByNumOrLet(searText);
+            List<ClassBean> classInfo = courseInfoDAO.findAllClaByNumOrLet(searText);
             log.info("\n成功跳转到查询方法()");
             claSearModel.addObject("claViewInfo", classInfo);
         }
@@ -69,7 +61,7 @@ public class ClassController {
 //            List<ClassBean> classInfo2 = classRepository.findAllClaByNumOrLet(searText);
 //            classInfo1.addAll(classInfo2);
 //            log.info("\n成功跳转到查询方法()");
-            List<ClassBean> classInfo1 = classRepository.findAllClaByRoom(searText);
+            List<ClassBean> classInfo1 = courseInfoDAO.findAllClaByRoom(searText);
             log.info("\n成功跳转到查询方法()");
             claSearModel.addObject("claViewInfo", classInfo1);
         }
@@ -96,7 +88,7 @@ public class ClassController {
         //来到员工列表页面
         log.info("\n保存的课程信息：" + claBe);
         //保存员工
-        classRepository.save(claBe);
+        courseInfoDAO.save(claBe);
         //由于模板引擎会拼串不能直接返回路径需要 redirect: 表示重定向到一个地址  /代表当前项目路径
         // forward: 表示转发到一个地址
         return "redirect:/classes";
@@ -107,7 +99,7 @@ public class ClassController {
     public String toEditPage(@PathVariable("id") Integer id, Model model) {
         log.info("\n进入get修改方法");
 
-        ClassBean claEdit = classRepository.getOne(id);
+        ClassBean claEdit = courseInfoDAO.getOne(id);
         //回显到add页面参数需要保存修改的bean claEdit
         model.addAttribute("claBe", claEdit);
 
@@ -121,13 +113,13 @@ public class ClassController {
     //    put提交修改后到学生列表页面
     @PutMapping(value = {"/class/{id}"})
     public String putClass(@PathVariable("id") Integer id, ClassBean claEdit) {
-        ClassBean oldCla = classRepository.getOne(id);
+        ClassBean oldCla = courseInfoDAO.getOne(id);
         log.info("\n进入put修改方法,旧数据:\n" + oldCla);
         log.info("\n修改课程数据:" + claEdit);
 //        if(!(){
         log.info("\n进入save保存");
 //        oldStu=stuEditBe;//赋值新变量
-        classRepository.save(claEdit);
+        courseInfoDAO.save(claEdit);
 //        }
         return "redirect:/classes";
 
@@ -137,7 +129,7 @@ public class ClassController {
     public String deleteStu(@PathVariable("id") Integer id) {
         log.info("\n进入delete删除方法");
 
-        classRepository.deleteById(id);
+        courseInfoDAO.deleteById(id);
 //        }
         return "redirect:/classes";
 

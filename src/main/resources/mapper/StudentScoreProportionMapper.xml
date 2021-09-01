@@ -5,11 +5,11 @@
 <mapper namespace="com.example.dao.StudentScoreProportionMapper">
 
     <resultMap id="BaseResultMap" type="com.example.entity.StudentScoreProportion">
-            <result property="course_id" column="course_id" jdbcType="VARCHAR"/>
-            <result property="usual_proportion" column="usual_proportion" jdbcType="TINYINT"/>
-            <result property="mid_term_proportion" column="mid_term_proportion" jdbcType="TINYINT"/>
-            <result property="final_term_proportion" column="final_term_proportion" jdbcType="TINYINT"/>
-            <result property="extra_proportion" column="extra_proportion" jdbcType="TINYINT"/>
+            <result property="courseId" column="course_id" jdbcType="VARCHAR"/>
+            <result property="usualProportion" column="usual_proportion" jdbcType="TINYINT"/>
+            <result property="midTermProportion" column="mid_term_proportion" jdbcType="TINYINT"/>
+            <result property="finalTermProportion" column="final_term_proportion" jdbcType="TINYINT"/>
+            <result property="extraProportion" column="extra_proportion" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">

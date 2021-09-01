@@ -1,7 +1,7 @@
 package com.example.controller;
 
 import com.example.DemoApplication;
-import com.example.StudentDAO.ClassRepository;
+import com.example.StudentDAO.CourseInfoDAO;
 import com.example.StudentDAO.GradeRepository;
 import com.example.StudentDAO.StudentRepository;
 import com.example.StudentDomain.ClassBean;
@@ -28,7 +28,7 @@ public class GradeController {
     @Autowired
     StudentRepository studentRepository;
     @Autowired
-    ClassRepository classRepository;
+    CourseInfoDAO courseInfoDAO;
 
     @GetMapping("/grades")
     public ModelAndView getGrades() {
@@ -78,7 +78,7 @@ public class GradeController {
         ModelAndView mv = new ModelAndView();
 //        List<GradeBean> grades = gradeRepository.findAll();
         List<StudentBean> students = studentRepository.findAll();
-        List<ClassBean> classes = classRepository.findAll();
+        List<ClassBean> classes = courseInfoDAO.findAll();
 //        mv.addObject("graViewInfo",grades);
         mv.setViewName("/grade/addGrade");
         mv.addObject("showStu", students);
@@ -99,7 +99,7 @@ public class GradeController {
 
         //页面要显示所有的学生，成绩
         List<StudentBean> students = studentRepository.findAll();
-        List<ClassBean> classes = classRepository.findAll();
+        List<ClassBean> classes = courseInfoDAO.findAll();
         model.addAttribute("gradeBe", grade);
         model.addAttribute("showStu", students);
         log.info("学生回显数据首个stuBe的id:" + students.get(1).getId());

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class AdminAccountServiceImpl extends ServiceImpl<AdminAccountMapper, AdminAccount>
     implements AdminAccountService{
 
+
 }
 
 
