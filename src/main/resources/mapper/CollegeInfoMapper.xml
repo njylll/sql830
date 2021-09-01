@@ -5,10 +5,10 @@
 <mapper namespace="com.example.dao.CollegeInfoMapper">
 
     <resultMap id="BaseResultMap" type="com.example.entity.CollegeInfo">
-            <id property="UUID" column="UUID" jdbcType="VARCHAR"/>
-            <result property="college_id" column="college_id" jdbcType="VARCHAR"/>
-            <result property="college_name" column="college_name" jdbcType="VARCHAR"/>
-            <result property="college_principal" column="college_principal" jdbcType="VARCHAR"/>
+            <id property="uuid" column="UUID" jdbcType="VARCHAR"/>
+            <result property="collegeId" column="college_id" jdbcType="VARCHAR"/>
+            <result property="collegeName" column="college_name" jdbcType="VARCHAR"/>
+            <result property="collegePrincipal" column="college_principal" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">

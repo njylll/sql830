@@ -1,7 +1,7 @@
 package com.example.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.entity.MajorInfo;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  *

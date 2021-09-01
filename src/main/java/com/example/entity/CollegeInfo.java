@@ -3,8 +3,9 @@ package com.example.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 学院信息
@@ -17,25 +18,25 @@ public class CollegeInfo implements Serializable {
      * 
      */
     @TableId(value = "UUID")
-    private String UUID;
+    private String uuid;
 
     /**
      * 学院id
      */
     @TableField(value = "college_id")
-    private String college_id;
+    private String collegeId;
 
     /**
      * 学院名
      */
     @TableField(value = "college_name")
-    private String college_name;
+    private String collegeName;
 
     /**
      * 院长
      */
     @TableField(value = "college_principal")
-    private String college_principal;
+    private String collegePrincipal;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -52,20 +53,20 @@ public class CollegeInfo implements Serializable {
             return false;
         }
         CollegeInfo other = (CollegeInfo) that;
-        return (this.getUUID() == null ? other.getUUID() == null : this.getUUID().equals(other.getUUID()))
-            && (this.getCollege_id() == null ? other.getCollege_id() == null : this.getCollege_id().equals(other.getCollege_id()))
-            && (this.getCollege_name() == null ? other.getCollege_name() == null : this.getCollege_name().equals(other.getCollege_name()))
-            && (this.getCollege_principal() == null ? other.getCollege_principal() == null : this.getCollege_principal().equals(other.getCollege_principal()));
+        return (this.getUuid() == null ? other.getUuid() == null : this.getUuid().equals(other.getUuid()))
+            && (this.getCollegeId() == null ? other.getCollegeId() == null : this.getCollegeId().equals(other.getCollegeId()))
+            && (this.getCollegeName() == null ? other.getCollegeName() == null : this.getCollegeName().equals(other.getCollegeName()))
+            && (this.getCollegePrincipal() == null ? other.getCollegePrincipal() == null : this.getCollegePrincipal().equals(other.getCollegePrincipal()));
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getUUID() == null) ? 0 : getUUID().hashCode());
-        result = prime * result + ((getCollege_id() == null) ? 0 : getCollege_id().hashCode());
-        result = prime * result + ((getCollege_name() == null) ? 0 : getCollege_name().hashCode());
-        result = prime * result + ((getCollege_principal() == null) ? 0 : getCollege_principal().hashCode());
+        result = prime * result + ((getUuid() == null) ? 0 : getUuid().hashCode());
+        result = prime * result + ((getCollegeId() == null) ? 0 : getCollegeId().hashCode());
+        result = prime * result + ((getCollegeName() == null) ? 0 : getCollegeName().hashCode());
+        result = prime * result + ((getCollegePrincipal() == null) ? 0 : getCollegePrincipal().hashCode());
         return result;
     }
 
@@ -75,10 +76,10 @@ public class CollegeInfo implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", UUID=").append(UUID);
-        sb.append(", college_id=").append(college_id);
-        sb.append(", college_name=").append(college_name);
-        sb.append(", college_principal=").append(college_principal);
+        sb.append(", uuid=").append(uuid);
+        sb.append(", collegeId=").append(collegeId);
+        sb.append(", collegeName=").append(collegeName);
+        sb.append(", collegePrincipal=").append(collegePrincipal);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

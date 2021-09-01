@@ -1,26 +1,20 @@
 package com.example.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
- * 学生信息
- * @TableName student_info
+ * 
+ * @TableName student_vo
  */
-@TableName(value ="student_info")
+@TableName(value ="student_vo")
 @Data
-public class StudentInfo implements Serializable {
-    /**
-     * 唯一标识符
-     */
-    @TableId(value = "UUID")
-    private String uuid;
-
+public class StudentVo implements Serializable {
     /**
      * 学号
      */
@@ -43,7 +37,8 @@ public class StudentInfo implements Serializable {
      * 出生日期
      */
     @TableField(value = "birthday")
-    private Date birthday;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthday;
 
     /**
      * 班号
@@ -52,22 +47,23 @@ public class StudentInfo implements Serializable {
     private String classId;
 
     /**
-     * 学院号
+     * 学院名
      */
-    @TableField(value = "college_id")
-    private String collegeId;
+    @TableField(value = "college_name")
+    private String collegeName;
 
     /**
-     * 专业号
+     * 专业名称
      */
-    @TableField(value = "major_id")
-    private String majorId;
+    @TableField(value = "major_name")
+    private String majorName;
 
     /**
      * 入学日期
      */
     @TableField(value = "admission_date")
-    private Date admissionDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate admissionDate;
 
     /**
      * 学制，如4年
@@ -95,15 +91,14 @@ public class StudentInfo implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        StudentInfo other = (StudentInfo) that;
-        return (this.getUuid() == null ? other.getUuid() == null : this.getUuid().equals(other.getUuid()))
-            && (this.getStudentId() == null ? other.getStudentId() == null : this.getStudentId().equals(other.getStudentId()))
+        StudentVo other = (StudentVo) that;
+        return (this.getStudentId() == null ? other.getStudentId() == null : this.getStudentId().equals(other.getStudentId()))
             && (this.getStudentName() == null ? other.getStudentName() == null : this.getStudentName().equals(other.getStudentName()))
             && (this.getGender() == null ? other.getGender() == null : this.getGender().equals(other.getGender()))
             && (this.getBirthday() == null ? other.getBirthday() == null : this.getBirthday().equals(other.getBirthday()))
             && (this.getClassId() == null ? other.getClassId() == null : this.getClassId().equals(other.getClassId()))
-            && (this.getCollegeId() == null ? other.getCollegeId() == null : this.getCollegeId().equals(other.getCollegeId()))
-            && (this.getMajorId() == null ? other.getMajorId() == null : this.getMajorId().equals(other.getMajorId()))
+            && (this.getCollegeName() == null ? other.getCollegeName() == null : this.getCollegeName().equals(other.getCollegeName()))
+            && (this.getMajorName() == null ? other.getMajorName() == null : this.getMajorName().equals(other.getMajorName()))
             && (this.getAdmissionDate() == null ? other.getAdmissionDate() == null : this.getAdmissionDate().equals(other.getAdmissionDate()))
             && (this.getSchoolingPeriod() == null ? other.getSchoolingPeriod() == null : this.getSchoolingPeriod().equals(other.getSchoolingPeriod()))
             && (this.getStudentStatus() == null ? other.getStudentStatus() == null : this.getStudentStatus().equals(other.getStudentStatus()));
@@ -113,14 +108,13 @@ public class StudentInfo implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getUuid() == null) ? 0 : getUuid().hashCode());
         result = prime * result + ((getStudentId() == null) ? 0 : getStudentId().hashCode());
         result = prime * result + ((getStudentName() == null) ? 0 : getStudentName().hashCode());
         result = prime * result + ((getGender() == null) ? 0 : getGender().hashCode());
         result = prime * result + ((getBirthday() == null) ? 0 : getBirthday().hashCode());
         result = prime * result + ((getClassId() == null) ? 0 : getClassId().hashCode());
-        result = prime * result + ((getCollegeId() == null) ? 0 : getCollegeId().hashCode());
-        result = prime * result + ((getMajorId() == null) ? 0 : getMajorId().hashCode());
+        result = prime * result + ((getCollegeName() == null) ? 0 : getCollegeName().hashCode());
+        result = prime * result + ((getMajorName() == null) ? 0 : getMajorName().hashCode());
         result = prime * result + ((getAdmissionDate() == null) ? 0 : getAdmissionDate().hashCode());
         result = prime * result + ((getSchoolingPeriod() == null) ? 0 : getSchoolingPeriod().hashCode());
         result = prime * result + ((getStudentStatus() == null) ? 0 : getStudentStatus().hashCode());
@@ -133,14 +127,13 @@ public class StudentInfo implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", uuid=").append(uuid);
         sb.append(", studentId=").append(studentId);
         sb.append(", studentName=").append(studentName);
         sb.append(", gender=").append(gender);
         sb.append(", birthday=").append(birthday);
         sb.append(", classId=").append(classId);
-        sb.append(", collegeId=").append(collegeId);
-        sb.append(", majorId=").append(majorId);
+        sb.append(", collegeName=").append(collegeName);
+        sb.append(", majorName=").append(majorName);
         sb.append(", admissionDate=").append(admissionDate);
         sb.append(", schoolingPeriod=").append(schoolingPeriod);
         sb.append(", studentStatus=").append(studentStatus);

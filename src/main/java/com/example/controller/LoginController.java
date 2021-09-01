@@ -2,7 +2,6 @@ package com.example.controller;
 
 
 import com.example.DemoApplication;
-import com.example.StudentDAO.StudentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,6 @@ public class LoginController {
 
     public static final Logger log = LoggerFactory.getLogger(DemoApplication.class);
 
-    @Autowired
-    StudentRepository studentRepository;
 
     //响应首页
     @RequestMapping(value = "/bar")
@@ -81,7 +78,6 @@ public class LoginController {
                         Map<String, Object> map,
                         HttpSession session) {
         if (!StringUtils.isEmpty(username) && "123456".equals(password)) {
-            log.info("进入登录跳转方法");
 //            //登陆成功，防止表单重复提交，可以重定向到主页
             session.setAttribute("loginUser", username);
 //            return "redirect:/main.html";//重定向到登录内
@@ -105,7 +101,6 @@ public class LoginController {
 
             return "index";
         } else
-            log.info("进入登录跳转方法");
 
         return "index";
     }

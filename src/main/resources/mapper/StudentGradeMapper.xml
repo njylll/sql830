@@ -5,12 +5,12 @@
 <mapper namespace="com.example.dao.StudentGradeMapper">
 
     <resultMap id="BaseResultMap" type="com.example.entity.StudentGrade">
-            <id property="gradeID" column="gradeID" jdbcType="INTEGER"/>
-            <result property="claName" column="claName" jdbcType="VARCHAR"/>
-            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <id property="gradeid" column="gradeID" jdbcType="INTEGER"/>
+            <result property="claname" column="claName" jdbcType="VARCHAR"/>
+            <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="score" column="score" jdbcType="INTEGER"/>
-            <result property="stuID" column="stuID" jdbcType="INTEGER"/>
-            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="stuid" column="stuID" jdbcType="INTEGER"/>
+            <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

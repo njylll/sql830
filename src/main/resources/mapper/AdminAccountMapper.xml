@@ -5,12 +5,12 @@
 <mapper namespace="com.example.dao.AdminAccountMapper">
 
     <resultMap id="BaseResultMap" type="com.example.entity.AdminAccount">
-            <id property="UUID" column="UUID" jdbcType="VARCHAR"/>
+            <id property="uuid" column="UUID" jdbcType="VARCHAR"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
             <result property="role" column="role" jdbcType="VARCHAR"/>
-            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

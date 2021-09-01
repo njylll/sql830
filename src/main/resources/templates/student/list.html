@@ -27,24 +27,36 @@
         <div th:replace="commons/bar::#sidebar(activeUri='students')"></div>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-<form id="fake"></form>
-<!--搜索需要区分-->
+            <form id="fake"></form>
+            <!--搜索需要区分-->
             <div class="table-responsive">
-                   <form th:action="@{/somestudents}" method="get">
+                <form th:action="@{/student/search}" method="post">
                     <div class="form-group">
-                        <label for="Search" class="sr-only"></label>
-                        <input type="text" name="query"
-                               placeholder="按名字,日期模糊查找,按年龄学号准确查找"class="form-control" id="Search"/>
+                        <label for="studentId" class="sr-only"></label>
+                        <input type="number" name="studentId" placeholder="学号" class="form-control" id="studentId"/>
+                        <label for="studentName" class="sr-only"></label>
+                        <input type="text" name="studentName" placeholder="姓名" class="form-control" id="studentName"/>
+                        <label for="gender" class="sr-only"></label>
+                        <input type="text" name="gender" placeholder="性别" class="form-control" id="gender"/>
+                        <label for="classId" class="sr-only"></label>
+                        <input type="number" name="classId" placeholder="班级" class="form-control" id="classId"/>
+                        <label for="collegeName" class="sr-only"></label>
+                        <input type="text" name="collegeName" placeholder="学院" class="form-control" id="collegeName"/>
+                        <label for="majorName" class="sr-only"></label>
+                        <input type="text" name="majorName" placeholder="专业" class="form-control" id="majorName"/>
+                        <label for="schoolingPeriod" class="sr-only"></label>
+                        <input type="number" name="schoolingPeriod" placeholder="学制" class="form-control" id="schoolingPeriod"/>
+
                     </div>
-                <button type="submit" class="btn btn-default">查询</button>
+                    <button type="submit" class="btn btn-default">查询</button>
 
-    </form>
+                </form>
             </div>
-                <a th:href="@{/student}">
-                    <button type="button" class="btn btn-success">添加</button>
-                </a>
+            <a th:href="@{/student/addStudent}">
+                <button type="button" class="btn btn-success">添加</button>
+            </a>
 
-<!--            <h2><a class="btn btn-sm btn-success" href="students"th:href="@{/student}">学生添加 </a></h2>-->
+            <!--            <h2><a class="btn btn-sm btn-success" href="students"th:href="@{/student}">学生添加 </a></h2>-->
             <div class="table-responsive">
                 <h1>学生列表</h1>
                 <br/><br/>
@@ -53,34 +65,37 @@
                         <thead>
                         <tr>
                             <th>#</th>
+                            <th>学号</th>
                             <th>姓名</th>
                             <th>性别</th>
-                            <th>年龄</th>
-                            <th>创建时间</th>
-                            <th>更新时间</th>
-                            <th>操作</th>
+                            <th>生日</th>
+                            <th>班级</th>
+                            <th>学院</th>
+                            <th>专业</th>
+                            <th>入学时间</th>
+                            <th>学制</th>
+                            <th>状态</th>
+                            <th>编辑</th>
+                            <th>删除</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <!--        需要从controller传参-->
-                        <!--/*@thymesVar id="stuViewInfo" type="java.util.List<com.example.StudentDomain.StudentBean>"*/-->
-                        <tr th:each="stuBean:${stuViewInfo}">
-                            <td th:text="${stuBean.id}">neo</td>
-                            <td th:text="${stuBean.name}">Otto</td>
-                            <td th:text="${stuBean.gender}"></td>
-                            <!--                            ${stuBean.gender}==0?"女":"男">6-->
-                            <td th:text="${stuBean.age}">6</td>
-                            <!-- th语法日期格式化-->
-                            <td th:text="${#dates.format(stuBean.createTime, 'yyyy-MM-dd HH:mm')}">6</td>
-                            <td th:text="${#dates.format(stuBean.updateTime, 'yyyy-MM-dd HH:mm')}">6</td>
-                            <td><a class="btn btn-sm btn-primary" th:href="@{/student/}+${stuBean.id}">编辑</a></td>
-                            <!--全部使用form再修改请求为delete太麻烦,所有button通过1个form使用js提交,自定义属性del_uri-->
+                        <tr th:each="stuBean,status:${studentInfos}">
+                            <td th:text="${status.count}"></td>
+                            <td th:text="${stuBean.studentId}">neo</td>
+                            <td th:text="${stuBean.studentName}">Otto</td>
+                            <td th:text="${stuBean.gender=='0'?'男':'女'}"></td>
+                            <td th:text="${stuBean.birthday}"></td>
+                            <td th:text="${stuBean.classId}"></td>
+                            <td th:text="${stuBean.collegeName}"></td>
+                            <td th:text="${stuBean.majorName}"></td>
+                            <td th:text="${stuBean.admissionDate}"></td>
+                            <td th:text="${stuBean.schoolingPeriod}"></td>
+                            <td th:text="${stuBean.studentStatus}"></td>
+                            <td><a class="btn btn-sm btn-primary" th:href="@{/student/update/}+${stuBean.studentId}">编辑</a></td>
                             <td>
-                            <button th:attr="del_uri=@{/student/}+${stuBean.id}" class="btn btn-sm btn-danger deleteBtn">
-
-                                删除</button>
+                                <button th:attr="del_uri='/student/'+${stuBean.studentId}" class="btn btn-sm btn-danger deleteBtn">删除</button>
                             </td>
-
                         </tr>
                         </tbody>
                     </table>

@@ -3,19 +3,44 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.dao.StudentInfoMapper">
+    <update id="updateStudent">
+        select @college_id:=(select college_id from college_info where college_name=#{vo.collegeName}),
+               @major_id:=(select major_id from major_info where major_name=#{vo.majorName});
+
+        update student_info
+        <set>
+            <if test="vo.studentName != null">student_name=#{vo.studentName},</if>
+            <if test="vo.gender != null">gender=#{vo.gender},</if>
+            <if test="vo.birthday != null">birthday=#{vo.birthday},</if>
+            <if test="vo.classId != null">class_id=#{vo.classId},</if>
+            <if test="vo.collegeName != null">college_id=@college_id,</if>
+            <if test="vo.majorName != null">major_id=major_id,</if>
+            <if test="vo.admissionDate != null">admission_date=#{vo.admissionDate},</if>
+            <if test="vo.schoolingPeriod != null">schooling_period=#{vo.schoolingPeriod},</if>
+            <if test="vo.studentStatus != null">student_status=#{vo.studentStatus}</if>
+        </set>
+        where student_id = #{vo.studentId}
+    </update>
+
+    <select id="searchAllStudentInfoVO" resultType="com.example.vo.StudentInfoVO">
+        select student_id as studentId,student_name as studentName,gender,birthday,class_id as classId,college_name as collegeName,major_name as majorName,admission_date as admissionDate,schooling_period as schoolingPeriod,student_status as studentStatus
+        from student_info
+        left join college_info ci on student_info.college_id = ci.college_id
+        left join major_info mi on student_info.major_id = mi.major_id
+    </select>
 
     <resultMap id="BaseResultMap" type="com.example.entity.StudentInfo">
-            <id property="UUID" column="UUID" jdbcType="VARCHAR"/>
-            <result property="student_id" column="student_id" jdbcType="VARCHAR"/>
-            <result property="student_name" column="student_name" jdbcType="VARCHAR"/>
+            <id property="uuid" column="UUID" jdbcType="VARCHAR"/>
+            <result property="studentId" column="student_id" jdbcType="VARCHAR"/>
+            <result property="studentName" column="student_name" jdbcType="VARCHAR"/>
             <result property="gender" column="gender" jdbcType="CHAR"/>
             <result property="birthday" column="birthday" jdbcType="DATE"/>
-            <result property="class_id" column="class_id" jdbcType="VARCHAR"/>
-            <result property="college_id" column="college_id" jdbcType="VARCHAR"/>
-            <result property="major_id" column="major_id" jdbcType="VARCHAR"/>
-            <result property="admission_date" column="admission_date" jdbcType="DATE"/>
-            <result property="schooling_period" column="schooling_period" jdbcType="TINYINT"/>
-            <result property="student_status" column="student_status" jdbcType="VARCHAR"/>
+            <result property="classId" column="class_id" jdbcType="VARCHAR"/>
+            <result property="collegeId" column="college_id" jdbcType="VARCHAR"/>
+            <result property="majorId" column="major_id" jdbcType="VARCHAR"/>
+            <result property="admissionDate" column="admission_date" jdbcType="DATE"/>
+            <result property="schoolingPeriod" column="schooling_period" jdbcType="TINYINT"/>
+            <result property="studentStatus" column="student_status" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">

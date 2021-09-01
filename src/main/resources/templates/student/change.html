@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<!--增改二合一页面，使用id属性为空判断修改还是添加-->
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -54,56 +53,56 @@
         <div th:replace="commons/bar::#sidebar(activeUri='students')"></div>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-            <form method="post" action="/student/doAdd">
+            <form method="post" action="/student/doUpdate">
                 <div class="form-group">
                     <label>学号</label>
-                    <input name="studentId" class="form-control" type="text"/>
+                    <input name="studentId" class="form-control" type="text"  th:placeholder="${student.studentId}" th:value="${student.studentId}" readonly/>
                 </div>
                 <div class="form-group">
                     <label>姓名</label>
-                    <input name="studentName" type="text" class="form-control" placeholder="姓名"/>
+                    <input name="studentName" type="text" class="form-control" th:value="${student.studentName}" th:placeholder="${student.studentName}"/>
                 </div>
                 <!--                01判断男女-->
                 <div class="form-group">
                     <label>性别</label><br/>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="gender" value="0"/>
+                        <input class="form-check-input" type="radio" th:checked="${student.gender.equals('0')}" name="gender" value="0"/>
                         <label class="form-check-label">男</label>
                     </div>
                     <div class="form-check form-check-inline"/>
-                    <input class="form-check-input" type="radio" name="gender" value="1"/>
+                    <input class="form-check-input" type="radio" th:checked="${student.gender.equals('1')}" name="gender" value="1"/>
                     <label class="form-check-label">女</label>
                 </div>
 
                 <div class="form-group">
                     <label>出生日期</label>
-                    <input name="birthday" type="date" class="form-control"/>
+                    <input name="birthday" type="date" th:value="${student.birthday}" class="form-control"/>
                 </div>
                 <div class="form-group">
                     <label>班级</label>
-                    <input name="classId" type="number" class="form-control" placeholder="班级"/>
+                    <input name="classId" type="number" th:placeholder="${student.classId}" th:value="${student.classId}" class="form-control" placeholder="班级"/>
                 </div>
                 <div class="form-group">
                     <label>学院</label>
-                    <input name="collegeName" type="text" class="form-control" placeholder="学院"/>
+                    <input name="collegeName" type="text" th:placeholder="${student.collegeName}" th:value="${student.collegeName}" class="form-control" placeholder="学院"/>
                 </div>
                 <div class="form-group">
                     <label>专业</label>
-                    <input name="majorName" type="text" class="form-control" placeholder="专业"/>
+                    <input name="majorName" type="text" th:placeholder="${student.majorName}" th:value="${student.majorName}" class="form-control" placeholder="专业"/>
                 </div>
                 <div class="form-group">
                     <label>入学日期</label>
-                    <input name="admissionDate" type="date" class="form-control" placeholder="入学日期"/>
+                    <input name="admissionDate" type="date"  th:value="${student.admissionDate}" class="form-control" />
                 </div>
                 <div class="form-group">
                     <label>学制</label>
-                    <input name="schoolingPeriod" type="number" class="form-control" placeholder="学制"/>
+                    <input name="schoolingPeriod" type="number" th:placeholder="${student.schoolingPeriod}" th:value="${student.schoolingPeriod}" class="form-control" placeholder="学制"/>
                 </div>
                 <div class="form-group">
                     <label>状态</label>
-                    <input name="studentStatus" type="text" class="form-control" placeholder="状态"/>
+                    <input name="studentStatus" type="text" th:placeholder="${student.studentStatus}" th:value="${student.studentStatus}" class="form-control" placeholder="状态"/>
                 </div>
-                <button type="submit" class="btn btn-primary">提交</button>
+                <button type="submit" class="btn btn-primary">修改</button>
             </form>
         </main>
     </div>

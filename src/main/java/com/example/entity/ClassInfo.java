@@ -3,8 +3,9 @@ package com.example.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 班级信息
@@ -18,43 +19,43 @@ public class ClassInfo implements Serializable {
 
      */
     @TableId(value = "UUID")
-    private String UUID;
+    private String uuid;
 
     /**
      * 班号
      */
     @TableField(value = "class_id")
-    private String class_id;
+    private String classId;
 
     /**
      * 学院号
      */
     @TableField(value = "college_id")
-    private String college_id;
+    private String collegeId;
 
     /**
      * 专业号
      */
     @TableField(value = "major_id")
-    private String major_id;
+    private String majorId;
 
     /**
      * 辅导员
      */
     @TableField(value = "counselor_name")
-    private String counselor_name;
+    private String counselorName;
 
     /**
      * 班主任
      */
     @TableField(value = "class_teacher_name")
-    private String class_teacher_name;
+    private String classTeacherName;
 
     /**
      * 班长
      */
     @TableField(value = "monitor_student_id")
-    private String monitor_student_id;
+    private String monitorStudentId;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -71,26 +72,26 @@ public class ClassInfo implements Serializable {
             return false;
         }
         ClassInfo other = (ClassInfo) that;
-        return (this.getUUID() == null ? other.getUUID() == null : this.getUUID().equals(other.getUUID()))
-            && (this.getClass_id() == null ? other.getClass_id() == null : this.getClass_id().equals(other.getClass_id()))
-            && (this.getCollege_id() == null ? other.getCollege_id() == null : this.getCollege_id().equals(other.getCollege_id()))
-            && (this.getMajor_id() == null ? other.getMajor_id() == null : this.getMajor_id().equals(other.getMajor_id()))
-            && (this.getCounselor_name() == null ? other.getCounselor_name() == null : this.getCounselor_name().equals(other.getCounselor_name()))
-            && (this.getClass_teacher_name() == null ? other.getClass_teacher_name() == null : this.getClass_teacher_name().equals(other.getClass_teacher_name()))
-            && (this.getMonitor_student_id() == null ? other.getMonitor_student_id() == null : this.getMonitor_student_id().equals(other.getMonitor_student_id()));
+        return (this.getUuid() == null ? other.getUuid() == null : this.getUuid().equals(other.getUuid()))
+            && (this.getClassId() == null ? other.getClassId() == null : this.getClassId().equals(other.getClassId()))
+            && (this.getCollegeId() == null ? other.getCollegeId() == null : this.getCollegeId().equals(other.getCollegeId()))
+            && (this.getMajorId() == null ? other.getMajorId() == null : this.getMajorId().equals(other.getMajorId()))
+            && (this.getCounselorName() == null ? other.getCounselorName() == null : this.getCounselorName().equals(other.getCounselorName()))
+            && (this.getClassTeacherName() == null ? other.getClassTeacherName() == null : this.getClassTeacherName().equals(other.getClassTeacherName()))
+            && (this.getMonitorStudentId() == null ? other.getMonitorStudentId() == null : this.getMonitorStudentId().equals(other.getMonitorStudentId()));
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getUUID() == null) ? 0 : getUUID().hashCode());
-        result = prime * result + ((getClass_id() == null) ? 0 : getClass_id().hashCode());
-        result = prime * result + ((getCollege_id() == null) ? 0 : getCollege_id().hashCode());
-        result = prime * result + ((getMajor_id() == null) ? 0 : getMajor_id().hashCode());
-        result = prime * result + ((getCounselor_name() == null) ? 0 : getCounselor_name().hashCode());
-        result = prime * result + ((getClass_teacher_name() == null) ? 0 : getClass_teacher_name().hashCode());
-        result = prime * result + ((getMonitor_student_id() == null) ? 0 : getMonitor_student_id().hashCode());
+        result = prime * result + ((getUuid() == null) ? 0 : getUuid().hashCode());
+        result = prime * result + ((getClassId() == null) ? 0 : getClassId().hashCode());
+        result = prime * result + ((getCollegeId() == null) ? 0 : getCollegeId().hashCode());
+        result = prime * result + ((getMajorId() == null) ? 0 : getMajorId().hashCode());
+        result = prime * result + ((getCounselorName() == null) ? 0 : getCounselorName().hashCode());
+        result = prime * result + ((getClassTeacherName() == null) ? 0 : getClassTeacherName().hashCode());
+        result = prime * result + ((getMonitorStudentId() == null) ? 0 : getMonitorStudentId().hashCode());
         return result;
     }
 
@@ -100,13 +101,13 @@ public class ClassInfo implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", UUID=").append(UUID);
-        sb.append(", class_id=").append(class_id);
-        sb.append(", college_id=").append(college_id);
-        sb.append(", major_id=").append(major_id);
-        sb.append(", counselor_name=").append(counselor_name);
-        sb.append(", class_teacher_name=").append(class_teacher_name);
-        sb.append(", monitor_student_id=").append(monitor_student_id);
+        sb.append(", uuid=").append(uuid);
+        sb.append(", classId=").append(classId);
+        sb.append(", collegeId=").append(collegeId);
+        sb.append(", majorId=").append(majorId);
+        sb.append(", counselorName=").append(counselorName);
+        sb.append(", classTeacherName=").append(classTeacherName);
+        sb.append(", monitorStudentId=").append(monitorStudentId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

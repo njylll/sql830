@@ -1,8 +1,14 @@
 package com.example.controller;
 
+import com.alibaba.druid.util.StringUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.DemoApplication;
-import com.example.StudentDAO.StudentRepository;
-import com.example.StudentDomain.StudentBean;
+import com.example.entity.*;
+import com.example.service.MajorInfoService;
+import com.example.service.impl.*;
+import com.example.util.UUIDGenerator;
+import com.example.vo.StudentInfoVO;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +19,21 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class StudentController {
     public static final Logger log = LoggerFactory.getLogger(DemoApplication.class);
 
+
     @Autowired
-    StudentRepository studentRepository;
+    private StudentInfoServiceImpl studentInfoService;
+
+    @Autowired
+    private StudentVoServiceImpl studentVoService;
 
     //    用户登录页面
     @RequestMapping(value = "/dashboard")
@@ -29,119 +42,111 @@ public class StudentController {
     }
 
     //查询所有学生返回列表页面
-    @GetMapping("/students")
-    public ModelAndView getStudents() {
-        List<StudentBean> stuInfo = studentRepository.findAll();
-//model的attribute和object方法添加的值用于传入还是传出？
-        ModelAndView model = new ModelAndView();
-        model.setViewName("/student/list");
-        log.info("\n成功跳转到列表方法getStudents()");
+    @GetMapping("/student/studentList")
+    public String getStudents(Model model)
+    {
+        List<StudentVo> studentInfoVOS = studentVoService.list();
 
-        model.addObject("stuViewInfo", stuInfo);
+        model.addAttribute("studentInfos", studentInfoVOS);
 
-//分页传数据未完成
-    	/*int page=1,size=2;
-
-    	Sort sort = new Sort(Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(page, size, sort);
-        model.addAttribute("users", pageable);*/
-        return model;
-//        return "/student/list";
+        return "/student/list";
     }
-    //get来到学生查询页面
-    @GetMapping("/somestudents")
-    public ModelAndView searchStu(HttpServletRequest req) {
-        String searText=(req.getParameter("query")).trim();
-//        入参@RequestParam(value ="query") String searText
-        ModelAndView stuSearModel = new ModelAndView();
-        stuSearModel.setViewName("/student/list");
-        if (searText.matches("[\\u4e00-\\u9fa5]+")) {
-            List<StudentBean> stuInfo = studentRepository.findAllStuByChinese(searText);
-            log.info("\n成功跳转到查询方法()");
-            stuSearModel.addObject("stuViewInfo", stuInfo);
-        } else if (searText.matches("[a-zA-Z]+") || searText.matches("[0-9]+")) {
-            List<StudentBean> stuInfo = studentRepository.findAllStuByNumOrLet(searText);
-            log.info("\n成功跳转到查询方法()");
-            stuSearModel.addObject("stuViewInfo", stuInfo);
-        } else {
-            List<StudentBean> stuInfo1 = studentRepository.findAllStuByChinese(searText);
-            List<StudentBean> stuInfo2 = studentRepository.findAllStuByNumOrLet(searText);
-            stuInfo1.addAll(stuInfo2);
-            log.info("\n成功跳转到查询方法()");
-            stuSearModel.addObject("stuViewInfo", stuInfo1);
+
+    //查询学生
+    @PostMapping("/student/search")
+    public String searchStu(StudentVo studentInfo,
+                            Model model)
+    {
+        QueryWrapper<StudentVo> studentInfoQueryWrapper=new QueryWrapper<>();
+        Map<String,String> eqMap=new HashMap<>();
+
+        //判断学号
+        if(!StringUtils.isEmpty(studentInfo.getStudentId()))
+            eqMap.put("student_id",studentInfo.getStudentId());
+        //判断姓名
+        if(!StringUtils.isEmpty(studentInfo.getStudentName()))
+            eqMap.put("student_name",studentInfo.getStudentName());
+        //判断性别
+        if(!StringUtils.isEmpty(studentInfo.getGender()))
+        {
+            if (studentInfo.getGender().equals("男"))
+                eqMap.put("gender","0");
+            else
+                eqMap.put("gender","1");
         }
-        return stuSearModel;
-//        return "/student/list";
+        //判断班级
+        if(!StringUtils.isEmpty(studentInfo.getClassId()))
+            eqMap.put("class_id",studentInfo.getClassId());
+        //查询是否有指定学院名称的学院
+        if(!StringUtils.isEmpty(studentInfo.getCollegeName()))
+        {
+            eqMap.put("college_name",studentInfo.getCollegeName());
+        }
+        //查询是否有指定专业名称的专业
+        if(!StringUtils.isEmpty(studentInfo.getMajorName()))
+        {
+            eqMap.put("major_name",studentInfo.getMajorName());
+        }
+        //判断学制
+        if(studentInfo.getSchoolingPeriod()!=null)
+            eqMap.put("schooling_period",studentInfo.getSchoolingPeriod().toString());
+
+        studentInfoQueryWrapper.allEq(eqMap);
+        List<StudentVo> studentVos =studentVoService.list(studentInfoQueryWrapper);
+        model.addAttribute("studentInfos",studentVos);
+
+        return "/student/list";
     }
+
     //get来到学生添加页面
-    @GetMapping("/student")
-    public String toAddPage() {
-        //来到添加页面,查出所有的部门，在页面显示
-//        ModelAndView mv = new ModelAndView();
-//        List<StudentBean> stuInfo = studentRepository.findAll();
-//        mv.addObject("stuViewInfo", stuInfo);
-//                mv.setViewName("list");
-        return "student/add";
+    @GetMapping("/student/addStudent")
+    public String toAddPage()
+    {
+        return "/student/add";
     }
 
-    //post学生添加,从表单绑定实体数据
-    //SpringMVC自动将请求参数和入参对象的属性进行一一绑定；要求请求参数的名字和javaBean入参的对象里面的属性名是一样的
-    @PostMapping("/student")
-    public String addStu(@Valid StudentBean student) {
-        //来到员工列表页面
-        log.info("\n保存的学生信息：" + student);
-        //保存员工
-        studentRepository.save(student);
-        //由于模板引擎会拼串不能直接返回路径需要 redirect: 表示重定向到一个地址  /代表当前项目路径
-        // forward: 表示转发到一个地址
-//        this.getStudents();
-        return "redirect:/students";
+    //学生添加
+    @PostMapping("/student/doAdd")
+    public String addStu(StudentVo student) {
+        String uuid= UUIDGenerator.generateStudentUUID(student.getStudentId());
+        studentVoService.insertStudent(student,uuid);
+
+        return "redirect:/student/studentList";
     }
 
-    //    get到学生修改页面
-    @GetMapping("/student/{id}")
-    public String toEditPage(@PathVariable("id") Integer id, Model model) {
-        log.info("\n进入get修改方法");
+    //学生信息修改页面
+    @GetMapping("/student/update/{studentId}")
+    public String toEditPage(@PathVariable("studentId") String studentId
+                            ,Model model)
+    {
+        //查询要修改的id
+        QueryWrapper<StudentVo> voQueryWrapper=new QueryWrapper<>();
+        voQueryWrapper.eq("student_id",studentId);
+        StudentVo vo = studentVoService.getOne(voQueryWrapper);
+        model.addAttribute("student",vo);
 
-        StudentBean stuEdit = studentRepository.getOne(id);
-        //回显到add页面参数需要保存修改的bean stuEdit
-        model.addAttribute("student", stuEdit);
-
-        //页面要显示所有的部门列表
-//        model.addAttribute("depts",departments);
-        //回到修改页面(add是一个修改添加二合一的页面);
-        return "student/add";
-//        return "redirect:/student";
+        return "student/change";
     }
 
-    //    put提交修改后到学生列表页面
-    @PutMapping(value = {"/student/{id}"})
-    public String putStudent(@PathVariable("id") Integer id,StudentBean stuEditBe) {
-        StudentBean oldStu=studentRepository.getOne(id);
-        log.info("\n进入put修改方法,旧数据:\n"+oldStu);
+    //提交修改
+    @PostMapping(value = {"/student/doUpdate"})
+    public String putStudent(StudentVo vo) {
+        String studentId=vo.getStudentId();
 
-//        if(!(){
-        log.info("\n进入save保存");
-//        oldStu=stuEditBe;//赋值新变量
-//        studentRepository.save(stuEditBe);
-//        if(id!=stuEditBe.getId()){
-//        studentRepository.updateStuById(id,stuEditBe.getId());
-//            log.info("\n修改id的学生数据:" + stuEditBe);
-//        studentRepository.save(stuEditBe);
-//        }else
-             studentRepository.save(stuEditBe);
-//        }
-        return "redirect:/students";
+        studentInfoService.updateStudentInfo(vo);
+
+        return "redirect:/student/update/"+studentId;
 
     }
 
-    @DeleteMapping("/student/{id}")
-    public String deleteStu(@PathVariable("id") Integer id) {
-        log.info("\n进入delete删除方法");
+    @DeleteMapping("/student/{studentId}")
+    public String deleteStu(@PathVariable("studentId") String studentId)
+    {
+        QueryWrapper<StudentInfo> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("student_id",studentId);
+        studentInfoService.remove(queryWrapper);
 
-        studentRepository.deleteById(id);
-//        }
-        return "redirect:/students";
+        return "redirect:/student/studentList";
 
     }
 
