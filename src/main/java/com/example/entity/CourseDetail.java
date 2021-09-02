@@ -20,6 +20,12 @@ public class CourseDetail implements Serializable {
     private String courseId;
 
     /**
+     * 课程详情号
+     */
+    @TableField(value = "course_detail_id")
+    private String courseDetailId;
+
+    /**
      * 开始学年
      */
     @TableField(value = "start_school_year")
@@ -76,7 +82,8 @@ public class CourseDetail implements Serializable {
             && (this.getStartTerm() == null ? other.getStartTerm() == null : this.getStartTerm().equals(other.getStartTerm()))
             && (this.getCourseCondition() == null ? other.getCourseCondition() == null : this.getCourseCondition().equals(other.getCourseCondition()))
             && (this.getTeacherName() == null ? other.getTeacherName() == null : this.getTeacherName().equals(other.getTeacherName()))
-            && (this.getTeachingLocation() == null ? other.getTeachingLocation() == null : this.getTeachingLocation().equals(other.getTeachingLocation()));
+            && (this.getTeachingLocation() == null ? other.getTeachingLocation() == null : this.getTeachingLocation().equals(other.getTeachingLocation()))
+                &&(this.getCourseDetailId() == null ? other.getCourseDetailId() == null : this.getCourseDetailId().equals(other.getCourseDetailId()));
     }
 
     @Override
@@ -90,6 +97,7 @@ public class CourseDetail implements Serializable {
         result = prime * result + ((getCourseCondition() == null) ? 0 : getCourseCondition().hashCode());
         result = prime * result + ((getTeacherName() == null) ? 0 : getTeacherName().hashCode());
         result = prime * result + ((getTeachingLocation() == null) ? 0 : getTeachingLocation().hashCode());
+        result = prime * result + ((getCourseDetailId() == null) ? 0 : getCourseDetailId().hashCode());
         return result;
     }
 
@@ -100,6 +108,7 @@ public class CourseDetail implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", courseId=").append(courseId);
+        sb.append(", courseDetailId=").append(courseDetailId);
         sb.append(", startSchoolYear=").append(startSchoolYear);
         sb.append(", endSchoolYear=").append(endSchoolYear);
         sb.append(", startTerm=").append(startTerm);

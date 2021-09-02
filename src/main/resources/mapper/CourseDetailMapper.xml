@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.example.entity.CourseDetail">
             <result property="courseId" column="course_id" jdbcType="VARCHAR"/>
+            <result property="courseDetailId" column="course_detail_id" jdbcType="VARCHAR"/>
             <result property="startSchoolYear" column="start_school_year" jdbcType="OTHER"/>
             <result property="endSchoolYear" column="end_school_year" jdbcType="OTHER"/>
             <result property="startTerm" column="start_term" jdbcType="TINYINT"/>
@@ -15,7 +16,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        course_id,start_school_year,end_school_year,
+        course_id,course_detail_id,start_school_year,end_school_year,
         start_term,course_condition,teacher_name,
         teaching_location
     </sql>

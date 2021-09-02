@@ -5,7 +5,7 @@
 <mapper namespace="com.example.dao.CourseTimeMapper">
 
     <resultMap id="BaseResultMap" type="com.example.entity.CourseTime">
-            <result property="courseId" column="course_id" jdbcType="VARCHAR"/>
+            <result property="courseDetailId" column="course_detail_id" jdbcType="VARCHAR"/>
             <result property="startWeek" column="start_week" jdbcType="TINYINT"/>
             <result property="endWeek" column="end_week" jdbcType="TINYINT"/>
             <result property="dayTime" column="day_time" jdbcType="VARCHAR"/>
@@ -13,7 +13,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        course_id,start_week,end_week,
+        course_detail_id,start_week,end_week,
         day_time,section
     </sql>
 </mapper>

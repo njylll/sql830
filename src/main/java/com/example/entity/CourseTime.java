@@ -14,10 +14,10 @@ import java.io.Serializable;
 @Data
 public class CourseTime implements Serializable {
     /**
-     * 
+     * 课程详情号
      */
-    @TableField(value = "course_id")
-    private String courseId;
+    @TableField(value = "course_detail_id")
+    private String courseDetailId;
 
     /**
      * 开始周
@@ -58,7 +58,7 @@ public class CourseTime implements Serializable {
             return false;
         }
         CourseTime other = (CourseTime) that;
-        return (this.getCourseId() == null ? other.getCourseId() == null : this.getCourseId().equals(other.getCourseId()))
+        return (this.getCourseDetailId() == null ? other.getCourseDetailId() == null : this.getCourseDetailId().equals(other.getCourseDetailId()))
             && (this.getStartWeek() == null ? other.getStartWeek() == null : this.getStartWeek().equals(other.getStartWeek()))
             && (this.getEndWeek() == null ? other.getEndWeek() == null : this.getEndWeek().equals(other.getEndWeek()))
             && (this.getDayTime() == null ? other.getDayTime() == null : this.getDayTime().equals(other.getDayTime()))
@@ -69,7 +69,7 @@ public class CourseTime implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getCourseId() == null) ? 0 : getCourseId().hashCode());
+        result = prime * result + ((getCourseDetailId() == null) ? 0 : getCourseDetailId().hashCode());
         result = prime * result + ((getStartWeek() == null) ? 0 : getStartWeek().hashCode());
         result = prime * result + ((getEndWeek() == null) ? 0 : getEndWeek().hashCode());
         result = prime * result + ((getDayTime() == null) ? 0 : getDayTime().hashCode());
@@ -83,7 +83,7 @@ public class CourseTime implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", courseId=").append(courseId);
+        sb.append(", courseId=").append(courseDetailId);
         sb.append(", startWeek=").append(startWeek);
         sb.append(", endWeek=").append(endWeek);
         sb.append(", dayTime=").append(dayTime);

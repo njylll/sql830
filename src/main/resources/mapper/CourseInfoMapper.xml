@@ -23,4 +23,9 @@
         course_type,course_type_2,teaching_way,
         assessment_method
     </sql>
+    <select id="listAll" resultType="com.example.entity.CourseInfo">
+        select
+        <include refid="Base_Column_List"/>
+        from course_info
+    </select>
 </mapper>
