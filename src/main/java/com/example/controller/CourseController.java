@@ -196,7 +196,7 @@ public class CourseController {
     }
 
 
-    @PostMapping(value = {"/course/doUpdateInfo"})
+    @PostMapping(value = {"/course/doUpdateDetail"})
     public String doEditDetail(CourseDetailDTO courseDetailDTO) {
         String courseDetailId = courseDetailDTO.getCourseDetailId();
         courseDetailDTOService.update(courseDetailDTO);
