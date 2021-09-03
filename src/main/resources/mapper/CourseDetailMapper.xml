@@ -7,8 +7,8 @@
     <resultMap id="BaseResultMap" type="com.example.entity.CourseDetail">
             <result property="courseId" column="course_id" jdbcType="VARCHAR"/>
             <result property="courseDetailId" column="course_detail_id" jdbcType="VARCHAR"/>
-            <result property="startSchoolYear" column="start_school_year" jdbcType="OTHER"/>
-            <result property="endSchoolYear" column="end_school_year" jdbcType="OTHER"/>
+            <result property="startSchoolYear" column="start_school_year" jdbcType="DATE"/>
+            <result property="endSchoolYear" column="end_school_year" jdbcType="DATE"/>
             <result property="startTerm" column="start_term" jdbcType="TINYINT"/>
             <result property="courseCondition" column="course_condition" jdbcType="VARCHAR"/>
             <result property="teacherName" column="teacher_name" jdbcType="VARCHAR"/>

@@ -3,8 +3,11 @@ package com.example.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * 已经开始（或结束）的课程
@@ -29,13 +32,15 @@ public class CourseDetail implements Serializable {
      * 开始学年
      */
     @TableField(value = "start_school_year")
-    private Object startSchoolYear;
+    @DateTimeFormat(pattern = "yyyy")
+    private LocalDate startSchoolYear;
 
     /**
      * 结束学年
      */
     @TableField(value = "end_school_year")
-    private Object endSchoolYear;
+    @DateTimeFormat(pattern = "yyyy")
+    private LocalDate endSchoolYear;
 
     /**
      * 开设学期

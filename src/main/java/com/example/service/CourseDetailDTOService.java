@@ -18,6 +18,7 @@ public interface CourseDetailDTOService
      */
     public List<CourseDetailDTO> queryByCourseId(String id);
 
+    public List<CourseDetailDTO> listAll();
     /**
      * 添加课程详情,包括时间
      */

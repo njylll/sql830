@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Dashboard Template for Bootstrap</title>
+    <!-- Bootstrap core CSS -->
+    <link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+
+</head>
+
+<body>
+<!--引入抽取的topbar-->
+<div th:replace="commons/bar::topbar"></div>
+<!--模板名：会使用thymeleaf的前后缀配置规则进行解析-->
+
+<div class="container-fluid">
+    <form class="row">
+        <!--引入侧边栏-->
+        <div th:replace="commons/bar::#sidebar(activeUri='classes')"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <form id="fake"></form>
+            <div class="table-responsive">
+                <form action="/course/search" method="post">
+                    <div class="form-group">
+                        <label for="courseId" class="sr-only">课程id</label>
+                        <input type="text" name="courseId"
+                               placeholder="课程id" class="form-control" id="courseId"/>
+                        <label for="courseName" class="sr-only">课程名</label>
+                        <input type="text" name="courseName"
+                               placeholder="课程名" class="form-control" id="courseName"/>
+                        <label for="responsibleCollegeId" class="sr-only">负责学院id</label>
+                        <input type="text" name="responsibleCollegeId"
+                               placeholder="负责学院id" class="form-control" id="responsibleCollegeId"/>
+                        <label for="creditHours" class="sr-only">学时</label>
+                        <input type="text" name="creditHours"
+                               placeholder="学时" class="form-control" id="creditHours"/>
+                        <label for="credit" class="sr-only">学分</label>
+                        <input type="text" name="credit"
+                               placeholder="学分" class="form-control" id="credit"/>
+                        <label for="courseType" class="sr-only">主分类</label>
+                        <input type="text" name="courseType"
+                               placeholder="主分类" class="form-control" id="courseType"/>
+                        <label for="courseType2" class="sr-only">备用分类</label>
+                        <input type="text" name="courseType2"
+                               placeholder="备用分类" class="form-control" id="courseType2"/>
+                        <label for="teachingWay" class="sr-only">教学方式</label>
+                        <input type="text" name="teachingWay"
+                               placeholder="教学方式" class="form-control" id="teachingWay"/>
+                        <label for="assessmentMethod" class="sr-only">考核方式</label>
+                        <input type="text" name="assessmentMethod"
+                               placeholder="考核方式" class="form-control" id="assessmentMethod"/>
+                    </div>
+                    <button type="submit" class="btn btn-default">查询</button>
+
+                </form>
+            </div>
+            <a th:href="@{/course/addCourseInfo}">
+                <button type="button" class="btn btn-success">添加课程</button>
+            </a>
+            <a th:href="@{/course/addCourseDetail}">
+                <button type="button" class="btn btn-success">添加课程详情</button>
+            </a>
+
+            <div class="table-responsive">
+                <h1>课程列表</h1>
+                <br/><br/>
+                <div class="with:80%">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>课程id</th>
+                            <th>课程名</th>
+                            <th>学时</th>
+                            <th>学分</th>
+                            <th>课程种类</th>
+                            <th>课程种类2</th>
+                            <th>教学方式</th>
+                            <th>考核方式</th>
+                            <th>详情</th>
+                            <th>编辑</th>
+                            <th>删除</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!--        需要从controller传参-->
+                        <!--/*@thymesVar id="claViewInfo" type="java.util.List<com.example.StudentDomain.ClassBean>"*/-->
+                        <tr th:each="courseInfo,status:${courseInfoList}">
+                            <td th:text="${status.count}"></td>
+                            <td th:text="${courseInfo.courseId}"></td>
+                            <td th:text="${courseInfo.courseName}"></td>
+                            <td th:text="${courseInfo.creditHours}"></td>
+                            <td th:text="${courseInfo.credit}"></td>
+                            <td th:text="${courseInfo.courseType}"></td>
+                            <td th:text="${courseInfo.courseType2}"></td>
+                            <td th:text="${courseInfo.teachingWay}"></td>
+                            <td th:text="${courseInfo.assessmentMethod}"></td>
+                            <td><a class="btn btn-sm btn-primary" th:href="@{/course/courseDetailList/}+${courseInfo.courseId}">详情</a></td>
+                            <td><a class="btn btn-sm btn-primary" th:href="@{/course/updateInfo/}+${courseInfo.courseId}">编辑</a></td>
+                            <td>
+                                <button th:attr="del_uri=@{/course/deleteInfo/}+${courseInfo.courseId}" class="btn btn-sm btn-danger deleteBtn">
+                                    删除
+                                </button>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </main>
+        <form id="deleteclaForm" method="post">
+            <input type="hidden" name="_method" value="delete"/>
+        </form>
+    </form>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js"
+        th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+<script type="text/javascript" src="asserts/js/popper.min.js"
+        th:src="@{/webjars/popper.js/1.11.1/dist/popper.js}"></script>
+<script type="text/javascript" src="asserts/js/bootstrap.min.js"
+        th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.js}"></script>
+
+<!-- Icons -->
+<script type="text/javascript" src="asserts/js/feather.min.js" th:src="@{/asserts/js/feather.min.js}"></script>
+<script>
+    feather.replace()
+</script>
+<script>
+    // 点击后取消按钮的默认行为再提交删除form,删除当前员工
+    $(".deleteBtn").click(function () {
+        //表单的地址通过按钮获取,修改为删除当前员工的地址后,再提交
+        $("#deleteclaForm").attr("action", $(this).attr("del_uri")).submit();
+        return false;
+    });
+</script>
+</body>
+</html>

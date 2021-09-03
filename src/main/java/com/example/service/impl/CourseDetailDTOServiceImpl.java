@@ -37,18 +37,37 @@ public class CourseDetailDTOServiceImpl implements CourseDetailDTOService
     {
         List courseDetailDTOList = new ArrayList<CourseDetailDTO>();
         List<CourseDetail> courseDetailList = courseDetailMapper.selectList(new QueryWrapper<CourseDetail>().eq("course_id",id));
-        CourseDetailDTO courseDetailDTO = new CourseDetailDTO();
         Iterator<CourseDetail> it = courseDetailList.iterator();
         while (it.hasNext()) {
-            BeanUtils.copyProperties(it,courseDetailDTO);
-            CourseTime courseTime = courseTimeService.queryByCourseDetailId(it.next().getCourseDetailId());
+            CourseDetail tmp=it.next();
+            CourseDetailDTO courseDetailDTO = new CourseDetailDTO();
+            BeanUtils.copyProperties(tmp,courseDetailDTO);
+            CourseTime courseTime = courseTimeService.queryByCourseDetailId(tmp.getCourseDetailId());
             courseDetailDTO.setDayTime(courseTime.getDayTime());
             courseDetailDTO.setStartWeek(courseTime.getStartWeek());
             courseDetailDTO.setEndWeek(courseTime.getEndWeek());
             courseDetailDTO.setSection(courseTime.getSection());
             courseDetailDTOList.add(courseDetailDTO);
         }
+        return courseDetailDTOList;
+    }
 
+    @Override
+    public List<CourseDetailDTO> listAll() {
+        List courseDetailDTOList = new ArrayList<CourseDetailDTO>();
+        List<CourseDetail> courseDetailList = courseDetailMapper.selectList(null);
+        Iterator<CourseDetail> it = courseDetailList.iterator();
+        while (it.hasNext()) {
+            CourseDetail tmp=it.next();
+            CourseDetailDTO courseDetailDTO = new CourseDetailDTO();
+            BeanUtils.copyProperties(tmp,courseDetailDTO);
+            CourseTime courseTime = courseTimeService.queryByCourseDetailId(tmp.getCourseDetailId());
+            courseDetailDTO.setDayTime(courseTime.getDayTime());
+            courseDetailDTO.setStartWeek(courseTime.getStartWeek());
+            courseDetailDTO.setEndWeek(courseTime.getEndWeek());
+            courseDetailDTO.setSection(courseTime.getSection());
+            courseDetailDTOList.add(courseDetailDTO);
+        }
         return courseDetailDTOList;
     }
 
@@ -62,8 +81,8 @@ public class CourseDetailDTOServiceImpl implements CourseDetailDTOService
         courseTime.setSection(courseDetailDTO.getSection());
         courseTime.setEndWeek(courseDetailDTO.getEndWeek());
         courseTime.setStartWeek(courseDetailDTO.getStartWeek());
-        courseTimeService.save(courseTime);
         courseDetailService.save(courseDetail);
+        courseTimeService.save(courseTime);
     }
 
     public CourseDetailDTO queryByCourseDetailId(String detailId)

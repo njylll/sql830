@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 
 @RunWith(SpringRunner.class)
@@ -47,6 +48,7 @@ Calendar calendar=Calendar.getInstance();
     {
        StudentInfo info= studentInfoMapper.selectById("412");
         System.out.println(info.getStudentName());
+        LocalDate date=LocalDate.now();
     }
 //@Test
 //public void getController{

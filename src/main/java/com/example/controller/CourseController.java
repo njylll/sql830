@@ -3,12 +3,9 @@ package com.example.controller;
 import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.DemoApplication;
-import com.example.dto.CourseDTO;
 import com.example.dto.CourseDetailDTO;
 import com.example.entity.*;
 import com.example.service.*;
-import com.example.service.impl.StudentInfoServiceImpl;
-import com.example.service.impl.StudentVoServiceImpl;
 import com.example.util.UUIDGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
 import java.util.HashMap;
 import java.util.List;
@@ -64,9 +59,25 @@ public class CourseController {
     @GetMapping("/course/courseDetailList/{courseId}")
     public String getCourseDetailList(@PathVariable("courseId")String courseId, Model model)
     {
+        if(courseId==null || courseId.equals("") || courseId.equals("null"))
+        {
+            return "redirect:/course/courseDetailList";
+        }
         List<CourseDetailDTO> courseDetailDTOList = courseDetailDTOService.queryByCourseId(courseId);
         model.addAttribute("courseDetailList",courseDetailDTOList);
+        return  "/course/courseDetailList";
+    }
 
+    /**
+     * 所有课程详情
+     * @param model
+     * @return
+     */
+    @GetMapping("/course/courseDetailList")
+    public String getAllCourseDetailList(Model model)
+    {
+        List<CourseDetailDTO> courseDetailDTOList = courseDetailDTOService.listAll();
+        model.addAttribute("courseDetailList",courseDetailDTOList);
         return  "/course/courseDetailList";
     }
 
@@ -104,11 +115,11 @@ public class CourseController {
             eqMap.put("teaching_way",courseInfo.getTeachingWay());
         }
 
-        if(!StringUtils.isEmpty(String.valueOf(courseInfo.getCreditHours())))
+        if(courseInfo.getCreditHours()!=null)
             eqMap.put("credit_hours",courseInfo.getCreditHours().toString());
 
 
-        if(!StringUtils.isEmpty(String.valueOf(courseInfo.getCredit())))
+        if(courseInfo.getCredit()!=null)
             eqMap.put("credit",courseInfo.getCredit().toString());
 
 
@@ -120,6 +131,10 @@ public class CourseController {
         return "/course/courseInfoList";
     }
 
+    /**
+     * 添加课程页面
+     * @return
+     */
     @GetMapping("/course/addCourseInfo")
     public String toAddInfoPage()
     {
@@ -133,11 +148,16 @@ public class CourseController {
      */
     @PostMapping("/course/doAddCourseInfo")
     public String addCourseInfo(CourseInfo courseInfo) {
+        String uuid= UUIDGenerator.generateCourseUUID(courseInfo.getCourseId());
+        courseInfo.setUuid(uuid);
         courseInfoService.add(courseInfo);
         return "redirect:/course/courseInfoList";
     }
 
-
+    /**
+     * 添加课程详情页面
+     * @return
+     */
     @GetMapping("/course/addCourseDetail")
     public String toAddDetailPage()
     {
@@ -150,15 +170,17 @@ public class CourseController {
      */
     @PostMapping("/course/doAddCourseDetail")
     public String addCourseDetail(CourseDetailDTO courseDetailDTO) {
+        String uuid=UUIDGenerator.generateCourseDetailUUID(courseDetailDTO.getCourseId());
+        courseDetailDTO.setCourseDetailId(uuid);
         courseDetailDTOService.add(courseDetailDTO);
 
        String courseId = courseDetailDTO.getCourseId();
-        return "redirect:/course/courseDetailList"+courseId;
+        return "redirect:/course/courseDetailList";
     }
 
 
     /**
-     *修改课程信息
+     *修改课程页面
      * @return
      */
     @GetMapping("/course/updateInfo/{courseId}")
@@ -172,18 +194,22 @@ public class CourseController {
         return "course/changeInfo";
     }
 
-
+    /**
+     * 修改课程
+     * @param courseInfo
+     * @return
+     */
     @PostMapping(value = {"/course/doUpdateInfo"})
     public String doEditInfo(CourseInfo courseInfo) {
         String courseId=courseInfo.getCourseId();
         courseInfoService.update(courseInfo,new QueryWrapper<CourseInfo>().eq("course_id",courseId));
 
-        return "redirect:/course/courseInfoList";
+        return "redirect:/course/updateInfo/"+courseId;
 
     }
 
     /**
-     *修改课程详情
+     *修改课程详情页面
      * @return
      */
     @GetMapping("/course/updateDetail/{courseDetailId}")
@@ -195,14 +221,18 @@ public class CourseController {
         return "course/changeDetail";
     }
 
-
+    /**
+     * 修改课程详情
+     * @param courseDetailDTO
+     * @return
+     */
     @PostMapping(value = {"/course/doUpdateDetail"})
     public String doEditDetail(CourseDetailDTO courseDetailDTO) {
         String courseId = courseDetailDTO.getCourseId();
 
         courseDetailDTOService.update(courseDetailDTO);
 
-        return "redirect:/course/courseDetailList"+courseId;
+        return "redirect:/course/courseDetailList/"+courseId;
 
     }
 
