@@ -188,7 +188,7 @@ public class CourseController {
      */
     @GetMapping("/course/updateDetail/{courseDetailId}")
     public String toEditDetailPage(@PathVariable("courseDetailId") String courseDetailId
-            ,Model model)
+            , Model model)
     {
         CourseDetailDTO courseDetailDTO = courseDetailDTOService.queryByCourseDetailId(courseDetailId);
         model.addAttribute("courseDetail",courseDetailDTO);
@@ -198,10 +198,11 @@ public class CourseController {
 
     @PostMapping(value = {"/course/doUpdateDetail"})
     public String doEditDetail(CourseDetailDTO courseDetailDTO) {
-        String courseDetailId = courseDetailDTO.getCourseDetailId();
+        String courseId = courseDetailDTO.getCourseId();
+
         courseDetailDTOService.update(courseDetailDTO);
 
-        return "redirect:/course/courseInfoList"+courseDetailId;
+        return "redirect:/course/courseDetailList"+courseId;
 
     }
 
@@ -210,7 +211,7 @@ public class CourseController {
      * @param courseId
      * @return
      */
-    @DeleteMapping("/course/{courseId}")
+    @DeleteMapping("/course/deleteInfo/{courseId}")
     public String deleteCourseInfo(@PathVariable("courseId") String courseId)
     {
         courseInfoService.remove(new QueryWrapper<CourseInfo>().eq("course_id",courseId));
@@ -222,11 +223,11 @@ public class CourseController {
     /**
      * 删除课程详情
      */
-    @DeleteMapping("/course/{courseDetailId}")
-    public String deleteCourseDetail(@PathVariable("courseDetailId") String courseDetailId)
+    @DeleteMapping("/course/deleteDetail/{courseId}/{courseDetailId}")
+    public String deleteCourseDetail(@PathVariable("courseDetailId") String courseDetailId,@PathVariable("courseId") String courseId)
     {
         courseDetailDTOService.remove(courseDetailId);
-        return "redirect:/course/courseInfoList";
+        return "redirect:/course/courseDetailList"+courseId;
 
     }
 
