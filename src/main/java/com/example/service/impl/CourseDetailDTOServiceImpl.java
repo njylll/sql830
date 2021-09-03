@@ -8,6 +8,8 @@ import com.example.dto.CourseDetailDTO;
 import com.example.entity.CourseDetail;
 import com.example.entity.CourseTime;
 import com.example.service.CourseDetailDTOService;
+import com.example.service.CourseDetailService;
+import com.example.service.CourseInfoService;
 import com.example.service.CourseTimeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ import java.util.List;
 @Service
 public class CourseDetailDTOServiceImpl implements CourseDetailDTOService
 {
+    @Autowired
+    private CourseDetailService courseDetailService;
     @Autowired
     private CourseDetailMapper courseDetailMapper;
 
@@ -48,9 +52,50 @@ public class CourseDetailDTOServiceImpl implements CourseDetailDTOService
         return courseDetailDTOList;
     }
 
+    public void add(CourseDetailDTO courseDetailDTO)
+    {
+        CourseDetail courseDetail = new CourseDetail();
+        CourseTime courseTime = new CourseTime();
+        BeanUtils.copyProperties(courseDetailDTO,courseDetail);
+        courseTime.setCourseDetailId(courseDetailDTO.getCourseDetailId());
+        courseTime.setDayTime(courseDetailDTO.getDayTime());
+        courseTime.setSection(courseDetailDTO.getSection());
+        courseTime.setEndWeek(courseDetailDTO.getEndWeek());
+        courseTime.setStartWeek(courseDetailDTO.getStartWeek());
+        courseTimeService.save(courseTime);
+        courseDetailService.save(courseDetail);
+    }
 
+    public CourseDetailDTO queryByCourseDetailId(String detailId)
+    {
+        CourseTime courseTime = courseTimeService.getOne(new QueryWrapper<CourseTime>().eq("course_detail_id", detailId));
+        CourseDetail courseDetail = courseDetailService.getOne(new QueryWrapper<CourseDetail>().eq("course_detail_id", detailId));
+        CourseDetailDTO courseDetailDTO = new CourseDetailDTO();
+        BeanUtils.copyProperties(courseTime,courseDetailDTO);
+        BeanUtils.copyProperties(courseDetail,courseDetailDTO);
+        return courseDetailDTO;
+    }
 
+    public void update(CourseDetailDTO courseDetailDTO)
+    {
+        CourseDetail courseDetail = new CourseDetail();
+        CourseTime courseTime = new CourseTime();
+        BeanUtils.copyProperties(courseDetailDTO,courseDetail);
+        courseTime.setCourseDetailId(courseDetailDTO.getCourseDetailId());
+        courseTime.setDayTime(courseDetailDTO.getDayTime());
+        courseTime.setSection(courseDetailDTO.getSection());
+        courseTime.setEndWeek(courseDetailDTO.getEndWeek());
+        courseTime.setStartWeek(courseDetailDTO.getStartWeek());
+        courseDetailService.update(courseDetail,new QueryWrapper<CourseDetail>().eq("course_detail_id",courseDetailDTO.getCourseDetailId()));
+        courseTimeService.update(courseTime,new QueryWrapper<CourseTime>().eq("course_detail_id",courseDetailDTO.getCourseDetailId()));
 
+    }
+
+    public void remove(String courseDetailId)
+    {
+        courseDetailService.remove(new QueryWrapper<CourseDetail>().eq("course_detail_id",courseDetailId));
+        courseTimeService.remove(new QueryWrapper<CourseTime>().eq("course_detail_id",courseDetailId));
+    }
 }
 
 

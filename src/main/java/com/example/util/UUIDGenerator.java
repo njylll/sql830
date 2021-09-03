@@ -7,4 +7,5 @@ public class UUIDGenerator {
         UUID uuid = UUID.nameUUIDFromBytes(studentId.getBytes());
         return uuid.toString();
     }
+
 }
