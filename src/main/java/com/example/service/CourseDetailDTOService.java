@@ -1,8 +1,6 @@
 package com.example.service;
 
 import com.example.dto.CourseDetailDTO;
-import com.example.entity.CourseDetail;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 

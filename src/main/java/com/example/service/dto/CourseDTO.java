@@ -1,5 +1,6 @@
-package com.example.dto;
+package com.example.service.dto;
 
+import com.example.dto.CourseDetailDTO;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

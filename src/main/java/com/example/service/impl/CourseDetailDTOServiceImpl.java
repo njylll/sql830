@@ -1,15 +1,12 @@
 package com.example.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dao.CourseDetailMapper;
-import com.example.dao.CourseTimeMapper;
 import com.example.dto.CourseDetailDTO;
 import com.example.entity.CourseDetail;
 import com.example.entity.CourseTime;
 import com.example.service.CourseDetailDTOService;
 import com.example.service.CourseDetailService;
-import com.example.service.CourseInfoService;
 import com.example.service.CourseTimeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

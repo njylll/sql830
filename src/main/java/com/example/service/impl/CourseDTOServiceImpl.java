@@ -1,14 +1,9 @@
 package com.example.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.dao.CourseInfoMapper;
 import com.example.dto.CourseDTO;
-import com.example.dto.CourseDetailDTO;
-import com.example.entity.CourseDetail;
 import com.example.entity.CourseInfo;
 import com.example.service.CourseDTOService;
 import com.example.service.CourseDetailDTOService;
-import com.example.service.CourseInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
