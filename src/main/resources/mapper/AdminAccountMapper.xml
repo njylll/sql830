@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.example.entity.AdminAccount">
             <id property="uuid" column="UUID" jdbcType="VARCHAR"/>
+        <result property="userid" column="id" jdbcType="VARCHAR"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
             <result property="role" column="role" jdbcType="VARCHAR"/>
@@ -14,7 +15,72 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        UUID,username,password,
+        UUID,userid,username,password,
         role,create_time,update_time
     </sql>
+    <select id="queryById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from admin_account
+        where userid = #{userid,jdbcType=VARCHAR}
+    </select>
+    <select id="queryByAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from admin_account
+    </select>
+    <select id="queryByOne" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from admin_account
+        where username = #{username,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR}
+    </select>
+    <insert id="add" parameterType="com.example.vo.AdminAccountVO">
+        insert into admin_account
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                userid,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="role != null">
+                role ,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                #{userid,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="role != null">
+                #{role,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.example.vo.AdminAccountVO">
+        update admin_account
+        <set>
+
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="role!= null">
+                role= #{realname,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where userid = #{userid,jdbcType=VARCHAR}
+    </update>
 </mapper>

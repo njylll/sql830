@@ -16,4 +16,9 @@
         student_id,course_id,usual_score,
         mid_term_score,final_term_score
     </sql>
+    <select id="listAll" resultType="com.example.entity.StudentScore">
+        select
+        <include refid="Base_Column_List"/>
+        from student_score
+    </select>
 </mapper>

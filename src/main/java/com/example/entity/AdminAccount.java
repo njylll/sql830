@@ -20,7 +20,11 @@ public class AdminAccount implements Serializable {
      */
     @TableId(value = "UUID")
     private String uuid;
-
+    /**
+     *
+     */
+    @TableField(value = "userid")
+    private String userid;
     /**
      * 
      */
@@ -67,6 +71,7 @@ public class AdminAccount implements Serializable {
         }
         AdminAccount other = (AdminAccount) that;
         return (this.getUuid() == null ? other.getUuid() == null : this.getUuid().equals(other.getUuid()))
+            && (this.getUserid() == null ? other.getUserid() == null : this.getUuid().equals(other.getUuid()))
             && (this.getUsername() == null ? other.getUsername() == null : this.getUsername().equals(other.getUsername()))
             && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
             && (this.getRole() == null ? other.getRole() == null : this.getRole().equals(other.getRole()))

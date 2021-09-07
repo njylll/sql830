@@ -6,14 +6,18 @@ import com.example.DemoApplication;
 import com.example.dto.CourseDetailDTO;
 import com.example.entity.*;
 import com.example.service.*;
+import com.example.service.impl.CollegeInfoServiceImpl;
 import com.example.util.UUIDGenerator;
+import com.example.vo.CourseInfoVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +34,7 @@ public class CourseController {
     private CourseInfoService courseInfoService;
 
     @Autowired
-    private CourseDetailService courseDetailService;
-
-    @Autowired
-    private CourseTimeService courseTimeService;
+    private CollegeInfoServiceImpl collegeInfoService;
 
 
     /**
@@ -45,8 +46,17 @@ public class CourseController {
     public String getCourseInfoList(Model model)
     {
         List<CourseInfo> courseInfoList = courseInfoService.listAll();
+        List<CourseInfoVO> courseInfoVOList=new ArrayList<>();
+        for (CourseInfo courseInfo : courseInfoList) {
+            CourseInfoVO courseInfoVO=new CourseInfoVO();
+            BeanUtils.copyProperties(courseInfo,courseInfoVO);
 
-        model.addAttribute("courseInfoList", courseInfoList);
+            QueryWrapper<CollegeInfo> queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("college_id",courseInfo.getResponsibleCollegeId());
+            courseInfoVO.setResponsibleCollegeName(collegeInfoService.getOne(queryWrapper).getCollegeName());
+            courseInfoVOList.add(courseInfoVO);
+        }
+        model.addAttribute("courseInfoList", courseInfoVOList);
 
         return "/course/courseInfoList";
     }
@@ -85,7 +95,7 @@ public class CourseController {
      *查询课程
      */
     @PostMapping("/course/search")
-    public String searchCourse(CourseInfo courseInfo,
+    public String searchCourse(CourseInfoVO courseInfo,
                                Model model)
     {
         QueryWrapper<CourseInfo> courseInfoQueryWrapper=new QueryWrapper<>();
@@ -105,9 +115,11 @@ public class CourseController {
         if(!StringUtils.isEmpty(courseInfo.getAssessmentMethod()))
             eqMap.put("assessment_method",courseInfo.getAssessmentMethod());
 
-        if(!StringUtils.isEmpty(courseInfo.getResponsibleCollegeId()))
+        if(!StringUtils.isEmpty(courseInfo.getResponsibleCollegeName()))
         {
-            eqMap.put("responsible_college_id",courseInfo.getResponsibleCollegeId());
+            QueryWrapper<CollegeInfo> queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("college_name",courseInfo.getResponsibleCollegeName());
+            eqMap.put("responsible_college_id",collegeInfoService.getOne(queryWrapper).getCollegeId());
         }
 
         if(!StringUtils.isEmpty(courseInfo.getTeachingWay()))
@@ -122,11 +134,19 @@ public class CourseController {
         if(courseInfo.getCredit()!=null)
             eqMap.put("credit",courseInfo.getCredit().toString());
 
-
-
         courseInfoQueryWrapper.allEq(eqMap);
         List<CourseInfo> courseInfoList = courseInfoService.list(courseInfoQueryWrapper);
-        model.addAttribute("courseInfoList",courseInfoList);
+        List<CourseInfoVO> courseInfoVOList=new ArrayList<>();
+        for (CourseInfo info : courseInfoList) {
+            CourseInfoVO courseInfoVO=new CourseInfoVO();
+            BeanUtils.copyProperties(info,courseInfoVO);
+
+            QueryWrapper<CollegeInfo> queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("college_id",info.getResponsibleCollegeId());
+            courseInfoVO.setResponsibleCollegeName(collegeInfoService.getOne(queryWrapper).getCollegeName());
+            courseInfoVOList.add(courseInfoVO);
+        }
+        model.addAttribute("courseInfoList",courseInfoVOList);
 
         return "/course/courseInfoList";
     }
@@ -143,13 +163,19 @@ public class CourseController {
 
     /**
      * 添加课程
-     * @param courseInfo
      * @return
      */
     @PostMapping("/course/doAddCourseInfo")
-    public String addCourseInfo(CourseInfo courseInfo) {
-        String uuid= UUIDGenerator.generateCourseUUID(courseInfo.getCourseId());
-        courseInfo.setUuid(uuid);
+    public String addCourseInfo(CourseInfoVO vo) {
+        String uuid= UUIDGenerator.generateCourseUUID(vo.getCourseId());
+        vo.setUuid(uuid);
+        QueryWrapper<CollegeInfo> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("college_name",vo.getResponsibleCollegeName());
+        CollegeInfo collegeInfo= collegeInfoService.getOne(queryWrapper);
+        CourseInfo courseInfo=new CourseInfo();
+        BeanUtils.copyProperties(vo,courseInfo);
+        courseInfo.setCourseId(collegeInfo.getCollegeId());
+
         courseInfoService.add(courseInfo);
         return "redirect:/course/courseInfoList";
     }
@@ -189,7 +215,14 @@ public class CourseController {
     {
         //查询要修改的id
         CourseInfo courseInfo = courseInfoService.getOne(new QueryWrapper<CourseInfo>().eq("course_id",courseId));
-        model.addAttribute("courseInfo",courseInfo);
+        QueryWrapper<CollegeInfo> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("college_id",courseId);
+        CollegeInfo collegeInfo= collegeInfoService.getOne(queryWrapper);
+        CourseInfoVO courseInfoVO=new CourseInfoVO();
+        BeanUtils.copyProperties(courseInfo,courseInfoVO);
+        courseInfoVO.setResponsibleCollegeName(collegeInfo.getCollegeName());
+
+        model.addAttribute("courseInfo",courseInfoVO);
 
         return "course/changeInfo";
     }

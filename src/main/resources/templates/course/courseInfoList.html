@@ -37,8 +37,8 @@
                         <input type="text" name="courseName"
                                placeholder="课程名" class="form-control" id="courseName"/>
                         <label for="responsibleCollegeId" class="sr-only">负责学院id</label>
-                        <input type="text" name="responsibleCollegeId"
-                               placeholder="负责学院id" class="form-control" id="responsibleCollegeId"/>
+                        <input type="text" name="responsibleCollegeName"
+                               placeholder="负责学院" class="form-control" id="responsibleCollegeId"/>
                         <label for="creditHours" class="sr-only">学时</label>
                         <input type="text" name="creditHours"
                                placeholder="学时" class="form-control" id="creditHours"/>
@@ -81,6 +81,7 @@
                             <th>课程名</th>
                             <th>学时</th>
                             <th>学分</th>
+                            <th>负责学院</th>
                             <th>课程种类</th>
                             <th>课程种类2</th>
                             <th>教学方式</th>
@@ -99,6 +100,7 @@
                             <td th:text="${courseInfo.courseName}"></td>
                             <td th:text="${courseInfo.creditHours}"></td>
                             <td th:text="${courseInfo.credit}"></td>
+                            <td th:text="${courseInfo.responsibleCollegeName}"></td>
                             <td th:text="${courseInfo.courseType}"></td>
                             <td th:text="${courseInfo.courseType2}"></td>
                             <td th:text="${courseInfo.teachingWay}"></td>

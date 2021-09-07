@@ -26,22 +26,17 @@ public class StudentScore implements Serializable {
     private String courseId;
 
     /**
-     * 平时成绩
+     * 成绩
      */
     @TableField(value = "usual_score")
-    private Double usualScore;
+    private Float usualScore;
 
-    /**
-     * 期中成绩
-     */
     @TableField(value = "mid_term_score")
-    private Double midTermScore;
+    private Float midTermScore;
 
-    /**
-     * 期末成绩
-     */
     @TableField(value = "final_term_score")
-    private Double finalTermScore;
+    private Float finalTermScore;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -61,9 +56,9 @@ public class StudentScore implements Serializable {
         return (this.getStudentId() == null ? other.getStudentId() == null : this.getStudentId().equals(other.getStudentId()))
             && (this.getCourseId() == null ? other.getCourseId() == null : this.getCourseId().equals(other.getCourseId()))
             && (this.getUsualScore() == null ? other.getUsualScore() == null : this.getUsualScore().equals(other.getUsualScore()))
-            && (this.getMidTermScore() == null ? other.getMidTermScore() == null : this.getMidTermScore().equals(other.getMidTermScore()))
-            && (this.getFinalTermScore() == null ? other.getFinalTermScore() == null : this.getFinalTermScore().equals(other.getFinalTermScore()));
-    }
+                && (this.getMidTermScore() == null ? other.getMidTermScore() == null : this.getMidTermScore().equals(other.getMidTermScore()))
+                && (this.getFinalTermScore() == null ? other.getFinalTermScore() == null : this.getFinalTermScore().equals(other.getFinalTermScore()));
+   }
 
     @Override
     public int hashCode() {
@@ -87,7 +82,7 @@ public class StudentScore implements Serializable {
         sb.append(", courseId=").append(courseId);
         sb.append(", usualScore=").append(usualScore);
         sb.append(", midTermScore=").append(midTermScore);
-        sb.append(", finalTermScore=").append(finalTermScore);
+        sb.append(", finalScore=").append(finalTermScore);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
