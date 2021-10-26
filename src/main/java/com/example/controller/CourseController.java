@@ -165,13 +165,14 @@ public class CourseController {
             courseInfoVO.setResponsibleCollegeName(collegeInfoService.getOne(queryWrapper).getCollegeName());
             courseInfoVOList.add(courseInfoVO);
         }
+        model.addAttribute("courseInfoList",courseInfoVOList);
+
         List<String> courseNameList = courseInfoService.searchAllCourseName();
         model.addAttribute("cName",courseNameList);
         List<String> idList= courseInfoService.listAllCourseId();
         model.addAttribute("cId",idList);
         List<CourseInfo> creditHours = courseInfoService.list(new QueryWrapper<CourseInfo>().select("distinct credit_hours").orderByAsc("credit_hours"));
         model.addAttribute("creditHours",creditHours);
-        model.addAttribute("courseInfoList",courseInfoVOList);
         List<CollegeInfo> collegeInfos = collegeInfoService.list(new QueryWrapper<CollegeInfo>().select("distinct college_name"));
         model.addAttribute("collegeInfos",collegeInfos);
         List<CourseInfo> credit = courseInfoService.list(new QueryWrapper<CourseInfo>().select("distinct credit").orderByAsc("credit"));

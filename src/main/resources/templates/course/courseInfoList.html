@@ -41,7 +41,7 @@
                             <option th:each="courseName,status:${cName}" th:text="${courseName}"></option>
                         </select>
                         <b>负责学院</b>
-                        <select name="responsibleCollegeId" id="responsibleCollegeId">
+                        <select name="responsibleCollegeName" id="responsibleCollegeName">
                             <option></option>
                             <option th:each="collegeInfos,status:${collegeInfos}" th:text="${collegeInfos.getCollegeName()}"></option>
                         </select>
