@@ -33,9 +33,17 @@
                 <form th:action="@{/score/search}" method="post">
                     <div class="form-group">
                         <label for="studentId" class="sr-only"></label>
-                        <input type="number" name="studentId" placeholder="学号" class="form-control" id="studentId"/>
+                        <b>学号</b>
+                        <select name="studentId" id="studentId">
+                            <option></option>
+                            <option th:each="stuId,status:${sId}" th:text="${stuId}"></option>
+                        </select>
                         <label for="course_name" class="sr-only"></label>
-                        <input type="text" name="courseName" placeholder="课程" class="form-control" id="course_name"/>
+                        <b>课程</b>
+                        <select name="courseName" id="course_name">
+                            <option></option>
+                            <option th:each="cN,status:${cName}" th:text="${cN}"></option>
+                        </select>
 
                     </div>
                     <button type="submit" class="btn btn-default">查询</button>

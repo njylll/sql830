@@ -49,6 +49,11 @@ public class CourseInfoServiceImpl extends ServiceImpl<CourseInfoMapper, CourseI
     {
         return courseInfoMapper.selectOne(new QueryWrapper<CourseInfo>().eq("course_id",id));
     }
+
+    @Override
+    public List<String> searchAllCourseName() {
+        return courseInfoMapper.findAllCourseName();
+    }
 }
 
 

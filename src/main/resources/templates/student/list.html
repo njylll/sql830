@@ -33,19 +33,46 @@
                 <form th:action="@{/student/search}" method="post">
                     <div class="form-group">
                         <label for="studentId" class="sr-only"></label>
-                        <input type="number" name="studentId" placeholder="学号" class="form-control" id="studentId"/>
+                        <b>学号</b>
+                        <select name="studentId" id="studentId">
+                            <option></option>
+                            <option th:each="stuId,status:${sId}" th:text="${stuId}"></option>
+                        </select>
                         <label for="studentName" class="sr-only"></label>
-                        <input type="text" name="studentName" placeholder="姓名" class="form-control" id="studentName"/>
+                        <b>姓名</b>
+                        <select name="studentName" id="studentName">
+                            <option></option>
+                            <option th:each="stuName,status:${sName}" th:text="${stuName}"></option>
+                        </select>
                         <label for="gender" class="sr-only"></label>
-                        <input type="text" name="gender" placeholder="性别" class="form-control" id="gender"/>
+                        <b>性别</b>
+                        <select name="gender" id="gender">
+                            <option></option>
+                            <option>男</option>
+                            <option>女</option>
+                        </select>
+                        <br><br>
                         <label for="classId" class="sr-only"></label>
-                        <input type="number" name="classId" placeholder="班级" class="form-control" id="classId"/>
+                        <b>班级</b>
+                        <select name="classId" id="classId">
+                            <option></option>
+                            <option th:each="cId,status:${classId}" th:text="${cId}"></option>
+                        </select>
                         <label for="collegeName" class="sr-only"></label>
-                        <input type="text" name="collegeName" placeholder="学院" class="form-control" id="collegeName"/>
+                        <b>学院</b>
+                        <select name="collegeName" id="collegeName">
+                            <option></option>
+                            <option th:each="coName,status:${collegeName}" th:text="${coName}"></option>
+                        </select>
                         <label for="majorName" class="sr-only"></label>
-                        <input type="text" name="majorName" placeholder="专业" class="form-control" id="majorName"/>
+                        <b>专业</b>
+                        <select name="majorName" id="majorName">
+                            <option></option>
+                            <option th:each="mName,status:${majorName}" th:text="${mName}"></option>
+                        </select>
+                        <br><br>
                         <label for="schoolingPeriod" class="sr-only"></label>
-                        <input type="number" name="schoolingPeriod" placeholder="学制" class="form-control" id="schoolingPeriod"/>
+                        <input type="number" name="schoolingPeriod" placeholder="学制" class="form-control" id="schoolingPeriod" style="width: 100px"/>
 
                     </div>
                     <button type="submit" class="btn btn-default">查询</button>

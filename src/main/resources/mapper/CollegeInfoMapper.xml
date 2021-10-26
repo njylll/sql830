@@ -15,4 +15,7 @@
         UUID,college_id,college_name,
         college_principal
     </sql>
+    <select id="searchAllCollegeName" resultType="java.lang.String">
+        select distinct college_name from college_info;
+    </select>
 </mapper>

@@ -13,4 +13,7 @@
     <sql id="Base_Column_List">
         UUID,major_id,major_name
     </sql>
+    <select id="searchAllMajorName" resultType="java.lang.String">
+        select distinct major_name from major_info
+    </select>
 </mapper>

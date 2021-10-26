@@ -19,4 +19,7 @@
         major_id,counselor_name,class_teacher_name,
         monitor_student_id
     </sql>
+    <select id="findAllClassId" resultType="java.lang.String">
+        select distinct class_id from class_info
+    </select>
 </mapper>

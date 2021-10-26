@@ -57,12 +57,18 @@
       <h1>成绩添加</h1>
       <form method="post" action="/score/doAdd">
         <div class="form-group">
-          <label>学号</label>
-          <input name="studentId" class="form-control" placeholder="学号" type="text"/>
+          <b>学号</b>
+          <select name="studentId" id="studentId">
+            <option></option>
+            <option th:each="stuId,status:${sId}" th:text="${stuId}"></option>
+          </select>
         </div>
         <div class="form-group">
-          <label>课程名</label>
-          <input name="courseName" class="form-control" placeholder="课程名" type="text"/>
+          <b>课程</b>
+          <select name="courseName" id="course_name">
+            <option></option>
+            <option th:each="cN,status:${cName}" th:text="${cN}"></option>
+          </select>
         </div>
         <div class="form-group">
           <label>平时成绩</label>

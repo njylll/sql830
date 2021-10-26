@@ -28,4 +28,7 @@
         <include refid="Base_Column_List"/>
         from course_info
     </select>
+    <select id="findAllCourseName" resultType="java.lang.String">
+        select distinct course_name from course_info
+    </select>
 </mapper>

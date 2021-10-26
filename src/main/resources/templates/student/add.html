@@ -81,16 +81,25 @@
                     <input name="birthday" type="date" class="form-control"/>
                 </div>
                 <div class="form-group">
-                    <label>班级</label>
-                    <input name="classId" type="number" class="form-control" placeholder="班级"/>
+                    <b>班级</b>
+                    <select name="classId" id="classId">
+                        <option></option>
+                        <option th:each="cId,status:${classId}" th:text="${cId}"></option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>学院</label>
-                    <input name="collegeName" type="text" class="form-control" placeholder="学院"/>
+                    <b>学院</b>
+                    <select name="collegeName" id="collegeName">
+                        <option></option>
+                        <option th:each="coName,status:${collegeName}" th:text="${coName}"></option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>专业</label>
-                    <input name="majorName" type="text" class="form-control" placeholder="专业"/>
+                    <b>专业</b>
+                    <select name="majorName" id="majorName">
+                        <option></option>
+                        <option th:each="mName,status:${majorName}" th:text="${mName}"></option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>入学日期</label>

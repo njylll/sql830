@@ -29,6 +29,16 @@ public class StudentInfoServiceImpl extends ServiceImpl<StudentInfoMapper, Stude
     public void updateStudentInfo(StudentVo vo) {
         studentInfoMapper.updateStudent(vo);
     }
+
+    @Override
+    public List<String> findAllStudentId() {
+        return studentInfoMapper.searchAllStudentId();
+    }
+
+    @Override
+    public List<String> findAllStudentName() {
+        return studentInfoMapper.searchAllStudentName();
+    }
 }
 
 

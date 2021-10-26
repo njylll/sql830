@@ -28,6 +28,12 @@
         left join college_info ci on student_info.college_id = ci.college_id
         left join major_info mi on student_info.major_id = mi.major_id
     </select>
+    <select id="searchAllStudentId" resultType="java.lang.String">
+        select distinct student_id from student_info
+    </select>
+    <select id="searchAllStudentName" resultType="java.lang.String">
+        select distinct student_name from student_info
+    </select>
 
     <resultMap id="BaseResultMap" type="com.example.entity.StudentInfo">
             <id property="uuid" column="UUID" jdbcType="VARCHAR"/>

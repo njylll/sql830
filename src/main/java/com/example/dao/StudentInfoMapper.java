@@ -21,6 +21,12 @@ public interface StudentInfoMapper extends BaseMapper<StudentInfo> {
    //修改学生信息
    void updateStudent(@Param("vo") StudentVo vo);
 
+   //查找所有学生id
+   List<String> searchAllStudentId();
+
+   //查找所有学生姓名
+   List<String> searchAllStudentName();
+
 }
 
 

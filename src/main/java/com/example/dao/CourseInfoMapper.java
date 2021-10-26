@@ -12,6 +12,7 @@ import java.util.List;
 @Mapper
 public interface CourseInfoMapper extends BaseMapper<CourseInfo> {
     List<CourseInfo> listAll();
+    List<String> findAllCourseName();
 }
 
 

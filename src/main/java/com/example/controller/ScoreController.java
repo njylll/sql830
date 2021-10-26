@@ -10,6 +10,7 @@ import com.example.entity.StudentVo;
 import com.example.service.CourseInfoService;
 import com.example.service.StudentScoreService;
 import com.example.service.impl.CourseInfoServiceImpl;
+import com.example.service.impl.StudentInfoServiceImpl;
 import com.example.service.impl.StudentScoreServiceImpl;
 import com.example.util.UUIDGenerator;
 import com.example.vo.StudentScoreVO;
@@ -43,6 +44,9 @@ class ScoreController {
     @Autowired(required=false)
     private CourseInfoServiceImpl courseService;
 
+    @Autowired
+    private StudentInfoServiceImpl studentInfoService;
+
 
     //查询
     @GetMapping("/score/scoreList")
@@ -58,6 +62,10 @@ class ScoreController {
             vo.setCourseName(courseService.getOne(queryWrapper).getCourseName());
             studentScoreVOS.add(vo);
         }
+        List<String> idList= studentInfoService.findAllStudentId();
+        List<String> courseList=courseService.searchAllCourseName();
+        model.addAttribute("sId", idList);
+        model.addAttribute("cName", courseList);
         model.addAttribute("scoreList", studentScoreVOS);
 
         return "/score/scoreList";
@@ -101,6 +109,10 @@ class ScoreController {
         }
 
         model.addAttribute("scoreList",studentScoreVOS);
+        List<String> idList= studentInfoService.findAllStudentId();
+        List<String> courseList=courseService.searchAllCourseName();
+        model.addAttribute("sId", idList);
+        model.addAttribute("cName", courseList);
 
         return "/score/scoreList";
     }
@@ -109,8 +121,13 @@ class ScoreController {
      * 添加
      */
     @GetMapping("/score/add")
-    public String toAddScorePage()
+    public String toAddScorePage(Model model)
     {
+        List<String> idList= studentInfoService.findAllStudentId();
+        List<String> courseList=courseService.searchAllCourseName();
+        model.addAttribute("sId", idList);
+        model.addAttribute("cName", courseList);
+
         return "/score/addScore";
     }
 

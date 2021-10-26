@@ -12,6 +12,7 @@ import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,15 @@ public class StudentController {
     @Autowired
     private StudentVoServiceImpl studentVoService;
 
+    @Autowired
+    private ClassInfoServiceImpl classInfoService;
+
+    @Autowired
+    private CollegeInfoServiceImpl collegeInfoService;
+
+    @Autowired
+    private MajorInfoServiceImpl majorInfoService;
+
     //    用户登录页面
     @RequestMapping(value = "/dashboard")
     public String entry() {
@@ -46,8 +56,17 @@ public class StudentController {
     public String getStudents(Model model)
     {
         List<StudentVo> studentInfoVOS = studentVoService.list();
-
+        List<String> idList= studentInfoService.findAllStudentId();
+        List<String> nameList= studentInfoService.findAllStudentName();
+        List<String> classList= classInfoService.findAllClassId();
+        List<String> collegeList= collegeInfoService.findAllCollegeName();
+        List<String> majorList= majorInfoService.findAllMajorName();
+        model.addAttribute("sId",idList);
+        model.addAttribute("sName",nameList);
+        model.addAttribute("classId",classList);
+        model.addAttribute("collegeName",collegeList);
         model.addAttribute("studentInfos", studentInfoVOS);
+        model.addAttribute("majorName",majorList);
 
         return "/student/list";
     }
@@ -94,14 +113,29 @@ public class StudentController {
         studentInfoQueryWrapper.allEq(eqMap);
         List<StudentVo> studentVos =studentVoService.list(studentInfoQueryWrapper);
         model.addAttribute("studentInfos",studentVos);
-
+        List<String> nameList= studentInfoService.findAllStudentName();
+        List<String> idList= studentInfoService.findAllStudentId();
+        List<String> classList= classInfoService.findAllClassId();
+        List<String> collegeList= collegeInfoService.findAllCollegeName();
+        List<String> majorList= majorInfoService.findAllMajorName();
+        model.addAttribute("sName",nameList);
+        model.addAttribute("sId",idList);
+        model.addAttribute("classId",classList);
+        model.addAttribute("collegeName",collegeList);
+        model.addAttribute("majorName",majorList);
         return "/student/list";
     }
 
     //get来到学生添加页面
     @GetMapping("/student/addStudent")
-    public String toAddPage()
+    public String toAddPage(Model model)
     {
+        List<String> classList= classInfoService.findAllClassId();
+        List<String> collegeList= collegeInfoService.findAllCollegeName();
+        List<String> majorList= majorInfoService.findAllMajorName();
+        model.addAttribute("classId",classList);
+        model.addAttribute("collegeName",collegeList);
+        model.addAttribute("majorName",majorList);
         return "/student/add";
     }
 

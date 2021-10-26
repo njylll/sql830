@@ -17,4 +17,6 @@ public interface CourseInfoService extends IService<CourseInfo> {
 
     public CourseInfo queryByCourseId(String id);
 
+    List<String> searchAllCourseName();
+
 }
