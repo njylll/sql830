@@ -30,6 +30,12 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+    @RequestMapping("/register")
+    public String goRegister()
+    {
+        return "/register";
+    }
+
     //响应首页
     @RequestMapping(value = "/bar")
     public String bar() {

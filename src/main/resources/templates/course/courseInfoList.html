@@ -30,33 +30,48 @@
             <div class="table-responsive">
                 <form action="/course/search" method="post">
                     <div class="form-group">
-                        <label for="courseId" class="sr-only">课程id</label>
-                        <input type="text" name="courseId"
-                               placeholder="课程id" class="form-control" id="courseId"/>
-                        <label for="courseName" class="sr-only">课程名</label>
-                        <input type="text" name="courseName"
-                               placeholder="课程名" class="form-control" id="courseName"/>
-                        <label for="responsibleCollegeId" class="sr-only">负责学院id</label>
-                        <input type="text" name="responsibleCollegeName"
-                               placeholder="负责学院" class="form-control" id="responsibleCollegeId"/>
-                        <label for="creditHours" class="sr-only">学时</label>
-                        <input type="text" name="creditHours"
-                               placeholder="学时" class="form-control" id="creditHours"/>
-                        <label for="credit" class="sr-only">学分</label>
-                        <input type="text" name="credit"
-                               placeholder="学分" class="form-control" id="credit"/>
-                        <label for="courseType" class="sr-only">主分类</label>
-                        <input type="text" name="courseType"
-                               placeholder="主分类" class="form-control" id="courseType"/>
-                        <label for="courseType2" class="sr-only">备用分类</label>
-                        <input type="text" name="courseType2"
-                               placeholder="备用分类" class="form-control" id="courseType2"/>
-                        <label for="teachingWay" class="sr-only">教学方式</label>
-                        <input type="text" name="teachingWay"
-                               placeholder="教学方式" class="form-control" id="teachingWay"/>
-                        <label for="assessmentMethod" class="sr-only">考核方式</label>
-                        <input type="text" name="assessmentMethod"
-                               placeholder="考核方式" class="form-control" id="assessmentMethod"/>
+                        <b>课程号</b>
+                        <select name="courseId" id="courseId">
+                            <option></option>
+                            <option th:each="courseId,status:${cId}" th:text="${courseId}"></option>
+                        </select>
+                        <b>课程名</b>
+                        <select name="courseName" id="courseName">
+                            <option></option>
+                            <option th:each="courseName,status:${cName}" th:text="${courseName}"></option>
+                        </select>
+                        <b>负责学院</b>
+                        <select name="responsibleCollegeId" id="responsibleCollegeId">
+                            <option></option>
+                            <option th:each="collegeInfos,status:${collegeInfos}" th:text="${collegeInfos.getCollegeName()}"></option>
+                        </select>
+                        <br>
+                        <br>
+                        <b>学时</b>
+                        <select name="creditHours" id="creditHours">
+                            <option></option>
+                            <option th:each="creditHours,status:${creditHours}" th:text="${creditHours.getCreditHours()}"></option>
+                        </select>
+                        <b>学分</b>
+                        <select name="credit" id="credit">
+                            <option></option>
+                            <option th:each="creditList,status:${creditList}" th:text="${creditList.getCredit()}"></option>
+                        </select>
+                        <b>主分类</b>
+                        <select name="courseType" id="courseType">
+                            <option></option>
+                            <option th:each="courseTypeList,status:${courseTypeList}" th:text="${courseTypeList.getCourseType()}"></option>
+                        </select>
+                        <b>教学方式</b>
+                        <select name="teachingWay" id="teachingWay">
+                            <option></option>
+                            <option th:each="teachingWay,status:${teachingWayList}" th:text="${teachingWay.teachingWay}"></option>
+                        </select>
+                        <b>考核方式</b>
+                        <select name="assessmentMethod" id="assessmentMethod">
+                            <option></option>
+                            <option th:each="assessmentMethodList,status:${assessmentMethodList}" th:text="${assessmentMethodList.getAssessmentMethod()}"></option>
+                        </select>
                     </div>
                     <button type="submit" class="btn btn-default">查询</button>
 

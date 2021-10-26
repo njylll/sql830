@@ -31,4 +31,10 @@
     <select id="findAllCourseName" resultType="java.lang.String">
         select distinct course_name from course_info
     </select>
+
+    <select id="listAllId" resultType="string">
+        select distinct course_id from course_info
+    </select>
+
+
 </mapper>

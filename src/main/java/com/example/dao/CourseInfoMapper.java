@@ -13,6 +13,7 @@ import java.util.List;
 public interface CourseInfoMapper extends BaseMapper<CourseInfo> {
     List<CourseInfo> listAll();
     List<String> findAllCourseName();
+    List<String> listAllId();
 }
 
 

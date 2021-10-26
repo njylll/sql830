@@ -54,6 +54,11 @@ public class CourseInfoServiceImpl extends ServiceImpl<CourseInfoMapper, CourseI
     public List<String> searchAllCourseName() {
         return courseInfoMapper.findAllCourseName();
     }
+
+    public List<String> listAllCourseId()
+    {
+        return courseInfoMapper.listAllId();
+    }
 }
 
 
