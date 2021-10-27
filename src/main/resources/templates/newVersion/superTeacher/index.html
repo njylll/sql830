@@ -6,10 +6,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>学生系统</title>
+  <title>super教师系统</title>
   <link rel="stylesheet" th:href="@{/layui/css/layui_origin.css}">
   <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
-
 </head>
 <body>
 <script>
@@ -20,7 +19,7 @@
 <div class="layui-layout layui-layout-admin">
   <div class="layui-header">
 
-    <div class="layui-logo layui-hide-xs layui-bg-black">学生系统</div>
+    <div class="layui-logo layui-hide-xs layui-bg-black">super教师系统</div>
     <!-- 头部区域（可配合layui 已有的水平导航） -->
     <ul class="layui-nav layui-layout-left">
       <!-- 移动端显示 -->
@@ -72,19 +71,52 @@
       <!--选课-->
       <ul class="layui-nav layui-nav-tree" lay-filter="test">
         <li class="layui-nav-item layui-nav-itemed">
-          <a class="" href="javascript:;">我的选课</a>
+          <a class="" href="javascript:;">开设课程</a>
           <dl class="layui-nav-child">
-            <dd><a onclick="" href="javascript:;">专业必修课</a></dd>
-            <dd><a onclick="" href="javascript:;">专业选修课</a></dd>
-            <dd><a onclick="" href="javascript:;">通识课</a></dd>
+            <dd><a href="javascript:;">专业必修课</a></dd>
+            <dd><a href="javascript:;">专业选修课</a></dd>
+            <dd><a href="javascript:;">通识课</a></dd>
+          </dl>
+        </li>
+
+
+        <!--开设课程-->
+        <li class="layui-nav-item layui-nav-itemed">
+          <a class="" href="javascript:;">课程模板</a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;">查询/编辑模板</a></dd>
+            <dd><a href="javascript:;">定义新模板</a></dd>
+          </dl>
+        </li>
+
+        <!--在教课程-->
+        <li class="layui-nav-item layui-nav-itemed">
+          <a class="" href="javascript:;">进行中课程</a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;">查询/编辑课程</a></dd>
+          </dl>
+        </li>
+
+        <!--课表-->
+        <li class="layui-nav-item layui-nav-itemed">
+          <a class="" href="javascript:;">课程表</a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;">班级课表</a></dd>
+            <dd><a href="javascript:;">教师课表</a></dd>
           </dl>
         </li>
 
         <!--成绩-->
-        <li class="layui-nav-item"><a href="javascript:;">我的成绩</a></li>
+        <li class="layui-nav-item"><a href="javascript:;">学生成绩</a></li>
 
-        <!--课表-->
-        <li class="layui-nav-item"><a href="">我的课表</a></li>
+        <!--用户管理-->
+        <li class="layui-nav-item layui-nav-itemed">
+          <a class="" href="javascript:;">用户管理</a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;">生成邀请码</a></dd>
+            <dd><a href="javascript:;">学生管理</a></dd>
+          </dl>
+        </li>
       </ul>
     </div>
   </div>
@@ -93,24 +125,21 @@
   <!-- 内容主体区域 -->
   <div class="layui-body">
     <div style="padding: 15px;">
-      <!--个人-->
-      <div class="main" id="d1" th:insert="/newVersion/student/me::me"></div>
-      <!--专业必修-->
-      <div class="main" id="d2" th:insert="/newVersion/student/professional_compulsory_course::pcc"></div>
-      <!--专业选修-->
-      <div class="main" id="d3" th:insert="/newVersion/student/professional_elective::pe"></div>
-      <!--通识课-->
-      <div class="main" id="d4" th:insert="/newVersion/student/general_course::gc"></div>
-      <!--成绩-->
-      <div class="main" id="d5" th:insert="/newVersion/student/myScore::score"></div>
-      <!--课表-->
-      <div class="main" id="d6" th:insert="/newVersion/student/curriculum::curriculum"></div>
+      <div class="main" id="d1" th:insert="/newVersion/superTeacher/me::me"></div>
+      <div class="main" id="d2" th:insert="/newVersion/superTeacher/professional_compulsory_course::p"></div>
+      <div class="main" id="d3" th:insert="/newVersion/superTeacher/professional_elective::p"></div>
+      <div class="main" id="d4" th:insert="/newVersion/superTeacher/general_course::p"></div>
+      <div class="main" id="d5" th:insert="/newVersion/superTeacher/editModule::p"></div>
+      <div class="main" id="d6" th:insert="/newVersion/superTeacher/createModule::p"></div>
+      <div class="main" id="d7" th:insert="/newVersion/superTeacher/classCurri::p"></div>
+      <div class="main" id="d8" th:insert="/newVersion/superTeacher/teacherCurri::p"></div>
+      <div class="main" id="d9" th:insert="/newVersion/superTeacher/general_course::p"></div>
+      <div class="main" id="d10" th:insert="/newVersion/superTeacher/studentManage::p"></div>
     </div>
   </div>
 
   <!--底部区域-->
   <div class="layui-footer">
-    <!-- 底部固定区域 -->
     底部固定区域
   </div>
 

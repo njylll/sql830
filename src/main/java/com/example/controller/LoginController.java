@@ -93,7 +93,7 @@ public class LoginController {
             if(code!=null)
             {
                 code.setUsed((byte) 1);
-                inviteCodeService.save(code);
+                inviteCodeService.saveOrUpdate(code);
             }
         }
 

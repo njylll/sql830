@@ -7,11 +7,23 @@ function ajax_login() {
     $.ajax({
         url:"/newVersion/gologin",
         type:"post",
-        data:{"username": user+'|'+role,"password": psw},
+        data:{"username": user+'|'+role[0],"password": psw},
         success:function (data){
             $("#loginMsg")
                 .html(data.msg);
-            $("#to-panel").attr("href","www.baidu.com")
+            if(role[0]==="STUDENT")
+            {
+                $("#to-panel").attr("href","/newVersion/student/index");
+            }
+            else if(role[0]==="TEACHER")
+            {
+                $("#to-panel").attr("href","/newVersion/teacher/index");
+            }
+            else if(role[0]==="SUPERTEACHER")
+            {
+                $("#to-panel").attr("href","/newVersion/superTeacher/index");
+            }
+
             document.getElementById("to-panel").click();
         },
         error:function (xhr, textStatus, errorThrown) {
