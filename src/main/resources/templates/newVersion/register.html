@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>注册商家</title>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+</head>
+<body>
+
+<div th:insert="/newVersion/header::header"></div>
+<br><br>
+<fieldset class="layui-elem-field">
+    <legend>注册</legend>
+    <div class="layui-field-box">
+        <form class="layui-form" id="login" method="post" action="/newVersion/doRegister" onSubmit="return check();">
+            <!--用户名-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div style="width: 450px;height: 40px; position:relative">
+                    <div class="layui-input-block" style="width: 200px">
+                        <input type="text" id="user" name="user" class="layui-input" placeholder="请输入用户名"
+                               style="width: 200px;height: 30px">
+                    </div>
+                    <div style="display: inline-block;width: 100px;position: absolute;top: 5px;right: 30px"><p
+                            id="user-check" style="vertical-align:middle;height: 30px"></p>
+                    </div>
+                </div>
+            </div>
+            <!--密码-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">密码</label>
+                <div style="width: 450px;height: 40px; position:relative">
+                    <div class="layui-input-block">
+                        <input type="password" id="psw" name="psw" class="layui-input" placeholder="请输入密码"
+                               style="width: 200px;height: 30px">
+                    </div>
+                    <div style="display: inline-block;width: 100px;position: absolute;top: 5px;right: 30px">
+                        <p id="psw-check" style="vertical-align:middle;height: 30px"></p>
+                    </div>
+                </div>
+            </div>
+            <!--注册码-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">邀请码</label>
+                <div style="width: 450px;height: 40px; position:relative">
+                    <div class="layui-input-block">
+                        <input type="text" id="iCode" name="iCode" class="layui-input" placeholder="邀请码（可选）"
+                               style="width: 200px;height: 30px">
+                    </div>
+                    <div style="display: inline-block;width: 100px;position: absolute;top: 5px;right: 30px">
+                        <p id="iCode-check" style="vertical-align:middle;height: 30px"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!--注册按钮-->
+            <div class="layui-form-item">
+                <div style="width: 50px;height: 50px;float: left"></div>
+                <div style="width: 120px;float: left">
+                    <button class="layui-btn layui-btn-disabled" type="submit" id="register-btn" disabled="true"
+                            style="width: 100px;">注册
+                    </button>
+                </div>
+                <button class="layui-btn layui-btn-primary layui-border-green" style="width: 100px;"><a
+                        th:href="@{/newVersion/login}">返回登录</a></button>
+            </div>
+        </form>
+    </div>
+</fieldset>
+<script type="text/javascript" th:src="@{/js/ajax_register.js}"></script>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'element', 'layer', 'laypage'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate
+            , element = layui.element
+            , laypage = layui.laypage;
+    });
+</script>
+</body>
+</html>

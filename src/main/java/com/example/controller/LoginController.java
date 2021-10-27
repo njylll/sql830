@@ -3,9 +3,12 @@ package com.example.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.DemoApplication;
+import com.example.entity.InviteCode;
 import com.example.entity.User;
 import com.example.service.UserService;
+import com.example.service.impl.InviteCodeServiceImpl;
 import com.example.service.impl.UserServiceImpl;
+import net.bytebuddy.utility.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @Controller
 public class LoginController {
@@ -28,7 +32,115 @@ public class LoginController {
     public static final Logger log = LoggerFactory.getLogger(DemoApplication.class);
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
+
+    @Autowired
+    private InviteCodeServiceImpl inviteCodeService;
+
+    @GetMapping("/newVersion")
+    public String toLogin1()
+    {
+        return "/newVersion/login";
+    }
+
+    @GetMapping("/newVersion/login")
+    public String toLogin2()
+    {
+        return "/newVersion/login";
+    }
+
+    @GetMapping("/newVersion/register")
+    public String toRegister()
+    {
+        return "/newVersion/register";
+    }
+
+    //注册请求
+    @PostMapping("/newVersion/doRegister")
+    public String doRegister(@RequestParam("user")String username,
+                             @RequestParam("psw")String password,
+                             @RequestParam("iCode") String iCode)
+    {
+        if(username==null||password==null)
+            return "redirect:/error/403.html";
+
+        //防止小鬼，再进行用户名测试
+        if(userService.getOne(new QueryWrapper<User>().eq("username",username))!=null)
+            return "redirect:/error/403.html";
+
+        User newone=new User();
+        newone.setUuid(RandomString.make(10));
+        newone.setUsername(username);
+        newone.setPassword(password);
+        //默认学生权限
+        if(StringUtils.isEmpty(iCode))
+            newone.setRole("ROLE_STUDENT");
+        //有邀请码
+        else
+        {
+            InviteCode code= inviteCodeService.getOne(new QueryWrapper<InviteCode>().eq("code",iCode));
+            if(code==null)
+                newone.setRole("ROLE_STUDENT");
+            else if(code.getUsed()==1)
+                newone.setRole("ROLE_STUDENT");
+            else if(code.getRole().equals("student"))
+                newone.setRole("ROLE_STUDENT");
+            else if(code.getRole().equals("teacher"))
+                newone.setRole("ROLE_TEACHER");
+            else if(code.getRole().equals("super_teacher"))
+                newone.setRole("ROLE_SUPERTEACHER");
+            //标记使用
+            if(code!=null)
+            {
+                code.setUsed((byte) 1);
+                inviteCodeService.save(code);
+            }
+        }
+
+        userService.save(newone);
+
+        return "/newVersion/registerOK";
+    }
+
+    //ajax处理注册
+    @PostMapping("/newVersion/ajax_register")
+    @ResponseBody
+    public String ajaxRegister(@RequestParam("originUser")String originUser,
+                               HttpServletResponse response)
+    {
+        //用户名被占用
+        if(userService.getOne(new QueryWrapper<User>().eq("username",originUser))!=null)
+        {
+            response.setStatus(444);
+            return "{\"status\":\"error\",\"msg\":\"用户名已被占用\"}";
+        }
+        return "{\"status\":\"ok\",\"msg\":\"ok\"}";
+    }
+    //ajax处理邀请码
+    @PostMapping("/newVersion/ajax_register_code")
+    @ResponseBody
+    public String ajaxRegisterCode(@RequestParam("iCode")String code,
+                               HttpServletResponse response)
+    {
+        //邀请码被占用
+        InviteCode inviteCode=inviteCodeService.getOne(new QueryWrapper<InviteCode>().eq("code",code));
+        if(inviteCode==null)
+        {
+            response.setStatus(444);
+            return "{\"status\":\"error\",\"msg\":\"邀请码不存在\"}";
+        }
+        else if(inviteCode.getUsed()==1)
+        {
+            response.setStatus(444);
+            return "{\"status\":\"error\",\"msg\":\"邀请码已用过\"}";
+        }
+        return "{\"status\":\"ok\",\"msg\":\"ok\"}";
+    }
+
+
+
+
+
 
     //响应首页
     @RequestMapping(value = "/bar")

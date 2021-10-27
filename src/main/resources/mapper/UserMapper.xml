@@ -8,11 +8,12 @@
             <result property="uuid" column="UUID" jdbcType="VARCHAR"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="role" column="role" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIME"/>
             <result property="updateTime" column="update_time" jdbcType="TIME"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-       UUID,username,password,create_time,update_time
+       UUID,username,password,role,create_time,update_time
     </sql>
 </mapper>

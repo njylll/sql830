@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <meta charset="UTF-8">
+  <title>登录</title>
+  <script th:src="@{/layui/layui.js}"></script>
+  <script type="text/javascript" th:src="@{/js/ajax_login.js}"></script>
+  <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+  <link rel="stylesheet" th:href="@{/layui/css/layui_origin.css}" media="all">
+</head>
+<body>
+<div th:insert="/newVersion/header::header"></div>
+<br><br><br><br><br>
+<div class="layui-row">
+  <div class="layui-col-xs4">
+    <div><img th:src="@{/images/cq1.png}" style="width: 90%"></div>
+  </div>
+  <div class="layui-col-xs4">
+
+    <fieldset class="layui-elem-field">
+      <legend>登录</legend>
+      <div class="layui-field-box">
+        <form class="layui-form" id="login" method="post" action="/newVersion/gologin">
+          <!--用户名-->
+          <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-block" style="width: 300px">
+              <input type="text" id="user-name-label" name="username" lay-verify="title"
+                     autocomplete="off" placeholder="请输入用户名" class="layui-input"
+                     style="width: 200px;height: 30px">
+            </div>
+          </div>
+          <!--密码-->
+          <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block">
+              <input type="password" id="password-label" name="password" placeholder="请输入密码"
+                     autocomplete="off" class="layui-input" style="width: 200px;height: 30px">
+              <br>
+              <p style="color: crimson" id="loginMsg"></p>
+            </div>
+          </div>
+          <!--角色-->
+          <div class="layui-form-item">
+            <label class="layui-form-label">角色</label>
+            <input type="radio" name="role" value="STUDENT" title="学生" checked="">
+            <input type="radio" name="role" value="TEACHER" title="老师">
+            <input type="radio" name="role" value="SUPERTEACHER" title="super老师" >
+          </div>
+        </form>
+        <!--登录按钮-->
+        <div class="layui-form-item">
+          <div style="width: 50px;height: 50px;float: left"></div>
+          <div style="width: 120px;float: left">
+            <button type="button" class="layui-btn" onclick="ajax_login()" style="width: 100px;">登录</button>
+          </div>
+          <button class="layui-btn layui-btn-primary layui-border-green" style="width: 100px;"><a href="/newVersion/register">注册</a></button>
+          <img id="login-img" th:src="@{/images/logining.gif}" style="display: none;height: 25px">
+        </div>
+      </div>
+    </fieldset>
+
+  </div>
+  <div class="layui-col-xs4">
+
+  </div>
+</div>
+
+<br>
+
+<a href="/seller/order/list" id="to-panel"></a>
+
+<script th:src="@{/layui/layui_origin.js}"></script>
+<script>
+  layui.use(['form', 'layedit', 'laydate', 'element', 'layer', 'laypage'], function () {
+    var form = layui.form;
+    var layer = layui.layer;
+    var layedit = layui.layedit;
+    var laydate = layui.laydate;
+    var element = layui.element;
+    var laypage = layui.laypage;
+    form.render();
+  });
+</script>
+</body>
+</html>
