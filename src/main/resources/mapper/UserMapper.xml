@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.example.entity.User">
             <result property="uuid" column="UUID" jdbcType="VARCHAR"/>
+            <result property="id" column="id" jdbcType="VARCHAR"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
             <result property="role" column="role" jdbcType="VARCHAR"/>

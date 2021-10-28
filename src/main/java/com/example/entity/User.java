@@ -18,6 +18,7 @@ public class User implements Serializable {
 
   @Id
   private String uuid;
+  private String id;
   private String username;
   private String password;
   private String role;
