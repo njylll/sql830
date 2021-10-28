@@ -9,6 +9,7 @@
   <title>学生系统</title>
   <link rel="stylesheet" th:href="@{/layui/css/layui_origin.css}">
   <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+  <script type="text/javascript" th:src="@{/js/student.js}"></script>
 
 </head>
 <body>
@@ -47,7 +48,7 @@
           <dd sec:authorize="isAuthenticated()" style="text-align: center;"><a href="javascript:;" sec:authentication="name"></a>
           </dd>
           <hr sec:authorize="isAuthenticated()">
-          <dd sec:authorize="isAuthenticated()"><a href="javascript:;">个人设置</a></dd>
+          <dd sec:authorize="isAuthenticated()"><a  onclick="f1(0)" href="javascript:;">个人设置</a></dd>
           <hr sec:authorize="isAuthenticated()">
           <dd sec:authorize="isAuthenticated()" style="text-align: center;"><a href="javascript:;" onclick="logout()">登出</a>
           </dd>
@@ -74,17 +75,17 @@
         <li class="layui-nav-item layui-nav-itemed">
           <a class="" href="javascript:;">我的选课</a>
           <dl class="layui-nav-child">
-            <dd><a onclick="" href="javascript:;">专业必修课</a></dd>
-            <dd><a onclick="" href="javascript:;">专业选修课</a></dd>
-            <dd><a onclick="" href="javascript:;">通识课</a></dd>
+            <dd><a onclick="f1(1)" href="javascript:;">专业必修课</a></dd>
+            <dd><a onclick="f1(2)" href="javascript:;">专业选修课</a></dd>
+            <dd><a onclick="f1(3)" href="javascript:;">通识课</a></dd>
           </dl>
         </li>
 
         <!--成绩-->
-        <li class="layui-nav-item"><a href="javascript:;">我的成绩</a></li>
+        <li class="layui-nav-item"><a onclick="f1(4)" href="javascript:;">我的成绩</a></li>
 
         <!--课表-->
-        <li class="layui-nav-item"><a href="">我的课表</a></li>
+        <li class="layui-nav-item"><a onclick="f1(5)" href="javascript:;">我的课表</a></li>
       </ul>
     </div>
   </div>
@@ -94,17 +95,17 @@
   <div class="layui-body">
     <div style="padding: 15px;">
       <!--个人-->
-      <div class="main" id="d1" th:insert="/newVersion/student/me::me"></div>
+      <div class="main" id="d0" th:insert="/newVersion/student/me::me"></div>
       <!--专业必修-->
-      <div class="main" id="d2" th:insert="/newVersion/student/professional_compulsory_course::pcc"></div>
+      <div hidden="hidden" class="main" id="d1" th:insert="/newVersion/student/professional_compulsory_course::pcc"></div>
       <!--专业选修-->
-      <div class="main" id="d3" th:insert="/newVersion/student/professional_elective::pe"></div>
+      <div hidden="hidden" class="main" id="d2" th:insert="/newVersion/student/professional_elective::pe"></div>
       <!--通识课-->
-      <div class="main" id="d4" th:insert="/newVersion/student/general_course::gc"></div>
+      <div hidden="hidden" class="main" id="d3" th:insert="/newVersion/student/general_course::gc"></div>
       <!--成绩-->
-      <div class="main" id="d5" th:insert="/newVersion/student/myScore::score"></div>
+      <div hidden="hidden" class="main" id="d4" th:insert="/newVersion/student/myScore::score"></div>
       <!--课表-->
-      <div class="main" id="d6" th:insert="/newVersion/student/curriculum::curriculum"></div>
+      <div hidden="hidden" class="main" id="d5" th:insert="/newVersion/student/curriculum::curriculum"></div>
     </div>
   </div>
 

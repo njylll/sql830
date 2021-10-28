@@ -17,7 +17,7 @@
     <ul class="layui-nav layui-layout-left" lay-filter="" style="left: 0;width: 100%">
         <!--点餐-->
         <li th:class="${#httpServletRequest.requestURI=='/'}?'layui-this layui-nav-item':'layui-nav-item'"><a
-                href="/#/">点餐</a></li>
+                href="/#/">学校主页</a></li>
         <!--联系方式-->
         <li class="layui-nav-item">
             <a href="javascript:;">联系方式</a>
@@ -29,10 +29,10 @@
         </li>
         <!--订单查询 /seller/order/list-->
         <li th:class="${#httpServletRequest.requestURI=='/seller/order/list'}?'layui-this layui-nav-item':'layui-nav-item'">
-            <a href="/seller/order/list">订单查询</a></li>
+            <a href="/seller/order/list">作息时间</a></li>
         <!--商铺管理-->
         <li th:class="${#httpServletRequest.requestURI=='/seller/store'}?'layui-this layui-nav-item':'layui-nav-item'">
-            <a href="/seller/store">商铺管理</a></li>
+            <a href="/seller/store">校历</a></li>
         <!--个人主页 /seller/order/home-->
         <li th:class="${#httpServletRequest.requestURI=='/seller/order/home'}?'layui-this layui-nav-item':'layui-nav-item'"
             lay-unselect="">
@@ -42,7 +42,7 @@
                 <dd sec:authorize="isAuthenticated()" style="text-align: center;"><a href="javascript:;" sec:authentication="name"></a>
                 </dd>
                 <hr sec:authorize="isAuthenticated()">
-                <dd sec:authorize="isAuthenticated()"><a href="javascript:;">个人设置(请加钱)</a></dd>
+                <dd sec:authorize="isAuthenticated()"><a href="javascript:;">个人设置</a></dd>
                 <dd sec:authorize="isAuthenticated()"><a href="/seller/store">店铺设置</a></dd>
                 <hr sec:authorize="isAuthenticated()">
                 <dd sec:authorize="isAuthenticated()" style="text-align: center;"><a href="javascript:;"

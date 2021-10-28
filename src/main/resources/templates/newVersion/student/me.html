@@ -7,7 +7,7 @@
 <body>
 
 <div th:fragment="me">
-  123123123
+    <b sec:authorize="isAuthenticated()"><a href="javascript:;">个人设置</a></b>
 </div>
 
 </body>

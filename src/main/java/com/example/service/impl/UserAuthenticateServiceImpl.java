@@ -26,7 +26,7 @@ public class UserAuthenticateServiceImpl implements UserAuthenticateService {
         String name= username.split("\\|")[0];
         String role= username.split("\\|")[1];
         QueryWrapper<User> wrapper=new QueryWrapper<>();
-        wrapper.eq("username",name);
+        wrapper.eq("username",name).or().eq("id",name);
         User u=userMapper.selectOne(wrapper);
 
         if(u==null)

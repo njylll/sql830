@@ -5,12 +5,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/newVersion/superTeacher")
+@RequestMapping("/newVersion/teacher")
 public class NewTeacherController {
     @GetMapping(value = {"/","/index"})
     public String toSuperTeacherMainPage()
     {
-        return "/newVersion/superTeacher/index";
+        return "/newVersion/teacher/index";
     }
 
 }

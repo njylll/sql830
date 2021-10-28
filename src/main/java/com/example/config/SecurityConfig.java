@@ -71,6 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 permitAll();
 
         http.csrf().disable();
+        http.headers().frameOptions().sameOrigin();
 
     }
     //Thymeleaf方言
