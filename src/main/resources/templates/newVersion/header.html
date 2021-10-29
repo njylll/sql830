@@ -36,14 +36,13 @@
         <!--个人主页 /seller/order/home-->
         <li th:class="${#httpServletRequest.requestURI=='/seller/order/home'}?'layui-this layui-nav-item':'layui-nav-item'"
             lay-unselect="">
-            <a href="javascript:;"><img sec:authorize="isAuthenticated()" src="https://sunnynoodlebucket.oss-cn-shanghai.aliyuncs.com/images/t.png" class="layui-nav-img"></a>
+            <a href="javascript:;"><img sec:authorize="isAuthenticated()" th:src="${avatar}" class="layui-nav-img"></a>
             <a href="javascript:;"><img sec:authorize="isAnonymous()" src="https://sunnynoodlebucket.oss-cn-shanghai.aliyuncs.com/images/banner.jpg" class="layui-nav-img"></a>
             <dl class="layui-nav-child">
                 <dd sec:authorize="isAuthenticated()" style="text-align: center;"><a href="javascript:;" sec:authentication="name"></a>
                 </dd>
                 <hr sec:authorize="isAuthenticated()">
                 <dd sec:authorize="isAuthenticated()"><a href="javascript:;">个人设置</a></dd>
-                <dd sec:authorize="isAuthenticated()"><a href="/seller/store">店铺设置</a></dd>
                 <hr sec:authorize="isAuthenticated()">
                 <dd sec:authorize="isAuthenticated()" style="text-align: center;"><a href="javascript:;"
                                                                                      onclick="logout()">登出</a>

@@ -3,16 +3,23 @@ package com.example.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.DemoApplication;
+import com.example.dao.UserMapper;
 import com.example.entity.InviteCode;
 import com.example.entity.User;
 import com.example.service.UserService;
 import com.example.service.impl.InviteCodeServiceImpl;
 import com.example.service.impl.UserServiceImpl;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import net.bytebuddy.utility.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,6 +40,8 @@ public class LoginController {
 
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private InviteCodeServiceImpl inviteCodeService;
@@ -44,8 +53,20 @@ public class LoginController {
     }
 
     @GetMapping("/newVersion/login")
-    public String toLogin2()
+    public String toLogin2(Model model)
     {
+
+        Authentication auth =SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getPrincipal().equals("anonymousUser"))
+        {
+            model.addAttribute("avatar","");
+            return "/newVersion/login";
+        }
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
+        model.addAttribute("avatar",u.getAvatarUrl());
         return "/newVersion/login";
     }
 

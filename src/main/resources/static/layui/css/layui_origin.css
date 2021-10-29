@@ -3873,6 +3873,10 @@ body .layui-table-tips .layui-layer-content {
 .layui-upload-list {
     margin: 10px 0
 }
+.layui-upload-img {
+    width: 92px;
+    height: 92px;
+}
 
 .layui-upload-choose {
     max-width: 200px;

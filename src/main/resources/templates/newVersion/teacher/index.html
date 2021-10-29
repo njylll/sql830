@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>教师系统</title>
   <link rel="stylesheet" th:href="@{/layui/css/layui_origin.css}">
+  <link rel="stylesheet" th:href="@{/css/frame.css}">
   <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
   <script type="text/javascript" th:src="@{/js/teacher.js}"></script>
 </head>
@@ -41,7 +42,7 @@
     </ul>
     <ul class="layui-nav layui-layout-right">
       <li class="layui-nav-item layui-hide layui-show-md-inline-block">
-        <a href="javascript:;"><img sec:authorize="isAuthenticated()" src="https://sunnynoodlebucket.oss-cn-shanghai.aliyuncs.com/images/t.png" class="layui-nav-img"></a>
+        <a href="javascript:;"><img sec:authorize="isAuthenticated()" th:src="${avatar}" class="layui-nav-img"></a>
         <a href="javascript:;"><img sec:authorize="isAnonymous()" src="https://sunnynoodlebucket.oss-cn-shanghai.aliyuncs.com/images/banner.jpg" class="layui-nav-img"></a>
         <dl class="layui-nav-child">
           <dd sec:authorize="isAuthenticated()" style="text-align: center;"><a href="javascript:;" sec:authentication="name"></a>
@@ -94,12 +95,12 @@
   <!-- 内容主体区域 -->
   <div class="layui-body">
     <div style="padding: 15px;">
-      <div class="main" id="d0" th:insert="/newVersion/teacher/me::me"></div>
-      <div class="main" id="d1" th:insert="/newVersion/teacher/professional_compulsory_course::p"></div>
-      <div class="main" id="d2" th:insert="/newVersion/teacher/professional_elective::p"></div>
-      <div class="main" id="d3" th:insert="/newVersion/teacher/general_course::p"></div>
-      <div class="main" id="d4" th:insert="/newVersion/teacher/studentScore::p"></div>
-      <div class="main" id="d5" th:insert="/newVersion/teacher/teacherCurri::p"></div>
+      <iframe class="main" id="d0" th:src="@{/newVersion/teacher/me}"></iframe>
+      <div class="main" hidden="hidden" id="d1" th:insert="/newVersion/teacher/professional_compulsory_course::p"></div>
+      <div class="main" hidden="hidden" id="d2" th:insert="/newVersion/teacher/professional_elective::p"></div>
+      <div class="main" hidden="hidden" id="d3" th:insert="/newVersion/teacher/general_course::p"></div>
+      <div class="main" hidden="hidden" id="d4" th:insert="/newVersion/teacher/studentScore::p"></div>
+      <div class="main" hidden="hidden" id="d5" th:insert="/newVersion/teacher/teacherCurri::p"></div>
     </div>
   </div>
 
