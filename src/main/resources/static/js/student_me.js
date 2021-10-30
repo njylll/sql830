@@ -2,6 +2,7 @@ $("#me-submit").click(function (){
     let uName=$("#user-name").val();
     let uId=$("#user-id").val();
     let uPass=$("#user-password").val();
+    let sName=$("#user-real-name").val();
     if(uName.length<5)
     {
         layer.msg("昵称不得小于5个字符！");
@@ -20,7 +21,7 @@ $("#me-submit").click(function (){
     $.ajax({
         url:"/newVersion/student/me",
         type:"post",
-        data: {"username":uName,"studentId":uId,"password":uPass},
+        data: {"username":uName,"studentId":uId,"password":uPass,"studentName":sName},
         success:function (data){
             layer.msg("修改成功，请重新登陆！2s自动跳转");
             //定义开始的秒数

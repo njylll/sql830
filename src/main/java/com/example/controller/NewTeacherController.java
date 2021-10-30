@@ -7,6 +7,7 @@ import com.example.entity.StudentCourseVo;
 import com.example.entity.User;
 import com.example.service.impl.AliOssServiceImpl;
 import com.example.service.impl.StudentCourseVoServiceImpl;
+import com.example.service.impl.TeacherInfoServiceImpl;
 import com.example.service.impl.UserServiceImpl;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class NewTeacherController {
     private AliOssServiceImpl aliOssService;
     @Autowired
     private StudentCourseVoServiceImpl studentCourseVoService;
+    @Autowired
+    private TeacherInfoServiceImpl teacherInfoService;
 
     //主页
     @GetMapping(value = {"/","/index"})

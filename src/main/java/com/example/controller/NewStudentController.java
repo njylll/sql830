@@ -7,22 +7,25 @@ import com.example.dao.StudentInfoMapper;
 import com.example.dao.UserMapper;
 import com.example.entity.StudentCourse;
 import com.example.entity.StudentCourseVo;
+import com.example.entity.StudentInfo;
 import com.example.entity.User;
-import com.example.service.impl.AliOssServiceImpl;
-import com.example.service.impl.StudentCourseServiceImpl;
-import com.example.service.impl.StudentCourseVoServiceImpl;
-import com.example.service.impl.UserServiceImpl;
+import com.example.service.impl.*;
 import com.mysql.cj.xdevapi.JsonParser;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -36,7 +39,7 @@ public class NewStudentController {
     @Autowired
     private AliOssServiceImpl aliOssService;
     @Autowired
-    private StudentCourseServiceImpl studentCourseService;
+    private StudentInfoServiceImpl studentInfoService;
     @Autowired
     private StudentCourseVoServiceImpl studentCourseVoService;
 
@@ -62,12 +65,14 @@ public class NewStudentController {
                 .getPrincipal();
         User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
         model.addAttribute("avatar",u.getAvatarUrl());
-        String id;
-        if(u!=null)
-            id=u.getId();
+        model.addAttribute("sId",u.getId());
+        StudentInfo studentInfo= studentInfoService.getOne(new QueryWrapper<StudentInfo>().eq("student_id",u.getId()));
+        String sName;
+        if(studentInfo==null)
+            sName="";
         else
-            id="";
-        model.addAttribute("sId",id);
+            sName=studentInfo.getStudentName();
+        model.addAttribute("sName",sName);
         return "/newVersion/student/me";
     }
     //个人设置
@@ -75,20 +80,48 @@ public class NewStudentController {
     @ResponseBody
     public String doEditMe(@RequestParam("username")String username,
                            @RequestParam("studentId")String studentId,
-                           @RequestParam("password")String password)
+                           @RequestParam("studentName")String studentName,
+                           @RequestParam("password")String password,
+                           HttpServletRequest request, HttpServletResponse response)
     {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
         User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
         String originName=u.getUsername();
+        String originId=u.getId();
+        boolean hasId=false;
         if(!StringUtils.isEmpty(username))
             u.setUsername(username);
         if(!StringUtils.isEmpty(studentId))
+        {
             u.setId(studentId);
+            hasId=true;
+        }
         if(!StringUtils.isEmpty(password))
             u.setPassword(password);
-        userMapper.updateIdOrName(u.getUuid(),u.getUsername(),u.getId());
+        //用户表id更新，学生表id同步更新
+        userMapper.update(u,new QueryWrapper<User>().eq("id",originId));
+        //学生设置id的情况下，判断学生表有学生
+        if(hasId && !StringUtils.isEmpty(studentName))
+        {
+            StudentInfo newS=new StudentInfo();
+            newS.setStudentName(studentName);
+            newS.setStudentId(u.getId());//更新后的
+            //存在学生记录
+            if(studentInfoService.getOne(new QueryWrapper<StudentInfo>().eq("student_id",u.getId()))!=null)
+            {
+                studentInfoService.update(newS,new QueryWrapper<StudentInfo>().eq("student_id",u.getId()));
+            }
+            else
+            {
+                studentInfoService.save(newS);
+            }
+        }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {//清除认证
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
         return "{\"message\":修改成功，请重新登陆}";
     }
 
