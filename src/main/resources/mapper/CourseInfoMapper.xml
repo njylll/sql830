@@ -23,6 +23,24 @@
         course_type,course_type_2,teaching_way,
         assessment_method
     </sql>
+    <update id="updateCourseIdByCourseId">
+        update student_manager.course_info set student_manager.course_info.course_id=#{newCourseId} where course_id=#{courseId}
+    </update>
+    <update id="updateCollegeIdByCourseId">
+        update student_manager.course_info set student_manager.course_info.responsible_college_id=#{collegeId} where course_id=#{courseId}
+    </update>
+    <update id="updateCreditHoursByCourseId">
+        update student_manager.course_info set student_manager.course_info.credit_hours=#{creditHour} where course_id=#{courseId}
+    </update>
+    <update id="updateCreditByCourseId">
+        update student_manager.course_info set student_manager.course_info.credit=#{credit} where course_id=#{courseId}
+    </update>
+    <update id="updateCourseTypeByCourseId">
+        update student_manager.course_info set student_manager.course_info.course_type=#{courseType} where course_id=#{courseId}
+    </update>
+    <update id="updateCourseNameByCourseId">
+        update student_manager.course_info set student_manager.course_info.course_name=#{courseName} where course_id=#{courseId}
+    </update>
     <select id="listAll" resultType="com.example.entity.CourseInfo">
         select
         <include refid="Base_Column_List"/>

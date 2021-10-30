@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.dao.UserMapper;
 import com.example.entity.StudentCourseVo;
+import com.example.entity.StudentInfo;
+import com.example.entity.TeacherInfo;
 import com.example.entity.User;
 import com.example.service.impl.AliOssServiceImpl;
 import com.example.service.impl.StudentCourseVoServiceImpl;
@@ -11,14 +13,18 @@ import com.example.service.impl.TeacherInfoServiceImpl;
 import com.example.service.impl.UserServiceImpl;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -70,20 +76,48 @@ public class NewTeacherController {
     @ResponseBody
     public String doEditMe(@RequestParam("username")String username,
                            @RequestParam("studentId")String studentId,
-                           @RequestParam("password")String password)
+                           @RequestParam("teacherName")String teacherName,
+                           @RequestParam("password")String password,
+                           HttpServletRequest request, HttpServletResponse response)
     {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
         User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
         String originName=u.getUsername();
+        String originId=u.getId();
+        boolean hasId=false;
         if(!StringUtils.isEmpty(username))
             u.setUsername(username);
         if(!StringUtils.isEmpty(studentId))
+        {
             u.setId(studentId);
+            hasId=true;
+        }
         if(!StringUtils.isEmpty(password))
             u.setPassword(password);
-        userService.update(u,new QueryWrapper<User>().eq("username",originName));
+        //用户表id更新，学生表id同步更新
+        userMapper.update(u,new QueryWrapper<User>().eq("username",originName));
+        //学生设置id的情况下，判断学生表有学生
+        if(hasId && !StringUtils.isEmpty(teacherName))
+        {
+            TeacherInfo newS=new TeacherInfo();
+            newS.setTeacherName(teacherName);
+            newS.setTeacherId(u.getId());//更新后的
+            //存在学生记录
+            if(teacherInfoService.getOne(new QueryWrapper<TeacherInfo>().eq("teacher_id",u.getId()))!=null)
+            {
+                teacherInfoService.update(newS,new QueryWrapper<TeacherInfo>().eq("teacher_id",u.getId()));
+            }
+            else
+            {
+                teacherInfoService.save(newS);
+            }
+        }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {//清除认证
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
         return "{\"message\":修改成功，请重新登陆}";
     }
 

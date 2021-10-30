@@ -101,7 +101,8 @@ public class NewStudentController {
         if(!StringUtils.isEmpty(password))
             u.setPassword(password);
         //用户表id更新，学生表id同步更新
-        userMapper.update(u,new QueryWrapper<User>().eq("id",originId));
+        System.out.println(u);
+        userMapper.update(u,new QueryWrapper<User>().eq("username",originName));
         //学生设置id的情况下，判断学生表有学生
         if(hasId && !StringUtils.isEmpty(studentName))
         {
