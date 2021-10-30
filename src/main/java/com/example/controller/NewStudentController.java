@@ -1,11 +1,18 @@
 package com.example.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.dao.StudentCourseVoMapper;
 import com.example.dao.StudentInfoMapper;
 import com.example.dao.UserMapper;
+import com.example.entity.StudentCourse;
+import com.example.entity.StudentCourseVo;
 import com.example.entity.User;
 import com.example.service.impl.AliOssServiceImpl;
+import com.example.service.impl.StudentCourseServiceImpl;
+import com.example.service.impl.StudentCourseVoServiceImpl;
 import com.example.service.impl.UserServiceImpl;
+import com.mysql.cj.xdevapi.JsonParser;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/newVersion/student")
@@ -27,6 +35,10 @@ public class NewStudentController {
     private UserMapper userMapper;
     @Autowired
     private AliOssServiceImpl aliOssService;
+    @Autowired
+    private StudentCourseServiceImpl studentCourseService;
+    @Autowired
+    private StudentCourseVoServiceImpl studentCourseVoService;
 
 
     //主页
@@ -110,6 +122,27 @@ public class NewStudentController {
                 "    \"src\": \"https://sunnynoodlebucket.oss-cn-shanghai.aliyuncs.com/avatar/"+ fileName+".jpg" +".jpg\"" +
                 "  }" +
                 "}       ";
+    }
+
+    //课表
+    @GetMapping("/curriculum")
+    public String toCurriculumPage(Model model)
+    {
+        String uId=getUserId();
+        List<StudentCourseVo> courseList= studentCourseVoService.list(new QueryWrapper<StudentCourseVo>().eq("student_id",uId).orderByAsc("day_time"));
+        String courseJson= JSON.toJSONString(courseList);
+        model.addAttribute("courses",courseJson);
+        //System.out.println(courseJson);
+        return "/newVersion/student/curriculum";
+    }
+
+    private String getUserId()
+    {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
+        return u.getId();
     }
 
 }

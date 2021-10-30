@@ -2,49 +2,57 @@ package com.example.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import java.io.Serializable;
 import lombok.Data;
 
-import java.io.Serializable;
-
 /**
- * 课程具体日期
- * @TableName course_time
+ * 
+ * @TableName student_course_vo
  */
-@TableName(value ="course_time")
+@TableName(value ="student_course_vo")
 @Data
-public class CourseTime implements Serializable {
+public class StudentCourseVo implements Serializable {
     /**
-     * 课程详情号
+     * 
      */
-    @TableField(value = "course_detail_id")
-    private String courseDetailId;
+    @TableField(value = "student_id")
+    private String studentId;
 
     /**
-     * 开始周
+     * 
      */
-    @TableField(value = "start_week")
-    private Byte startWeek;
+    @TableField(value = "course_name")
+    private String courseName;
 
     /**
-     * 结束周
-     */
-    @TableField(value = "end_week")
-    private Byte endWeek;
-
-    /**
-     * 一星期内的日次，如1,3,4
+     * 
      */
     @TableField(value = "day_time")
     private String dayTime;
 
     /**
-     * 节次，每天用;分割，如1-2,6-7;3-4
+     * 
      */
     @TableField(value = "section_start")
     private String sectionStart;
 
+    /**
+     * 
+     */
     @TableField(value = "section_end")
     private String sectionEnd;
+
+    /**
+     * 
+     */
+    @TableField(value = "start_week")
+    private Byte startWeek;
+
+    /**
+     * 
+     */
+    @TableField(value = "end_week")
+    private Byte endWeek;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -60,25 +68,27 @@ public class CourseTime implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        CourseTime other = (CourseTime) that;
-        return (this.getCourseDetailId() == null ? other.getCourseDetailId() == null : this.getCourseDetailId().equals(other.getCourseDetailId()))
-            && (this.getStartWeek() == null ? other.getStartWeek() == null : this.getStartWeek().equals(other.getStartWeek()))
-            && (this.getEndWeek() == null ? other.getEndWeek() == null : this.getEndWeek().equals(other.getEndWeek()))
+        StudentCourseVo other = (StudentCourseVo) that;
+        return (this.getStudentId() == null ? other.getStudentId() == null : this.getStudentId().equals(other.getStudentId()))
+            && (this.getCourseName() == null ? other.getCourseName() == null : this.getCourseName().equals(other.getCourseName()))
             && (this.getDayTime() == null ? other.getDayTime() == null : this.getDayTime().equals(other.getDayTime()))
             && (this.getSectionStart() == null ? other.getSectionStart() == null : this.getSectionStart().equals(other.getSectionStart()))
-            && (this.getSectionEnd() == null ? other.getSectionEnd() == null : this.getSectionEnd().equals(other.getSectionEnd()));
+            && (this.getSectionEnd() == null ? other.getSectionEnd() == null : this.getSectionEnd().equals(other.getSectionEnd()))
+            && (this.getStartWeek() == null ? other.getStartWeek() == null : this.getStartWeek().equals(other.getStartWeek()))
+            && (this.getEndWeek() == null ? other.getEndWeek() == null : this.getEndWeek().equals(other.getEndWeek()));
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getCourseDetailId() == null) ? 0 : getCourseDetailId().hashCode());
-        result = prime * result + ((getStartWeek() == null) ? 0 : getStartWeek().hashCode());
-        result = prime * result + ((getEndWeek() == null) ? 0 : getEndWeek().hashCode());
+        result = prime * result + ((getStudentId() == null) ? 0 : getStudentId().hashCode());
+        result = prime * result + ((getCourseName() == null) ? 0 : getCourseName().hashCode());
         result = prime * result + ((getDayTime() == null) ? 0 : getDayTime().hashCode());
         result = prime * result + ((getSectionStart() == null) ? 0 : getSectionStart().hashCode());
         result = prime * result + ((getSectionEnd() == null) ? 0 : getSectionEnd().hashCode());
+        result = prime * result + ((getStartWeek() == null) ? 0 : getStartWeek().hashCode());
+        result = prime * result + ((getEndWeek() == null) ? 0 : getEndWeek().hashCode());
         return result;
     }
 
@@ -88,12 +98,13 @@ public class CourseTime implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", courseId=").append(courseDetailId);
-        sb.append(", startWeek=").append(startWeek);
-        sb.append(", endWeek=").append(endWeek);
+        sb.append(", studentId=").append(studentId);
+        sb.append(", courseName=").append(courseName);
         sb.append(", dayTime=").append(dayTime);
         sb.append(", sectionStart=").append(sectionStart);
         sb.append(", sectionEnd=").append(sectionEnd);
+        sb.append(", startWeek=").append(startWeek);
+        sb.append(", endWeek=").append(endWeek);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

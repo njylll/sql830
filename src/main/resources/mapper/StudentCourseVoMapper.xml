@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.StudentCourseVoMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.StudentCourseVo">
+            <result property="studentId" column="student_id" jdbcType="VARCHAR"/>
+            <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+            <result property="dayTime" column="day_time" jdbcType="VARCHAR"/>
+            <result property="sectionStart" column="section_start" jdbcType="VARCHAR"/>
+            <result property="sectionEnd" column="section_end" jdbcType="VARCHAR"/>
+            <result property="startWeek" column="start_week" jdbcType="TINYINT"/>
+            <result property="endWeek" column="end_week" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        student_id,course_name,day_time,
+        section_start,section_end,start_week,
+        end_week
+    </sql>
+</mapper>

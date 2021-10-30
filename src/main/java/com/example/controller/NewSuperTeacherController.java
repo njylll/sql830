@@ -1,9 +1,12 @@
 package com.example.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.dao.UserMapper;
+import com.example.entity.StudentCourseVo;
 import com.example.entity.User;
 import com.example.service.impl.AliOssServiceImpl;
+import com.example.service.impl.StudentCourseVoServiceImpl;
 import com.example.service.impl.UserServiceImpl;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import org.springframework.web.servlet.resource.HttpResource;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/newVersion/superTeacher")
@@ -109,5 +113,14 @@ public class NewSuperTeacherController {
                 "    \"src\": \"https://sunnynoodlebucket.oss-cn-shanghai.aliyuncs.com/avatar/"+ fileName+".jpg" +".jpg\"" +
                 "  }" +
                 "}       ";
+    }
+
+    private String getUserId()
+    {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
+        return u.getId();
     }
 }

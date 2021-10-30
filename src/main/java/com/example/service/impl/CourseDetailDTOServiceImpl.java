@@ -46,7 +46,7 @@ public class CourseDetailDTOServiceImpl implements CourseDetailDTOService
             courseDetailDTO.setDayTime(courseTime.getDayTime());
             courseDetailDTO.setStartWeek(courseTime.getStartWeek());
             courseDetailDTO.setEndWeek(courseTime.getEndWeek());
-            courseDetailDTO.setSection(courseTime.getSection());
+            courseDetailDTO.setSection(courseTime.getSectionStart());
             courseDetailDTOList.add(courseDetailDTO);
         }
         return courseDetailDTOList;
@@ -65,7 +65,7 @@ public class CourseDetailDTOServiceImpl implements CourseDetailDTOService
             courseDetailDTO.setDayTime(courseTime.getDayTime());
             courseDetailDTO.setStartWeek(courseTime.getStartWeek());
             courseDetailDTO.setEndWeek(courseTime.getEndWeek());
-            courseDetailDTO.setSection(courseTime.getSection());
+            courseDetailDTO.setSection(courseTime.getSectionStart());
             courseDetailDTOList.add(courseDetailDTO);
         }
         return courseDetailDTOList;
@@ -78,7 +78,7 @@ public class CourseDetailDTOServiceImpl implements CourseDetailDTOService
         BeanUtils.copyProperties(courseDetailDTO,courseDetail);
         courseTime.setCourseDetailId(courseDetailDTO.getCourseDetailId());
         courseTime.setDayTime(courseDetailDTO.getDayTime());
-        courseTime.setSection(courseDetailDTO.getSection());
+        courseTime.setSectionStart(courseDetailDTO.getSection());
         courseTime.setEndWeek(courseDetailDTO.getEndWeek());
         courseTime.setStartWeek(courseDetailDTO.getStartWeek());
         courseDetailService.save(courseDetail);
@@ -102,7 +102,7 @@ public class CourseDetailDTOServiceImpl implements CourseDetailDTOService
         BeanUtils.copyProperties(courseDetailDTO,courseDetail);
         courseTime.setCourseDetailId(courseDetailDTO.getCourseDetailId());
         courseTime.setDayTime(courseDetailDTO.getDayTime());
-        courseTime.setSection(courseDetailDTO.getSection());
+        courseTime.setSectionStart(courseDetailDTO.getSection());
         courseTime.setEndWeek(courseDetailDTO.getEndWeek());
         courseTime.setStartWeek(courseDetailDTO.getStartWeek());
         courseDetailService.update(courseDetail,new QueryWrapper<CourseDetail>().eq("course_detail_id",courseDetailDTO.getCourseDetailId()));
