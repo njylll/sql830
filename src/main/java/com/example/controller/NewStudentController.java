@@ -6,8 +6,10 @@ import com.example.dao.StudentCourseMapper;
 import com.example.dao.StudentCourseVoMapper;
 import com.example.dao.StudentInfoMapper;
 import com.example.dao.UserMapper;
+import com.example.dto.CourseDetailDTO;
 import com.example.entity.*;
 import com.example.service.CourseDetailService;
+import com.example.service.CourseInfoService;
 import com.example.service.CourseVoService;
 import com.example.service.impl.AliOssServiceImpl;
 import com.example.service.impl.StudentCourseServiceImpl;
@@ -16,6 +18,7 @@ import com.example.service.impl.UserServiceImpl;
 import com.mysql.cj.xdevapi.JsonParser;
 import net.bytebuddy.utility.RandomString;
 import org.apache.tomcat.util.security.PrivilegedSetTccl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,6 +51,9 @@ public class NewStudentController {
 
     @Autowired
     private CourseVoService courseVoService;
+
+    @Autowired
+    private  CourseInfoService courseInfoService;
 
 
     //主页
@@ -159,18 +165,48 @@ public class NewStudentController {
     {
         String uId = getUserId();
         List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
-                info -> !info.getColumn().equals("course_detail_id")
-                && !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
-                .eq("student_id",uId).eq("course_type","必修课"));
+                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
+                .eq("student_id",uId).eq("course_type","专业必修课"));
         model.addAttribute("courseVOList",courseVoList);
         return "/newVersion/professional_compulsory_course";
     }
 
-    @GetMapping("/newVersion/student/pcc/detail/{courseId}")
-    public  String getDetail(Model model, @PathVariable("courseId") String courseId)
+    @GetMapping("/newVersion/student/pe")
+    public String getElectiveCourse(Model model)
     {
-        CourseDetail courseDetail = courseDetailService.getOne(new QueryWrapper<CourseDetail>().eq("course_id", courseId));
-        model.addAttribute("courseDetail",courseDetail);
+        String uId = getUserId();
+        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
+                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
+                .eq("student_id",uId).eq("course_type","专业选修课"));
+        model.addAttribute("courseVOList",courseVoList);
+        return "/newVersion/professional_elective";
+    }
+
+    @GetMapping("/newVersion/student/gc")
+    public String getLiberalCourse(Model model)
+    {
+        String uId = getUserId();
+        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
+                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
+                .eq("student_id",uId).eq("course_type","通识课"));
+        model.addAttribute("courseVOList",courseVoList);
+        return "/newVersion/general_course";
+    }
+
+
+
+
+
+    @GetMapping("/newVersion/student/detail/{courseDetailId}")
+    public  String getDetail(Model model, @PathVariable("courseDetailId") String courseDetailId)
+    {
+        CourseDetail courseDetail = courseDetailService.getOne(new QueryWrapper<CourseDetail>().eq("course_detail_id", courseDetailId));
+        CourseDetailDTO courseDetailDTO = new CourseDetailDTO();
+        BeanUtils.copyProperties(courseDetail,courseDetailDTO);
+        CourseInfo courseInfo = courseInfoService.getOne(new QueryWrapper<CourseInfo>().eq("course_id", courseDetail.getCourseId()));
+        courseDetailDTO.setCredit(courseInfo.getCredit());
+        courseDetailDTO.setCreditHours(courseInfo.getCreditHours());
+        model.addAttribute("courseDetail",courseDetailDTO);
         return "/newVerison/courseDetail";
     }
 

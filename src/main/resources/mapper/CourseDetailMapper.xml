@@ -11,7 +11,7 @@
             <result property="endSchoolYear" column="end_school_year" jdbcType="DATE"/>
             <result property="startTerm" column="start_term" jdbcType="TINYINT"/>
             <result property="courseCondition" column="course_condition" jdbcType="VARCHAR"/>
-            <result property="teacherId" column="teacher_id" jdbcType="VARCHAR"/>
+            <result property="teacherName" column="teacher_name" jdbcType="VARCHAR"/>
             <result property="teachingLocation" column="teaching_location" jdbcType="VARCHAR"/>
     </resultMap>
 
