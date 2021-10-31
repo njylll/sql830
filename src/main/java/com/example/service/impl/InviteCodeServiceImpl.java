@@ -20,7 +20,8 @@ public class InviteCodeServiceImpl extends ServiceImpl<InviteCodeMapper, InviteC
     {
         InviteCode inviteCode = new InviteCode();
         inviteCode.setCode(code);
-        inviteCode.setCode(role);
+        inviteCode.setRole(role);
+        inviteCode.setUsed((byte)0);
         inviteCodeMapper.insert(inviteCode);
     }
 }
