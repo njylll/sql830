@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.CourseVoMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.CourseVo">
+            <result property="courseId" column="course_id" jdbcType="VARCHAR"/>
+            <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+            <result property="teacherName" column="teacher_name" jdbcType="VARCHAR"/>
+            <result property="teachingLocation" column="teaching_location" jdbcType="VARCHAR"/>
+            <result property="assessmentMethod" column="assessment_method" jdbcType="VARCHAR"/>
+            <result property="courseType" column="courseType" jdbcType="VARCHAR"/>
+            <result property="courseDetailId" column="course_detail_id" jdbcType="VARCHAR"/>
+            <result property="studentId" column="stduent_id" jdbcType="VARCHAR"/>
+
+
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        course_id,course_name,teacher_name,
+        teaching_location,assessment_method,course_type,course_detail_id
+    </sql>
+</mapper>
