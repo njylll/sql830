@@ -7,6 +7,7 @@ import com.example.dao.UserMapper;
 import com.example.dto.CourseModuleDTO;
 import com.example.entity.*;
 import com.example.service.impl.*;
+import javafx.util.converter.LocalDateStringConverter;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +21,9 @@ import org.springframework.web.servlet.resource.HttpResource;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -39,6 +43,10 @@ public class NewSuperTeacherController {
     private CourseInfoMapper courseInfoMapper;
     @Autowired
     private CollegeInfoServiceImpl collegeInfoService;
+    @Autowired
+    private TeacherInfoServiceImpl teacherInfoService;
+    @Autowired
+    private CourseDetailServiceImpl courseDetailService;
 
     @GetMapping(value = {"/","/index"})
     public String toSuperTeacherMainPage(Model model)
@@ -243,6 +251,60 @@ public class NewSuperTeacherController {
         return "ok";
     }
 
+    //pcc创建课程界面
+    @GetMapping("/pcc")
+    public String toPccPage(Model model)
+    {
+        List<CourseInfoVo> courseInfoVos = courseInfoVoService.list(new QueryWrapper<CourseInfoVo>().eq("course_type","专业必修课"));
+        List<TeacherInfo> teacherInfos= teacherInfoService.list();
+        model.addAttribute("courseModules",courseInfoVos);
+        model.addAttribute("teachers",teacherInfos);
+        return "/newVersion/superTeacher/professional_compulsory_course";
+    }
+    //pe创建课程界面
+    @GetMapping("/pe")
+    public String toPePage(Model model)
+    {
+        List<CourseInfoVo> courseInfoVos = courseInfoVoService.list(new QueryWrapper<CourseInfoVo>().eq("course_type","专业选修课"));
+        List<TeacherInfo> teacherInfos= teacherInfoService.list();
+        model.addAttribute("courseModules",courseInfoVos);
+        model.addAttribute("teachers",teacherInfos);
+        return "/newVersion/superTeacher/professional_elective";
+    }
+    //gc创建课程界面
+    @GetMapping("/gc")
+    public String toGcPage(Model model)
+    {
+        List<CourseInfoVo> courseInfoVos = courseInfoVoService.list(new QueryWrapper<CourseInfoVo>().eq("course_type","通识课"));
+        List<TeacherInfo> teacherInfos= teacherInfoService.list();
+        model.addAttribute("courseModules",courseInfoVos);
+        model.addAttribute("teachers",teacherInfos);
+        return "/newVersion/superTeacher/general_course";
+    }
+    //ajax创建课程pcc
+    @PostMapping("/pcc")
+    @ResponseBody
+    public String doPccCreate(@RequestParam(value = "courseId",required = false)String courseId,
+                              @RequestParam(value = "start",required = false) String start,
+                              @RequestParam(value = "end",required = false) String end,
+                              @RequestParam(value = "term",required = false)int term,
+                              @RequestParam(value = "teacherName",required = false)String teacherName,
+                              @RequestParam(value = "location",required = false)String location)
+    {
+        CourseDetail courseDetail=new CourseDetail();
+        courseDetail.setCourseId(courseId);
+        courseDetail.setCourseDetailId(RandomString.make(16));
+        courseDetail.setCourseCondition("正常");
+        courseDetail.setTeacherName(teacherName);
+        courseDetail.setStartSchoolYear(LocalDate.parse(start,DateTimeFormatter.ISO_DATE));
+        courseDetail.setEndSchoolYear(LocalDate.parse(end,DateTimeFormatter.ISO_DATE));
+        courseDetail.setStartTerm((byte) term);
+        courseDetail.setTeachingLocation(location);
+
+        courseDetailService.save(courseDetail);
+
+        return "ok";
+    }
 
     private String getUserId()
     {
