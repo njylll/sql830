@@ -2,20 +2,21 @@ package com.example.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-
 /**
- * 已经开始（或结束）的课程
- * @TableName course_detail
+ * 
+ * @TableName course_detail_vo
  */
-@TableName(value ="course_detail")
+@TableName(value ="course_detail_vo")
 @Data
-public class CourseDetail implements Serializable {
+public class CourseDetailVo implements Serializable {
     /**
      * 课程号
      */
@@ -23,7 +24,7 @@ public class CourseDetail implements Serializable {
     private String courseId;
 
     /**
-     * 课程详情号
+     * 
      */
     @TableField(value = "course_detail_id")
     private String courseDetailId;
@@ -68,6 +69,12 @@ public class CourseDetail implements Serializable {
     @TableField(value = "teaching_location")
     private String teachingLocation;
 
+    /**
+     * 课程名
+     */
+    @TableField(value = "course_name")
+    private String courseName;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -82,15 +89,16 @@ public class CourseDetail implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        CourseDetail other = (CourseDetail) that;
+        CourseDetailVo other = (CourseDetailVo) that;
         return (this.getCourseId() == null ? other.getCourseId() == null : this.getCourseId().equals(other.getCourseId()))
+            && (this.getCourseDetailId() == null ? other.getCourseDetailId() == null : this.getCourseDetailId().equals(other.getCourseDetailId()))
             && (this.getStartSchoolYear() == null ? other.getStartSchoolYear() == null : this.getStartSchoolYear().equals(other.getStartSchoolYear()))
             && (this.getEndSchoolYear() == null ? other.getEndSchoolYear() == null : this.getEndSchoolYear().equals(other.getEndSchoolYear()))
             && (this.getStartTerm() == null ? other.getStartTerm() == null : this.getStartTerm().equals(other.getStartTerm()))
             && (this.getCourseCondition() == null ? other.getCourseCondition() == null : this.getCourseCondition().equals(other.getCourseCondition()))
             && (this.getTeacherName() == null ? other.getTeacherName() == null : this.getTeacherName().equals(other.getTeacherName()))
             && (this.getTeachingLocation() == null ? other.getTeachingLocation() == null : this.getTeachingLocation().equals(other.getTeachingLocation()))
-                &&(this.getCourseDetailId() == null ? other.getCourseDetailId() == null : this.getCourseDetailId().equals(other.getCourseDetailId()));
+            && (this.getCourseName() == null ? other.getCourseName() == null : this.getCourseName().equals(other.getCourseName()));
     }
 
     @Override
@@ -98,13 +106,14 @@ public class CourseDetail implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getCourseId() == null) ? 0 : getCourseId().hashCode());
+        result = prime * result + ((getCourseDetailId() == null) ? 0 : getCourseDetailId().hashCode());
         result = prime * result + ((getStartSchoolYear() == null) ? 0 : getStartSchoolYear().hashCode());
         result = prime * result + ((getEndSchoolYear() == null) ? 0 : getEndSchoolYear().hashCode());
         result = prime * result + ((getStartTerm() == null) ? 0 : getStartTerm().hashCode());
         result = prime * result + ((getCourseCondition() == null) ? 0 : getCourseCondition().hashCode());
         result = prime * result + ((getTeacherName() == null) ? 0 : getTeacherName().hashCode());
         result = prime * result + ((getTeachingLocation() == null) ? 0 : getTeachingLocation().hashCode());
-        result = prime * result + ((getCourseDetailId() == null) ? 0 : getCourseDetailId().hashCode());
+        result = prime * result + ((getCourseName() == null) ? 0 : getCourseName().hashCode());
         return result;
     }
 
@@ -120,8 +129,9 @@ public class CourseDetail implements Serializable {
         sb.append(", endSchoolYear=").append(endSchoolYear);
         sb.append(", startTerm=").append(startTerm);
         sb.append(", courseCondition=").append(courseCondition);
-        sb.append(", teacherId=").append(teacherName);
+        sb.append(", teacherName=").append(teacherName);
         sb.append(", teachingLocation=").append(teachingLocation);
+        sb.append(", courseName=").append(courseName);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

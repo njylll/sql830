@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.dao.CourseInfoMapper;
 import com.example.dao.UserMapper;
@@ -47,6 +48,8 @@ public class NewSuperTeacherController {
     private TeacherInfoServiceImpl teacherInfoService;
     @Autowired
     private CourseDetailServiceImpl courseDetailService;
+    @Autowired
+    private CourseDetailVoServiceImpl courseDetailVoService;
 
     @GetMapping(value = {"/","/index"})
     public String toSuperTeacherMainPage(Model model)
@@ -303,6 +306,52 @@ public class NewSuperTeacherController {
 
         courseDetailService.save(courseDetail);
 
+        return "ok";
+    }
+
+    //课程详情界面
+    @GetMapping("/editCourseDetail")
+    public String toEditCourseDetailPage()
+    {
+        return "/newVersion/superTeacher/editCourseDetail";
+    }
+    //课程详情json
+    @GetMapping("/courseDetail.json")
+    @ResponseBody
+    public String getCourseDetailJson()
+    {
+        List<CourseDetailVo> courseDetailVos= courseDetailVoService.list();
+        CourseDetailDTO courseDetailDTO=new CourseDetailDTO();
+        courseDetailDTO.setCode(0);
+        courseDetailDTO.setCount(courseDetailVos.size());
+        courseDetailDTO.setData(courseDetailVos);
+        courseDetailDTO.setMsg("成功");
+        return JSON.toJSONStringWithDateFormat(courseDetailDTO, "yyyy-MM-dd", SerializerFeature.WriteDateUseDateFormat);
+    }
+    //ajax删除课程详情
+    @PostMapping("/deleteCourseDetail")
+    @ResponseBody
+    public String deleteCourseDetail(@RequestParam("courseDetailId")String courseDetailId)
+    {
+        courseDetailService.remove(new QueryWrapper<CourseDetail>().eq("course_detail_id",courseDetailId));
+        return "ok";
+    }
+
+    //ajax修改课程
+    @PostMapping("/editCourseDetail")
+    @ResponseBody
+    public String editCourseDetail(CourseDetailVo vo)
+    {
+        CourseDetail courseDetail=new CourseDetail();
+        courseDetail.setCourseId(vo.getCourseId());
+        courseDetail.setCourseDetailId(vo.getCourseDetailId());
+        courseDetail.setStartSchoolYear(vo.getStartSchoolYear());
+        courseDetail.setEndSchoolYear(vo.getEndSchoolYear());
+        courseDetail.setStartTerm(vo.getStartTerm());
+        courseDetail.setCourseCondition(vo.getCourseCondition());
+        courseDetail.setTeacherName(vo.getTeacherName());
+        courseDetail.setTeachingLocation(vo.getTeachingLocation());
+        courseDetailService.update(courseDetail,new QueryWrapper<CourseDetail>().eq("course_detail_id",vo.getCourseDetailId()));
         return "ok";
     }
 
