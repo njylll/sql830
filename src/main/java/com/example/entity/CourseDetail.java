@@ -56,8 +56,8 @@ public class CourseDetail implements Serializable {
     /**
      * 教师名
      */
-    @TableField(value = "teacher_id")
-    private String teacherId;
+    @TableField(value = "teacher_name")
+    private String teacherName;
 
     /**
      * 授课地点
@@ -85,7 +85,7 @@ public class CourseDetail implements Serializable {
             && (this.getEndSchoolYear() == null ? other.getEndSchoolYear() == null : this.getEndSchoolYear().equals(other.getEndSchoolYear()))
             && (this.getStartTerm() == null ? other.getStartTerm() == null : this.getStartTerm().equals(other.getStartTerm()))
             && (this.getCourseCondition() == null ? other.getCourseCondition() == null : this.getCourseCondition().equals(other.getCourseCondition()))
-            && (this.getTeacherId() == null ? other.getTeacherId() == null : this.getTeacherId().equals(other.getTeacherId()))
+            && (this.getTeacherName() == null ? other.getTeacherName() == null : this.getTeacherName().equals(other.getTeacherName()))
             && (this.getTeachingLocation() == null ? other.getTeachingLocation() == null : this.getTeachingLocation().equals(other.getTeachingLocation()))
                 &&(this.getCourseDetailId() == null ? other.getCourseDetailId() == null : this.getCourseDetailId().equals(other.getCourseDetailId()));
     }
@@ -99,7 +99,7 @@ public class CourseDetail implements Serializable {
         result = prime * result + ((getEndSchoolYear() == null) ? 0 : getEndSchoolYear().hashCode());
         result = prime * result + ((getStartTerm() == null) ? 0 : getStartTerm().hashCode());
         result = prime * result + ((getCourseCondition() == null) ? 0 : getCourseCondition().hashCode());
-        result = prime * result + ((getTeacherId() == null) ? 0 : getTeacherId().hashCode());
+        result = prime * result + ((getTeacherName() == null) ? 0 : getTeacherName().hashCode());
         result = prime * result + ((getTeachingLocation() == null) ? 0 : getTeachingLocation().hashCode());
         result = prime * result + ((getCourseDetailId() == null) ? 0 : getCourseDetailId().hashCode());
         return result;
@@ -117,7 +117,7 @@ public class CourseDetail implements Serializable {
         sb.append(", endSchoolYear=").append(endSchoolYear);
         sb.append(", startTerm=").append(startTerm);
         sb.append(", courseCondition=").append(courseCondition);
-        sb.append(", teacherId=").append(teacherId);
+        sb.append(", teacherId=").append(teacherName);
         sb.append(", teachingLocation=").append(teachingLocation);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
