@@ -14,7 +14,7 @@ public class InviteCode {
         String code="";
         try {
             SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-            final int randomNum = random.nextInt();
+            final int randomNum = random.nextInt(1000);
             Hashids coder = new Hashids("mysalt", 6);
             code = coder.encode(randomNum);
 
