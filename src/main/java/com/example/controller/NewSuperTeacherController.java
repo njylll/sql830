@@ -366,7 +366,6 @@ public class NewSuperTeacherController {
     @PostMapping("/generateCode")
     public Map<String, ArrayList<String>> generateCode(@RequestParam("tNum") int tNum, @RequestParam("sNum") int sNum)
     {
-        HashMap map = new HashMap<String,String>();
         HashMap<String, ArrayList<String>> codeMap = new HashMap<>();
         ArrayList<String> tCode = new ArrayList<>();
         ArrayList<String> stCode = new ArrayList<>();
