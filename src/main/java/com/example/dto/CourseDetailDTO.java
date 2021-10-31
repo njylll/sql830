@@ -16,22 +16,18 @@ public class CourseDetailDTO implements Serializable
 {
     private static final long serialVersionUID = 1L;
     private String courseId;
-    private String courseDetailId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startSchoolYear;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endSchoolYear;
 
     private Byte startTerm;
-    private String courseCondition;
-    private String teacherName;
-    private String teachingLocation;
-
+    private Byte creditHours;
     /**
-     * 课程时间
+     * 学分
      */
-    private Byte startWeek;
-    private Byte endWeek;
-    private String dayTime;
-    private String section;
+    private Double credit;
+
+
+
 }

@@ -2,31 +2,35 @@ package com.example.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.dao.StudentCourseMapper;
 import com.example.dao.StudentCourseVoMapper;
 import com.example.dao.StudentInfoMapper;
 import com.example.dao.UserMapper;
-import com.example.entity.StudentCourse;
-import com.example.entity.StudentCourseVo;
-import com.example.entity.StudentInfo;
-import com.example.entity.User;
-import com.example.service.impl.*;
+import com.example.dto.CourseDetailDTO;
+import com.example.entity.*;
+import com.example.service.CourseDetailService;
+import com.example.service.CourseInfoService;
+import com.example.service.CourseVoService;
+import com.example.service.impl.AliOssServiceImpl;
+import com.example.service.impl.StudentCourseServiceImpl;
+import com.example.service.impl.StudentCourseVoServiceImpl;
+import com.example.service.impl.UserServiceImpl;
 import com.mysql.cj.xdevapi.JsonParser;
 import net.bytebuddy.utility.RandomString;
+import org.apache.tomcat.util.security.PrivilegedSetTccl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -39,9 +43,17 @@ public class NewStudentController {
     @Autowired
     private AliOssServiceImpl aliOssService;
     @Autowired
-    private StudentInfoServiceImpl studentInfoService;
+    private StudentCourseServiceImpl studentCourseService;
     @Autowired
     private StudentCourseVoServiceImpl studentCourseVoService;
+    @Autowired
+    private CourseDetailService courseDetailService;
+
+    @Autowired
+    private CourseVoService courseVoService;
+
+    @Autowired
+    private  CourseInfoService courseInfoService;
 
 
     //主页
@@ -65,14 +77,12 @@ public class NewStudentController {
                 .getPrincipal();
         User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
         model.addAttribute("avatar",u.getAvatarUrl());
-        model.addAttribute("sId",u.getId());
-        StudentInfo studentInfo= studentInfoService.getOne(new QueryWrapper<StudentInfo>().eq("student_id",u.getId()));
-        String sName;
-        if(studentInfo==null)
-            sName="";
+        String id;
+        if(u!=null)
+            id=u.getId();
         else
-            sName=studentInfo.getStudentName();
-        model.addAttribute("sName",sName);
+            id="";
+        model.addAttribute("sId",id);
         return "/newVersion/student/me";
     }
     //个人设置
@@ -80,49 +90,20 @@ public class NewStudentController {
     @ResponseBody
     public String doEditMe(@RequestParam("username")String username,
                            @RequestParam("studentId")String studentId,
-                           @RequestParam("studentName")String studentName,
-                           @RequestParam("password")String password,
-                           HttpServletRequest request, HttpServletResponse response)
+                           @RequestParam("password")String password)
     {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
         User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
         String originName=u.getUsername();
-        String originId=u.getId();
-        boolean hasId=false;
         if(!StringUtils.isEmpty(username))
             u.setUsername(username);
         if(!StringUtils.isEmpty(studentId))
-        {
             u.setId(studentId);
-            hasId=true;
-        }
         if(!StringUtils.isEmpty(password))
             u.setPassword(password);
-        //用户表id更新，学生表id同步更新
-        System.out.println(u);
-        userMapper.update(u,new QueryWrapper<User>().eq("username",originName));
-        //学生设置id的情况下，判断学生表有学生
-        if(hasId && !StringUtils.isEmpty(studentName))
-        {
-            StudentInfo newS=new StudentInfo();
-            newS.setStudentName(studentName);
-            newS.setStudentId(u.getId());//更新后的
-            //存在学生记录
-            if(studentInfoService.getOne(new QueryWrapper<StudentInfo>().eq("student_id",u.getId()))!=null)
-            {
-                studentInfoService.update(newS,new QueryWrapper<StudentInfo>().eq("student_id",u.getId()));
-            }
-            else
-            {
-                studentInfoService.save(newS);
-            }
-        }
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {//清除认证
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
+        userMapper.updateIdOrName(u.getUuid(),u.getUsername(),u.getId());
         return "{\"message\":修改成功，请重新登陆}";
     }
 
@@ -178,5 +159,57 @@ public class NewStudentController {
         User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
         return u.getId();
     }
+
+    @GetMapping("/newVersion/student/pcc")
+    public String getRequiredCourse(Model model)
+    {
+        String uId = getUserId();
+        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
+                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
+                .eq("student_id",uId).eq("course_type","专业必修课"));
+        model.addAttribute("courseVOList",courseVoList);
+        return "/newVersion/professional_compulsory_course";
+    }
+
+    @GetMapping("/newVersion/student/pe")
+    public String getElectiveCourse(Model model)
+    {
+        String uId = getUserId();
+        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
+                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
+                .eq("student_id",uId).eq("course_type","专业选修课"));
+        model.addAttribute("courseVOList",courseVoList);
+        return "/newVersion/professional_elective";
+    }
+
+    @GetMapping("/newVersion/student/gc")
+    public String getLiberalCourse(Model model)
+    {
+        String uId = getUserId();
+        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
+                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
+                .eq("student_id",uId).eq("course_type","通识课"));
+        model.addAttribute("courseVOList",courseVoList);
+        return "/newVersion/general_course";
+    }
+
+
+
+
+
+    @GetMapping("/newVersion/student/detail/{courseDetailId}")
+    public  String getDetail(Model model, @PathVariable("courseDetailId") String courseDetailId)
+    {
+        CourseDetail courseDetail = courseDetailService.getOne(new QueryWrapper<CourseDetail>().eq("course_detail_id", courseDetailId));
+        CourseDetailDTO courseDetailDTO = new CourseDetailDTO();
+        BeanUtils.copyProperties(courseDetail,courseDetailDTO);
+        CourseInfo courseInfo = courseInfoService.getOne(new QueryWrapper<CourseInfo>().eq("course_id", courseDetail.getCourseId()));
+        courseDetailDTO.setCredit(courseInfo.getCredit());
+        courseDetailDTO.setCreditHours(courseInfo.getCreditHours());
+        model.addAttribute("courseDetail",courseDetailDTO);
+        return "/newVerison/courseDetail";
+    }
+
+
 
 }
