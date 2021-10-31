@@ -3,8 +3,8 @@ package com.example.controller;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.dao.UserMapper;
-import com.example.entity.StudentCourseVo;
-import com.example.entity.User;
+import com.example.entity.*;
+import com.example.service.CourseVoService;
 import com.example.service.impl.AliOssServiceImpl;
 import com.example.service.impl.StudentCourseVoServiceImpl;
 import com.example.service.impl.UserServiceImpl;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -32,6 +33,8 @@ public class NewTeacherController {
     private AliOssServiceImpl aliOssService;
     @Autowired
     private StudentCourseVoServiceImpl studentCourseVoService;
+    @Autowired
+    private CourseVoService courseVoService;
 
     //主页
     @GetMapping(value = {"/","/index"})
@@ -135,5 +138,32 @@ public class NewTeacherController {
         User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
         return u.getId();
     }
+    private String getUserName()
+    {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        return userDetails.getUsername();
+    }
+
+   @GetMapping("/newVersion/teacher/pcc")
+    public String getRequiredCourse(Model model)
+    {
+        String uId = getUserId();
+        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
+                info -> !info.getColumn().equals("course_detail_id")
+                        && !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
+                .eq("student_id",uId).eq("course_type","必修课"));
+        model.addAttribute("courseVOList",courseVoList);
+        return "/newVersion/professional_compulsory_course";
+    }
+
+//    @GetMapping("/newVersion/teacher/pcc/detail/{courseId}")
+//    public  String getDetail(Model model, @PathVariable("courseId") String courseId)
+//    {
+//        CourseDetail courseDetail = courseDetailService.getOne(new QueryWrapper<CourseDetail>().eq("course_id", courseId));
+//        model.addAttribute("courseDetail",courseDetail);
+//        return "/newVerison/courseDetail";
+//    }
 
 }
