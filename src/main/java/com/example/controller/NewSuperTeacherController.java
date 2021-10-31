@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.dao.CourseInfoMapper;
 import com.example.dao.UserMapper;
 import com.example.dto.CourseModuleDTO;
-import com.example.entity.CourseInfo;
-import com.example.entity.CourseInfoVo;
-import com.example.entity.StudentCourseVo;
-import com.example.entity.User;
+import com.example.entity.*;
 import com.example.service.impl.*;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +37,8 @@ public class NewSuperTeacherController {
     private CourseInfoServiceImpl courseInfoService;
     @Autowired
     private CourseInfoMapper courseInfoMapper;
+    @Autowired
+    private CollegeInfoServiceImpl collegeInfoService;
 
     @GetMapping(value = {"/","/index"})
     public String toSuperTeacherMainPage(Model model)
@@ -194,6 +193,53 @@ public class NewSuperTeacherController {
     public String deleteModule(@RequestParam("courseId")String courseId)
     {
         courseInfoService.remove(new QueryWrapper<CourseInfo>().eq("course_id",courseId));
+        return "ok";
+    }
+
+    //创建新模板页面
+    @GetMapping("/createModule")
+    public String toCreateModulePage(Model model)
+    {
+        List<CollegeInfo> collegeInfos = collegeInfoService.list(new QueryWrapper<CollegeInfo>().select("distinct college_name,college_id"));
+        model.addAttribute("collegeInfos",collegeInfos);
+        return "/newVersion/superTeacher/createModule";
+    }
+    //ajax创建新模板
+    @PostMapping("/createModule")
+    @ResponseBody
+    public String doCreateModule(@RequestParam("courseId")String courseId,
+                                 @RequestParam("courseName")String courseName,
+                                 @RequestParam("collegeId")String collegeId,
+                                 @RequestParam("creditHour")int creditHour,
+                                 @RequestParam("credit")double credit,
+                                 @RequestParam("courseType")String courseType,
+                                 HttpServletResponse response)
+    {
+        //存在相同id
+        if(courseInfoService.getOne(new QueryWrapper<CourseInfo>().eq("course_id",courseId))!=null)
+        {
+            response.setStatus(403);
+            return "{\"msg\":\"存在相同id\"}";
+        }
+        CourseInfo info=new CourseInfo();
+        info.setCourseId(courseId);info.setCourseName(courseName);info.setResponsibleCollegeId(collegeId);
+        info.setCreditHours((byte) creditHour);
+        info.setCredit(credit);
+        if (!StringUtils.isEmpty(courseType))
+        {
+            switch (courseType) {
+                case "pcc":
+                    info.setCourseType("专业必修课");
+                    break;
+                case "pe":
+                    info.setCourseType("专业选修课");
+                    break;
+                case "gc":
+                    info.setCourseType("通识课");
+                    break;
+            }
+        }
+        courseInfoService.save(info);
         return "ok";
     }
 
