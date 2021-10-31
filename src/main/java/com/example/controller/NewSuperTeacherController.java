@@ -7,10 +7,14 @@ import com.example.dao.CourseInfoMapper;
 import com.example.dao.UserMapper;
 import com.example.dto.CourseModuleDTO;
 import com.example.entity.*;
+import com.example.service.InviteCodeService;
 import com.example.service.impl.*;
+import com.example.util.InviteCode;
 import javafx.util.converter.LocalDateStringConverter;
 import net.bytebuddy.utility.RandomString;
+import org.hashids.Hashids;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -22,10 +26,11 @@ import org.springframework.web.servlet.resource.HttpResource;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/newVersion/superTeacher")
@@ -50,6 +55,9 @@ public class NewSuperTeacherController {
     private CourseDetailServiceImpl courseDetailService;
     @Autowired
     private CourseDetailVoServiceImpl courseDetailVoService;
+
+    @Autowired
+    private InviteCodeService inviteCodeService;
 
     @GetMapping(value = {"/","/index"})
     public String toSuperTeacherMainPage(Model model)
@@ -355,7 +363,30 @@ public class NewSuperTeacherController {
         return "ok";
     }
 
-    @PostMapping("/newVersion/superTeacher/generateCode")
+    @PostMapping("/generateCode")
+    public Map<String, ArrayList<String>> generateCode(@RequestParam("tNum") int tNum, @RequestParam("sNum") int sNum)
+    {
+        HashMap map = new HashMap<String,String>();
+        HashMap<String, ArrayList<String>> codeMap = new HashMap<>();
+        ArrayList<String> tCode = new ArrayList<>();
+        ArrayList<String> stCode = new ArrayList<>();
+        while(tNum > 0) {
+            String code = InviteCode.getInviteCode();
+            inviteCodeService.save(code,"teacher");
+            tCode.add(code);
+            tNum--;
+        }
+        while(sNum > 0) {
+            String code = InviteCode.getInviteCode();
+            inviteCodeService.save(code,"super_teacher");
+            stCode.add(code);
+            sNum--;
+        }
+
+        codeMap.put("tCode",tCode);
+        codeMap.put("stCode",stCode);
+        return codeMap;
+    }
 
     private String getUserId()
     {
