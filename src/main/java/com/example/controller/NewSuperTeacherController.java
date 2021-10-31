@@ -355,6 +355,8 @@ public class NewSuperTeacherController {
         return "ok";
     }
 
+    @PostMapping("/newVersion/superTeacher/generateCode")
+
     private String getUserId()
     {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()

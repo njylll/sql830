@@ -150,7 +150,7 @@ public class NewTeacherController {
         return userDetails.getUsername();
     }
 
-    @GetMapping("/newVersion/teacher/pcc")
+    @GetMapping("/pcc")
     public String getRequiredCourse(Model model) {
         String uName = getUserName();
         List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
@@ -158,10 +158,10 @@ public class NewTeacherController {
                         && !info.getColumn().equals("student_id"))
                 .eq("teacher_name", uName).eq("course_type", "专业必修课"));
         model.addAttribute("courseVOList", courseVoList);
-        return "/newVersion/professional_compulsory_course";
+        return "/newVersion/teacher/professional_compulsory_course";
     }
 
-    @GetMapping("/newVersion/teacher/pe")
+    @GetMapping("/pe")
     public String getElectiveCourse(Model model) {
         String uName = getUserName();
         List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
@@ -169,10 +169,10 @@ public class NewTeacherController {
                         && !info.getColumn().equals("student_id"))
                 .eq("teacher_name", uName).eq("course_type", "专业选修课"));
         model.addAttribute("courseVOList", courseVoList);
-        return "/newVersion/professional_compulsory_course";
+        return "/newVersion/teacher/professional_compulsory_course";
     }
 
-    @GetMapping("/newVersion/teacher/gc")
+    @GetMapping("/gc")
     public String getGeneralCourse(Model model) {
         String uName = getUserName();
         List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
@@ -180,11 +180,11 @@ public class NewTeacherController {
                         && !info.getColumn().equals("student_id"))
                 .eq("teacher_name", uName).eq("course_type", "通识课"));
         model.addAttribute("courseVOList", courseVoList);
-        return "/newVersion/general_course";
+        return "/newVersion/teacher/general_course";
 
     }
 
-    @GetMapping("/newVersion/student/detail/{courseDetailId}")
+    @GetMapping("/detail/{courseDetailId}")
     public  String getDetail(Model model, @PathVariable("courseDetailId") String courseDetailId)
     {
         CourseDetail courseDetail = courseDetailService.getOne(new QueryWrapper<CourseDetail>().eq("course_detail_id", courseDetailId));
@@ -194,6 +194,6 @@ public class NewTeacherController {
         courseDetailDTO.setCredit(courseInfo.getCredit());
         courseDetailDTO.setCreditHours(courseInfo.getCreditHours());
         model.addAttribute("courseDetail",courseDetailDTO);
-        return "/newVerison/courseDetail";
+        return "/newVerison/teacher/courseDetail";
     }
 }

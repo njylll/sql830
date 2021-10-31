@@ -160,7 +160,7 @@ public class NewStudentController {
         return u.getId();
     }
 
-    @GetMapping("/newVersion/student/pcc")
+    @GetMapping("/pcc")
     public String getRequiredCourse(Model model)
     {
         String uId = getUserId();
@@ -168,10 +168,10 @@ public class NewStudentController {
                 info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
                 .eq("student_id",uId).eq("course_type","专业必修课"));
         model.addAttribute("courseVOList",courseVoList);
-        return "/newVersion/professional_compulsory_course";
+        return "/newVersion/student/professional_compulsory_course";
     }
 
-    @GetMapping("/newVersion/student/pe")
+    @GetMapping("/pe")
     public String getElectiveCourse(Model model)
     {
         String uId = getUserId();
@@ -179,10 +179,10 @@ public class NewStudentController {
                 info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
                 .eq("student_id",uId).eq("course_type","专业选修课"));
         model.addAttribute("courseVOList",courseVoList);
-        return "/newVersion/professional_elective";
+        return "/newVersion/student/professional_elective";
     }
 
-    @GetMapping("/newVersion/student/gc")
+    @GetMapping("/gc")
     public String getLiberalCourse(Model model)
     {
         String uId = getUserId();
@@ -190,14 +190,14 @@ public class NewStudentController {
                 info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
                 .eq("student_id",uId).eq("course_type","通识课"));
         model.addAttribute("courseVOList",courseVoList);
-        return "/newVersion/general_course";
+        return "/newVersion/student/general_course";
     }
 
 
 
 
 
-    @GetMapping("/newVersion/student/detail/{courseDetailId}")
+    @GetMapping("/detail/{courseDetailId}")
     public  String getDetail(Model model, @PathVariable("courseDetailId") String courseDetailId)
     {
         CourseDetail courseDetail = courseDetailService.getOne(new QueryWrapper<CourseDetail>().eq("course_detail_id", courseDetailId));
@@ -207,7 +207,7 @@ public class NewStudentController {
         courseDetailDTO.setCredit(courseInfo.getCredit());
         courseDetailDTO.setCreditHours(courseInfo.getCreditHours());
         model.addAttribute("courseDetail",courseDetailDTO);
-        return "/newVerison/courseDetail";
+        return "/newVerison/student/courseDetail";
     }
 
 
