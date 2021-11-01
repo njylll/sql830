@@ -62,11 +62,20 @@ function submit_choice()
         data: res,
         success:function (data){
             layer.msg("添加成功！");
-            $("#reset-bt").click();
+            setInterval(refresh,1000);
         },
         error:function (xhr, textStatus, errorThrown){
             let res= JSON.parse(xhr.responseText);
             layer.msg("添加失败，原因: "+res.msg);
         }
     })
+}
+let second = 1;
+function refresh() {
+    second--;
+    //判断秒数是否为0
+    if (second<=0){
+        //为0的话利用location方法href跳转到百度页面
+        location.reload();
+    }
 }

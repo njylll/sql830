@@ -16,8 +16,10 @@ import net.bytebuddy.utility.RandomString;
 import org.hashids.Hashids;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.resource.HttpResource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -100,7 +103,9 @@ public class NewSuperTeacherController {
     @ResponseBody
     public String doEditMe(@RequestParam("username")String username,
                            @RequestParam("studentId")String studentId,
-                           @RequestParam("password")String password)
+                           @RequestParam("password")String password,
+                           HttpServletResponse response,
+                           HttpServletRequest request)
     {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
@@ -114,6 +119,10 @@ public class NewSuperTeacherController {
         if(!StringUtils.isEmpty(password))
             u.setPassword(password);
         userService.update(u,new QueryWrapper<User>().eq("username",originName));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {//清除认证
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
         return "{\"message\":修改成功，请重新登陆}";
     }
 
@@ -324,6 +333,7 @@ public class NewSuperTeacherController {
         courseDetailService.save(courseDetail);
         CourseTime courseTime=new CourseTime();
         courseTime.setCourseDetailId(rdStr);
+        courseTime.setCourseTimeId(RandomString.make(16));
         //保存时间
         courseTimeService.save(courseTime);
 
@@ -462,8 +472,15 @@ public class NewSuperTeacherController {
     }
 
 
+    @GetMapping("/generateCode")
+    public String toCodePage()
+    {
+        return "newVersion/superTeacher/generateCode";
+    }
+
     @PostMapping("/generateCode")
-    public Map<String, ArrayList<String>> generateCode(@RequestParam("tNum") int tNum, @RequestParam("sNum") int sNum)
+    @ResponseBody
+    public String generateCode(@RequestParam("tNum") int tNum, @RequestParam("sNum") int sNum)
     {
         HashMap<String, ArrayList<String>> codeMap = new HashMap<>();
         ArrayList<String> tCode = new ArrayList<>();
@@ -483,7 +500,7 @@ public class NewSuperTeacherController {
 
         codeMap.put("tCode",tCode);
         codeMap.put("stCode",stCode);
-        return codeMap;
+        return JSON.toJSONString(codeMap);
     }
 
     private String getUserId()

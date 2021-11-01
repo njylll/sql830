@@ -106,11 +106,11 @@
       <!--个人-->
       <iframe class="main" id="d0" th:src="@{/newVersion/student/me}"></iframe>
       <!--专业必修-->
-      <div hidden="hidden" class="main" id="d1" th:insert="/newVersion/student/professional_compulsory_course::pcc"></div>
+      <iframe hidden="hidden" class="main" id="d1" th:src="@{/newVersion/student/pcc}"></iframe>
       <!--专业选修-->
-      <div hidden="hidden" class="main" id="d2" th:insert="/newVersion/student/professional_elective::pe"></div>
+      <iframe hidden="hidden" class="main" id="d2" th:src="@{/newVersion/student/pe}"></iframe>
       <!--通识课-->
-      <div hidden="hidden" class="main" id="d3" th:insert="/newVersion/student/general_course::gc"></div>
+      <iframe hidden="hidden" class="main" id="d3" th:src="@{/newVersion/student/gc}"></iframe>
       <!--选课-->
       <iframe hidden="hidden" class="main" id="d6" th:src="@{/newVersion/student/choosePCC}"></iframe>
       <iframe hidden="hidden" class="main" id="d7" th:src="@{/newVersion/student/choosePE}"></iframe>

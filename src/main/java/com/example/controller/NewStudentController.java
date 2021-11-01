@@ -9,6 +9,7 @@ import com.example.dao.UserMapper;
 import com.example.dto.CourseDetailDTO;
 import com.example.dto.CourseDetailVoDTO;
 import com.example.dto.CourseModuleDTO;
+import com.example.dto.CourseVoDTO;
 import com.example.entity.*;
 import com.example.service.CourseDetailService;
 import com.example.service.CourseInfoService;
@@ -20,14 +21,17 @@ import org.apache.tomcat.util.security.PrivilegedSetTccl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,6 +62,8 @@ public class NewStudentController {
     private  CourseInfoService courseInfoService;
     @Autowired
     private CourseInfoVoServiceImpl courseInfoVoService;
+    @Autowired
+    private StudentInfoServiceImpl studentInfoService;
 
 
     //主页
@@ -86,6 +92,11 @@ public class NewStudentController {
             id=u.getId();
         else
             id="";
+        if(!StringUtils.isEmpty(id))
+        {
+            String sName= studentInfoService.getOne(new QueryWrapper<StudentInfo>().eq("student_id",id)).getStudentName();
+            model.addAttribute("sName", sName);
+        }
         model.addAttribute("sId",id);
         return "/newVersion/student/me";
     }
@@ -94,7 +105,10 @@ public class NewStudentController {
     @ResponseBody
     public String doEditMe(@RequestParam("username")String username,
                            @RequestParam("studentId")String studentId,
-                           @RequestParam("password")String password)
+                           @RequestParam("studentName")String studentName,
+                           @RequestParam("password")String password,
+                           HttpServletResponse response,
+                           HttpServletRequest request)
     {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
@@ -108,6 +122,21 @@ public class NewStudentController {
         if(!StringUtils.isEmpty(password))
             u.setPassword(password);
         userService.update(u,new QueryWrapper<User>().eq("username",originName));
+        //绑定学生
+        if(!StringUtils.isEmpty(studentId))
+        {
+            StudentInfo studentInfo=new StudentInfo();
+            studentInfo.setStudentId(studentId);
+            studentInfo.setStudentName(studentName);
+            studentInfo.setUuid(RandomString.make(16));
+            studentInfoService.remove(new QueryWrapper<StudentInfo>().eq("student_id",studentId));
+            studentInfoService.save(studentInfo);
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {//清除认证
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
         return "{\"message\":修改成功，请重新登陆}";
     }
 
@@ -164,40 +193,128 @@ public class NewStudentController {
         return u.getId();
     }
 
+    //我的选课
     @GetMapping("/pcc")
     public String getRequiredCourse(Model model)
     {
-        String uId = getUserId();
-        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
-                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
-                .eq("student_id",uId).eq("course_type","专业必修课"));
-        model.addAttribute("courseVOList",courseVoList);
         return "/newVersion/student/professional_compulsory_course";
     }
 
     @GetMapping("/pe")
     public String getElectiveCourse(Model model)
     {
-        String uId = getUserId();
-        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
-                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
-                .eq("student_id",uId).eq("course_type","专业选修课"));
-        model.addAttribute("courseVOList",courseVoList);
         return "/newVersion/student/professional_elective";
     }
 
     @GetMapping("/gc")
     public String getLiberalCourse(Model model)
     {
+        return "/newVersion/student/general_course";
+    }
+    @GetMapping("/pcc.json")
+    @ResponseBody
+    public String getPccJson()
+    {
+        CourseVoDTO courseVoDTO=new CourseVoDTO();
         String uId = getUserId();
+        if(StringUtils.isEmpty(uId))
+        {
+            courseVoDTO.setCode(1);
+            courseVoDTO.setCount(0);
+            courseVoDTO.setMsg("你没有绑定学号");
+            return JSON.toJSONString(courseVoDTO);
+        }
+
+        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
+                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
+                .eq("student_id",uId).eq("course_type","专业必修课"));
+        if(courseVoList.size()==0)
+        {
+            courseVoDTO.setCode(1);
+            courseVoDTO.setCount(0);
+            courseVoDTO.setMsg("无数据");
+        }
+        else
+        {
+            courseVoDTO.setCode(0);
+            courseVoDTO.setCount(courseVoList.size());
+            courseVoDTO.setMsg("ok");
+        }
+        courseVoDTO.setData(courseVoList);
+        return JSON.toJSONString(courseVoDTO);
+    }
+    @GetMapping("/pe.json")
+    @ResponseBody
+    public String getPeJson()
+    {
+        CourseVoDTO courseVoDTO=new CourseVoDTO();
+        String uId = getUserId();
+        if(StringUtils.isEmpty(uId))
+        {
+            courseVoDTO.setCode(1);
+            courseVoDTO.setCount(0);
+            courseVoDTO.setMsg("你没有绑定学号");
+            return JSON.toJSONString(courseVoDTO);
+        }
+        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
+                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
+                .eq("student_id",uId).eq("course_type","专业选修课"));
+        if(courseVoList.size()==0)
+        {
+            courseVoDTO.setCode(1);
+            courseVoDTO.setCount(0);
+            courseVoDTO.setMsg("无数据");
+        }
+        else
+        {
+            courseVoDTO.setCode(0);
+            courseVoDTO.setCount(courseVoList.size());
+            courseVoDTO.setMsg("ok");
+        }
+        courseVoDTO.setData(courseVoList);
+        return JSON.toJSONString(courseVoDTO);
+    }
+    @GetMapping("/gc.json")
+    @ResponseBody
+    public String getGcJson()
+    {
+        CourseVoDTO courseVoDTO=new CourseVoDTO();
+        String uId = getUserId();
+        if(StringUtils.isEmpty(uId))
+        {
+            courseVoDTO.setCode(1);
+            courseVoDTO.setCount(0);
+            courseVoDTO.setMsg("你没有绑定学号");
+            return JSON.toJSONString(courseVoDTO);
+        }
         List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
                 info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
                 .eq("student_id",uId).eq("course_type","通识课"));
-        model.addAttribute("courseVOList",courseVoList);
-        return "/newVersion/student/general_course";
+        if(courseVoList.size()==0)
+        {
+            courseVoDTO.setCode(1);
+            courseVoDTO.setCount(0);
+            courseVoDTO.setMsg("无数据");
+        }
+        else
+        {
+            courseVoDTO.setCode(0);
+            courseVoDTO.setCount(courseVoList.size());
+            courseVoDTO.setMsg("ok");
+        }
+        courseVoDTO.setData(courseVoList);
+        return JSON.toJSONString(courseVoDTO);
     }
-
-
+    //退选ajax
+    @PostMapping("/deleteStudentCourse")
+    @ResponseBody
+    public String deleteStudentCourse(@RequestParam("courseDetailId")String courseDetailId)
+    {
+        String studentId=getUserId();
+        studentCourseService.remove(new QueryWrapper<StudentCourse>().eq("student_id",studentId)
+                .eq("course_detail_id",courseDetailId));
+        return "ok";
+    }
 
 
 
@@ -211,7 +328,7 @@ public class NewStudentController {
         courseDetailDTO.setCredit(courseInfo.getCredit());
         courseDetailDTO.setCreditHours(courseInfo.getCreditHours());
         model.addAttribute("courseDetail",courseDetailDTO);
-        return "/newVerison/student/courseDetail";
+        return "/newVersion/student/courseDetail";
     }
 
     //获得课程JSON
@@ -232,9 +349,11 @@ public class NewStudentController {
         for (StudentCourse s : studentCourses) {
             details.add(s.getCourseDetailId());
         }
-        List<CourseDetailVo>  courseDetailVos= courseDetailVoService.list(new QueryWrapper<CourseDetailVo>()
-                .eq("course_type","专业必修课")
-                .notIn("course_detail_id",details));
+        QueryWrapper<CourseDetailVo> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("course_type","专业必修课");
+        if(!details.isEmpty())
+                queryWrapper.notIn("course_detail_id",details);
+        List<CourseDetailVo>  courseDetailVos= courseDetailVoService.list(queryWrapper);
         CourseDetailVoDTO courseDetailVoDTO=new CourseDetailVoDTO();
         courseDetailVoDTO.setCode(0);
         courseDetailVoDTO.setCount(courseDetailVos.size());
@@ -260,9 +379,11 @@ public class NewStudentController {
         for (StudentCourse s : studentCourses) {
             details.add(s.getCourseDetailId());
         }
-        List<CourseDetailVo>  courseDetailVos= courseDetailVoService.list(new QueryWrapper<CourseDetailVo>()
-                .eq("course_type","专业选修课")
-                .notIn("course_detail_id",details));
+        QueryWrapper<CourseDetailVo> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("course_type","专业选修课");
+        if(!details.isEmpty())
+            queryWrapper.notIn("course_detail_id",details);
+        List<CourseDetailVo>  courseDetailVos= courseDetailVoService.list(queryWrapper);
         CourseDetailVoDTO courseDetailVoDTO=new CourseDetailVoDTO();
         courseDetailVoDTO.setCode(0);
         courseDetailVoDTO.setCount(courseDetailVos.size());
@@ -288,9 +409,11 @@ public class NewStudentController {
         for (StudentCourse s : studentCourses) {
             details.add(s.getCourseDetailId());
         }
-        List<CourseDetailVo>  courseDetailVos= courseDetailVoService.list(new QueryWrapper<CourseDetailVo>()
-                .eq("course_type","通识课")
-                .notIn("course_detail_id",details));
+        QueryWrapper<CourseDetailVo> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("course_type","通识课");
+        if(!details.isEmpty())
+            queryWrapper.notIn("course_detail_id",details);
+        List<CourseDetailVo>  courseDetailVos= courseDetailVoService.list(queryWrapper);
         CourseDetailVoDTO courseDetailVoDTO=new CourseDetailVoDTO();
         courseDetailVoDTO.setCode(0);
         courseDetailVoDTO.setCount(courseDetailVos.size());

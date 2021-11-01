@@ -24,6 +24,12 @@ public class StudentCourseVo implements Serializable {
     @TableField(value = "course_name")
     private String courseName;
 
+    @TableField(value = "teacher_name")
+    private String teacherName;
+
+    @TableField(value = "teaching_location")
+    private String teachingLocation;
+
     /**
      * 
      */

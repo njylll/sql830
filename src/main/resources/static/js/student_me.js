@@ -18,6 +18,11 @@ $("#me-submit").click(function (){
         layer.msg("密码不得小于5个字符！");
         return;
     }
+    if((uId==null||uId=="")&&(uName!=null||uName!=""))
+    {
+        layer.msg("没绑定学号前无法绑定姓名");
+        return;
+    }
     $.ajax({
         url:"/newVersion/student/me",
         type:"post",

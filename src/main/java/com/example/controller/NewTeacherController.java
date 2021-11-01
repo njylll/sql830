@@ -10,20 +10,24 @@ import com.example.service.CourseInfoService;
 import com.example.service.CourseVoService;
 import com.example.service.impl.AliOssServiceImpl;
 import com.example.service.impl.StudentCourseVoServiceImpl;
+import com.example.service.impl.TeacherInfoServiceImpl;
 import com.example.service.impl.UserServiceImpl;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -44,6 +48,8 @@ public class NewTeacherController {
     private CourseDetailService courseDetailService;
     @Autowired
     private CourseInfoService courseInfoService;
+    @Autowired
+    private TeacherInfoServiceImpl teacherInfoService;
     //主页
     @GetMapping(value = {"/", "/index"})
     public String toTeacherMainPage(Model model) {
@@ -68,6 +74,11 @@ public class NewTeacherController {
             id = u.getId();
         else
             id = "";
+        if(!StringUtils.isEmpty(id))
+        {
+            String tName= teacherInfoService.getOne(new QueryWrapper<TeacherInfo>().eq("teacher_id",id)).getTeacherName();
+            model.addAttribute("tName", tName);
+        }
         model.addAttribute("sId", id);
         return "/newVersion/teacher/me";
     }
@@ -76,8 +87,11 @@ public class NewTeacherController {
     @PostMapping("/me")
     @ResponseBody
     public String doEditMe(@RequestParam("username") String username,
-                           @RequestParam("studentId") String studentId,
-                           @RequestParam("password") String password) {
+                           @RequestParam("teacherId") String teacherId,
+                           @RequestParam("teacherName")String teacherName,
+                           @RequestParam("password") String password,
+                            HttpServletResponse response,
+                           HttpServletRequest request) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
@@ -86,10 +100,22 @@ public class NewTeacherController {
         if (!StringUtils.isEmpty(username))
             u.setUsername(username);
         //相当于取消绑定
-        u.setId(studentId);
+        u.setId(teacherId);
         if (!StringUtils.isEmpty(password))
             u.setPassword(password);
         userService.update(u, new QueryWrapper<User>().eq("username", originName));
+        //绑定老师
+        if(!StringUtils.isEmpty(teacherId))
+        {
+            TeacherInfo teacherInfo=new TeacherInfo();
+            teacherInfo.setTeacherId(teacherId);
+            teacherInfo.setTeacherName(teacherName);
+            teacherInfoService.saveOrUpdate(teacherInfo,new QueryWrapper<TeacherInfo>().eq("teacher_id",teacherId));
+        }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {//清除认证
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
         return "{\"message\":修改成功，请重新登陆}";
     }
 

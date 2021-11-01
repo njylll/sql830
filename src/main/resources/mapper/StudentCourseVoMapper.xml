@@ -7,6 +7,8 @@
     <resultMap id="BaseResultMap" type="com.example.entity.StudentCourseVo">
             <result property="studentId" column="student_id" jdbcType="VARCHAR"/>
             <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+        <result property="teacherName" column="teacher_name" jdbcType="VARCHAR"/>
+        <result property="teachingLocation" column="teaching_location" jdbcType="VARCHAR"/>
             <result property="dayTime" column="day_time" jdbcType="VARCHAR"/>
             <result property="sectionStart" column="section_start" jdbcType="VARCHAR"/>
             <result property="sectionEnd" column="section_end" jdbcType="VARCHAR"/>
@@ -16,7 +18,7 @@
 
     <sql id="Base_Column_List">
         student_id,course_name,day_time,
-        section_start,section_end,start_week,
+        section_start,section_end,start_week,teaching_location,teacher_name
         end_week
     </sql>
 </mapper>

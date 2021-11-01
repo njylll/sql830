@@ -15,7 +15,7 @@ public class InviteCode {
         try {
             SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
             final int randomNum = random.nextInt(100000);
-            Hashids coder = new Hashids("mysalt", 6);
+            Hashids coder = new Hashids("mysalt", 8);
             code = coder.encode(randomNum);
 
         } catch (NoSuchAlgorithmException ex) {
