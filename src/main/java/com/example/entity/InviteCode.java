@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -19,7 +20,7 @@ public class InviteCode implements Serializable {
     @TableId(value = "code")
     private String code;
 
-    @TableField(value = "role")
+    @TableField(value = "role",fill = FieldFill.INSERT_UPDATE)
     private String role;
 
     /**
