@@ -9,11 +9,12 @@
             <result property="startWeek" column="start_week" jdbcType="TINYINT"/>
             <result property="endWeek" column="end_week" jdbcType="TINYINT"/>
             <result property="dayTime" column="day_time" jdbcType="VARCHAR"/>
-            <result property="section" column="section" jdbcType="VARCHAR"/>
+            <result property="sectionStart" column="section_start" jdbcType="VARCHAR"/>
+            <result property="sectionEnd" column="section_end" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         course_detail_id,start_week,end_week,
-        day_time,section
+        day_time,section_start,section_end
     </sql>
 </mapper>

@@ -14,11 +14,14 @@
             <result property="teacherName" column="teacher_name" jdbcType="VARCHAR"/>
             <result property="teachingLocation" column="teaching_location" jdbcType="VARCHAR"/>
             <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+            <result property="courseType" column="course_type" jdbcType="VARCHAR"/>
+            <result property="creditHours" column="credit_hours" jdbcType="TINYINT"/>
+            <result property="credit" column="credit" jdbcType="FLOAT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         course_id,course_detail_id,start_school_year,
         end_school_year,start_term,course_condition,
-        teacher_name,teaching_location,course_name
+        teacher_name,teaching_location,course_name,course_type,credit_hours,credit
     </sql>
 </mapper>

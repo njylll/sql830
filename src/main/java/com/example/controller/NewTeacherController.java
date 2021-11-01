@@ -85,8 +85,8 @@ public class NewTeacherController {
         String originName = u.getUsername();
         if (!StringUtils.isEmpty(username))
             u.setUsername(username);
-        if (!StringUtils.isEmpty(studentId))
-            u.setId(studentId);
+        //相当于取消绑定
+        u.setId(studentId);
         if (!StringUtils.isEmpty(password))
             u.setPassword(password);
         userService.update(u, new QueryWrapper<User>().eq("username", originName));

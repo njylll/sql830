@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.dao.CourseInfoMapper;
 import com.example.dao.UserMapper;
 import com.example.dto.CourseModuleDTO;
+import com.example.dto.CourseTimeVoDTO;
 import com.example.entity.*;
 import com.example.service.impl.*;
 import javafx.util.converter.LocalDateStringConverter;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +52,10 @@ public class NewSuperTeacherController {
     private CourseDetailServiceImpl courseDetailService;
     @Autowired
     private CourseDetailVoServiceImpl courseDetailVoService;
+    @Autowired
+    private CourseTimeServiceImpl courseTimeService;
+    @Autowired
+    private CourseTimeVoServiceImpl courseTimeVoService;
 
     @GetMapping(value = {"/","/index"})
     public String toSuperTeacherMainPage(Model model)
@@ -93,8 +99,8 @@ public class NewSuperTeacherController {
         String originName=u.getUsername();
         if(!StringUtils.isEmpty(username))
             u.setUsername(username);
-        if(!StringUtils.isEmpty(studentId))
-            u.setId(studentId);
+        //相当于取消绑定
+        u.setId(studentId);
         if(!StringUtils.isEmpty(password))
             u.setPassword(password);
         userService.update(u,new QueryWrapper<User>().eq("username",originName));
@@ -284,7 +290,7 @@ public class NewSuperTeacherController {
         model.addAttribute("teachers",teacherInfos);
         return "/newVersion/superTeacher/general_course";
     }
-    //ajax创建课程pcc
+    //ajax创建课程
     @PostMapping("/pcc")
     @ResponseBody
     public String doPccCreate(@RequestParam(value = "courseId",required = false)String courseId,
@@ -296,7 +302,8 @@ public class NewSuperTeacherController {
     {
         CourseDetail courseDetail=new CourseDetail();
         courseDetail.setCourseId(courseId);
-        courseDetail.setCourseDetailId(RandomString.make(16));
+        String rdStr=RandomString.make(16);
+        courseDetail.setCourseDetailId(rdStr);
         courseDetail.setCourseCondition("正常");
         courseDetail.setTeacherName(teacherName);
         courseDetail.setStartSchoolYear(LocalDate.parse(start,DateTimeFormatter.ISO_DATE));
@@ -305,6 +312,10 @@ public class NewSuperTeacherController {
         courseDetail.setTeachingLocation(location);
 
         courseDetailService.save(courseDetail);
+        CourseTime courseTime=new CourseTime();
+        courseTime.setCourseDetailId(rdStr);
+        //保存时间
+        courseTimeService.save(courseTime);
 
         return "ok";
     }
@@ -355,7 +366,92 @@ public class NewSuperTeacherController {
         return "ok";
     }
 
-    @PostMapping("/newVersion/superTeacher/generateCode")
+    //安排时间页面
+    @GetMapping("/editCourseTime")
+    public String toTimePage()
+    {
+        return "/newVersion/superTeacher/courseTime";
+    }
+
+    //课程时间JSON
+    @GetMapping("/courseTime.json")
+    @ResponseBody
+    public String getCourseTimeJson()
+    {
+        List<CourseTimeVo> timeVos = courseTimeVoService.list();
+        CourseTimeVoDTO courseTimeVoDTO=new CourseTimeVoDTO();
+        if(timeVos.size()==0)
+        {
+            courseTimeVoDTO.setCode(1);
+            courseTimeVoDTO.setCount(0);
+            courseTimeVoDTO.setMsg("无数据");
+        }
+        else
+        {
+            courseTimeVoDTO.setCode(0);
+            courseTimeVoDTO.setCount(timeVos.size());
+            courseTimeVoDTO.setMsg("ok");
+        }
+        courseTimeVoDTO.setData(timeVos);
+        return JSON.toJSONStringWithDateFormat(courseTimeVoDTO, "yyyy-MM-dd", SerializerFeature.WriteDateUseDateFormat);
+    }
+
+    //添加时间页面
+    @GetMapping("/createCourseTime")
+    public String toCreateTimePage(Model model)
+    {
+        List<CourseDetailVo> courseDetailVos =courseDetailVoService.list(new QueryWrapper<CourseDetailVo>().select("distinct course_name"));
+        model.addAttribute("courseNames",courseDetailVos);
+        return "/newVersion/superTeacher/createCourseTime";
+    }
+    //删除时间
+    @PostMapping("/deleteCourseTime")
+    @ResponseBody
+    public String deleteTime(@RequestParam("courseTimeId") String courseTimeId)
+    {
+        courseTimeService.remove(new QueryWrapper<CourseTime>().eq("course_time_id",courseTimeId));
+        return "ok";
+    }
+    @PostMapping("/editCourseTime")
+    @ResponseBody
+    public String doEditTime(CourseTimeVo vo)
+    {
+        CourseTime courseTime=new CourseTime();
+        courseTime.setCourseTimeId(vo.getCourseTimeId());
+        courseTime.setCourseDetailId(vo.getCourseDetailId());
+        courseTime.setStartWeek(vo.getStartWeek());
+        courseTime.setEndWeek(vo.getEndWeek());
+        courseTime.setDayTime(vo.getDayTime());
+        courseTime.setSectionStart(vo.getSectionStart());
+        courseTime.setSectionEnd(vo.getSectionEnd());
+        courseTimeService.update(courseTime,new QueryWrapper<CourseTime>().eq("course_time_id",vo.getCourseTimeId()));
+
+        return "ok";
+    }
+
+    //添加课程时间
+    @PostMapping("/createCourseTime")
+    @ResponseBody
+    public String doCreateTime(CourseTime courseTime)
+    {
+        courseTime.setCourseTimeId(RandomString.make(16));
+        courseTimeService.save(courseTime);
+        return "ok";
+    }
+    //搜索课程时间表里的课程详情id
+    @PostMapping("/searchCourseDetailId")
+    @ResponseBody
+    public String searchDetailId(@RequestParam("courseName")String courseName)
+    {
+        List<CourseDetailVo> detailVos = courseDetailVoService.list(new QueryWrapper<CourseDetailVo>().eq("course_name",courseName));
+        List<String> details=new ArrayList<>();
+        for (CourseDetailVo detailVo : detailVos) {
+            details.add(detailVo.getCourseDetailId());
+        }
+        return JSON.toJSONString(details);
+    }
+
+
 
     private String getUserId()
     {

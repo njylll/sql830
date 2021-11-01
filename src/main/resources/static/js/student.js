@@ -23,6 +23,15 @@ function f1(n){
         case 6:
             $("#d6").removeAttr("hidden");
             break;
+        case 7:
+            $("#d7").removeAttr("hidden");
+            break;
+        case 8:
+            $("#d8").removeAttr("hidden");
+            break;
+        case 9:
+            $("#d9").removeAttr("hidden");
+            break;
     }
 
 }

@@ -72,6 +72,7 @@
 
       <!--选课-->
       <ul class="layui-nav layui-nav-tree" lay-filter="test">
+        <!--开设课程-->
         <li class="layui-nav-item layui-nav-itemed">
           <a class=""  href="javascript:;">开设课程</a>
           <dl class="layui-nav-child">
@@ -81,8 +82,17 @@
           </dl>
         </li>
 
-
+        <!--时间设置-->
         <!--开设课程-->
+        <li class="layui-nav-item layui-nav-itemed">
+          <a class=""  href="javascript:;">时间管理</a>
+          <dl class="layui-nav-child">
+            <dd><a onclick="f1(12)" href="javascript:;">编辑现有时间</a></dd>
+            <dd><a onclick="f1(13)" href="javascript:;">添加时间</a></dd>
+          </dl>
+        </li>
+
+        <!--课程模板-->
         <li class="layui-nav-item layui-nav-itemed">
           <a class="" href="javascript:;">课程模板</a>
           <dl class="layui-nav-child">
@@ -100,13 +110,13 @@
         </li>
 
         <!--课表-->
-        <li class="layui-nav-item layui-nav-itemed">
-          <a class="" href="javascript:;">课程表</a>
-          <dl class="layui-nav-child">
-            <dd><a onclick="f1(7)" href="javascript:;">班级课表</a></dd>
-            <dd><a onclick="f1(8)" href="javascript:;">教师课表</a></dd>
-          </dl>
-        </li>
+        <!--<li class="layui-nav-item layui-nav-itemed">-->
+        <!--  <a class="" href="javascript:;">课程表</a>-->
+        <!--  <dl class="layui-nav-child">-->
+        <!--    <dd><a onclick="f1(7)" href="javascript:;">班级课表</a></dd>-->
+        <!--    <dd><a onclick="f1(8)" href="javascript:;">教师课表</a></dd>-->
+        <!--  </dl>-->
+        <!--</li>-->
 
         <!--成绩-->
         <li class="layui-nav-item"><a onclick="f1(9)" href="javascript:;">学生成绩</a></li>
@@ -116,7 +126,7 @@
           <a class="" href="javascript:;">用户管理</a>
           <dl class="layui-nav-child">
             <dd><a onclick="f1(10)" href="javascript:;">生成邀请码</a></dd>
-            <dd><a onclick="f1(11)" href="javascript:;">学生管理</a></dd>
+            <!--<dd><a onclick="f1(11)" href="javascript:;">学生管理</a></dd>-->
           </dl>
         </li>
       </ul>
@@ -139,6 +149,8 @@
       <div class="main" hidden="hidden" id="d9" th:insert="/newVersion/superTeacher/studentScore::p"></div>
       <div class="main" hidden="hidden" id="d10" th:insert="/newVersion/superTeacher/generateCode::p"></div>
       <div class="main" hidden="hidden" id="d11" th:insert="/newVersion/superTeacher/studentManage::p"></div>
+      <iframe class="main" hidden="hidden" id="d12" th:src="@{/newVersion/superTeacher/editCourseTime}"></iframe>
+      <iframe class="main" hidden="hidden" id="d13" th:src="@{/newVersion/superTeacher/createCourseTime}"></iframe>
     </div>
   </div>
 

@@ -74,7 +74,15 @@
       <!--选课-->
       <ul class="layui-nav layui-nav-tree" lay-filter="test">
         <li class="layui-nav-item layui-nav-itemed">
-          <a class="" href="javascript:;">我的选课</a>
+          <a class="" href="javascript:;">选课</a>
+          <dl class="layui-nav-child">
+            <dd><a onclick="f1(6)" href="javascript:;">专业必修课</a></dd>
+            <dd><a onclick="f1(7)" href="javascript:;">专业选修课</a></dd>
+            <dd><a onclick="f1(8)" href="javascript:;">通识课</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item layui-nav-itemed">
+          <a class="" href="javascript:;">我选的课</a>
           <dl class="layui-nav-child">
             <dd><a onclick="f1(1)" href="javascript:;">专业必修课</a></dd>
             <dd><a onclick="f1(2)" href="javascript:;">专业选修课</a></dd>
@@ -103,6 +111,10 @@
       <div hidden="hidden" class="main" id="d2" th:insert="/newVersion/student/professional_elective::pe"></div>
       <!--通识课-->
       <div hidden="hidden" class="main" id="d3" th:insert="/newVersion/student/general_course::gc"></div>
+      <!--选课-->
+      <iframe hidden="hidden" class="main" id="d6" th:src="@{/newVersion/student/choosePCC}"></iframe>
+      <iframe hidden="hidden" class="main" id="d7" th:src="@{/newVersion/student/choosePE}"></iframe>
+      <iframe hidden="hidden" class="main" id="d8" th:src="@{/newVersion/student/chooseGC}"></iframe>
       <!--成绩-->
       <div hidden="hidden" class="main" id="d4" th:insert="/newVersion/student/myScore::score"></div>
       <!--课表-->

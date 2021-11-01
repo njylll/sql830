@@ -38,6 +38,12 @@ function f1(n){
         case 11:
             $("#d11").removeAttr("hidden");
             break;
+        case 12:
+            $("#d12").removeAttr("hidden");
+            break;
+        case 13:
+            $("#d13").removeAttr("hidden");
+            break;
     }
 
 }

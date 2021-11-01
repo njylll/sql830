@@ -11,7 +11,7 @@
 </head>
 <body>
 <div>
-    <table class="layui-table" lay-data="{url:'/newVersion/superTeacher/courseDetail.json', id:'test3', escape: true}" lay-filter="test3">
+    <table class="layui-table" lay-data="{url:'/newVersion/superTeacher/courseDetail.json', id:'test3', escape: true,initSort: {field:'courseId', type:'asc'}}" lay-filter="test3">
         <thead>
         <tr>
             <th lay-data="{field:'courseId', width:100, sort: true}">课程id</th>
