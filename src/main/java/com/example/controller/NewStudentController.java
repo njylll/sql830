@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.dao.StudentCourseVoMapper;
 import com.example.dao.StudentInfoMapper;
 import com.example.dao.UserMapper;
-import com.example.entity.StudentCourse;
-import com.example.entity.StudentCourseVo;
-import com.example.entity.StudentInfo;
-import com.example.entity.User;
+import com.example.entity.*;
 import com.example.service.impl.*;
 import com.mysql.cj.xdevapi.JsonParser;
 import net.bytebuddy.utility.RandomString;
@@ -27,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/newVersion/student")
@@ -43,7 +42,67 @@ public class NewStudentController {
     @Autowired
     private StudentCourseVoServiceImpl studentCourseVoService;
 
+    @PostMapping("/newVersion/student/pcc")
+    public String searchCourse(CourseVo courseVo,
+                               Model model)
+    {
+        QueryWrapper<CourseVo> courseVoQueryWrapper=new QueryWrapper<>();
+        Map<String,String> eqMap=new HashMap<>();
 
+        if(!StringUtils.isEmpty(courseVo.getCourseId()))
+            eqMap.put("course_id",courseVo.getCourseId());
+
+        if(!StringUtils.isEmpty(courseVo.getCourseName()))
+            eqMap.put("course_name",courseVo.getCourseName());
+
+        if(!StringUtils.isEmpty(courseVo.getTeacherName())){
+
+            eqMap.put("teacher_name",courseVo.getTeacherName());
+        }
+
+        if(!StringUtils.isEmpty(courseVo.getTeachingLocation())){
+
+            eqMap.put("teaching_location",courseVo.getTeachingLocation());
+        }
+        if(!StringUtils.isEmpty(courseVo.getAssessmentMethod())){
+
+            eqMap.put("assessment_method",courseVo.getAssessmentMethod());
+        }
+        if(!StringUtils.isEmpty(courseVo.getCourseType())){
+
+            eqMap.put("course_type",courseVo.getCourseType());
+        }
+        if(!StringUtils.isEmpty(courseVo.getCourseDetailId())){
+
+            eqMap.put("course_detail_id",courseVo.getCourseDetailId());
+        }
+
+
+
+
+        courseVoQueryWrapper.allEq(eqMap);
+        List<CourseVo> courseVoList = courseVoService.list(courseVoQueryWrapper);
+        model.addAttribute("courseVoList",courseVoList);
+
+        List<String> courseNameList = courseVoService.searchAllCourseId();
+        model.addAttribute("cName",courseNameList);
+        List<CourseVo> idList= courseVoService.listAll();
+        model.addAttribute("cId",idList);
+        List<CourseVo> startSchoolYear = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct startSchoolYear").orderByAsc("startSchoolYear"));
+        model.addAttribute("startschoolyear",startSchoolYear);
+        List<CourseVo> endSchoolYear = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct endSchoolYear"));
+        model.addAttribute("endschoolyear",endSchoolYear);
+        List<CourseVo> teachername = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct teacher_name").orderByAsc("teacher_name"));
+        model.addAttribute("teacher_name",teachername);
+        List<CourseVo> teachingLocation = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct teaching_location"));
+        model.addAttribute("teaching_location",teachingLocation);
+        List<CourseVo> assessment_method = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct assessment_method"));
+        model.addAttribute("assessment_method",assessment_method);
+
+
+
+        return "newVersion/teacher/courseInfoList";
+    }
     //主页
     @GetMapping(value = {"/","/index"})
     public String toStudentMainPage(Model model)
@@ -178,5 +237,65 @@ public class NewStudentController {
         User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
         return u.getId();
     }
+    @PostMapping("/newVersion/student/pcc")
+    public String searchCourse(CourseVo courseVo,
+                               Model model)
+    {
+        QueryWrapper<CourseVo> courseVoQueryWrapper=new QueryWrapper<>();
+        Map<String,String> eqMap=new HashMap<>();
 
+        if(!StringUtils.isEmpty(courseVo.getCourseId()))
+            eqMap.put("course_id",courseVo.getCourseId());
+
+        if(!StringUtils.isEmpty(courseVo.getCourseName()))
+            eqMap.put("course_name",courseVo.getCourseName());
+
+        if(!StringUtils.isEmpty(courseVo.getTeacherName())){
+
+            eqMap.put("teacher_name",courseVo.getTeacherName());
+        }
+
+        if(!StringUtils.isEmpty(courseVo.getTeachingLocation())){
+
+            eqMap.put("teaching_location",courseVo.getTeachingLocation());
+        }
+        if(!StringUtils.isEmpty(courseVo.getAssessmentMethod())){
+
+            eqMap.put("assessment_method",courseVo.getAssessmentMethod());
+        }
+        if(!StringUtils.isEmpty(courseVo.getCourseType())){
+
+            eqMap.put("course_type",courseVo.getCourseType());
+        }
+        if(!StringUtils.isEmpty(courseVo.getCourseDetailId())){
+
+            eqMap.put("course_detail_id",courseVo.getCourseDetailId());
+        }
+
+
+
+
+        courseVoQueryWrapper.allEq(eqMap);
+        List<CourseVo> courseVoList = courseVoService.list(courseVoQueryWrapper);
+        model.addAttribute("courseVoList",courseVoList);
+
+        List<String> courseNameList = courseVoService.searchAllCourseId();
+        model.addAttribute("cName",courseNameList);
+        List<CourseVo> idList= courseVoService.listAll();
+        model.addAttribute("cId",idList);
+        List<CourseVo> startSchoolYear = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct startSchoolYear").orderByAsc("startSchoolYear"));
+        model.addAttribute("startschoolyear",startSchoolYear);
+        List<CourseVo> endSchoolYear = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct endSchoolYear"));
+        model.addAttribute("endschoolyear",endSchoolYear);
+        List<CourseVo> teachername = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct teacher_name").orderByAsc("teacher_name"));
+        model.addAttribute("teacher_name",teachername);
+        List<CourseVo> teachingLocation = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct teaching_location"));
+        model.addAttribute("teaching_location",teachingLocation);
+        List<CourseVo> assessment_method = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct assessment_method"));
+        model.addAttribute("assessment_method",assessment_method);
+
+
+
+        return "newVersion/teacher/courseInfoList";
+    }
 }
