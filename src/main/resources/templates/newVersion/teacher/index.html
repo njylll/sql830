@@ -82,7 +82,7 @@
         </li>
 
         <!--成绩-->
-        <li class="layui-nav-item"><a onclick="f1(4)" href="javascript:;">我的学生成绩</a></li>
+        <!--<li class="layui-nav-item"><a onclick="f1(4)" href="javascript:;">我的学生成绩</a></li>-->
 
         <!--课表-->
         <li class="layui-nav-item"><a onclick="f1(5)" href="javascript:;">我的课表</a></li>
@@ -96,9 +96,9 @@
   <div class="layui-body">
     <div style="padding: 15px;">
       <iframe class="main" id="d0" th:src="@{/newVersion/teacher/me}"></iframe>
-      <div class="main" hidden="hidden" id="d1" th:insert="/newVersion/teacher/professional_compulsory_course::p"></div>
-      <div class="main" hidden="hidden" id="d2" th:insert="/newVersion/teacher/professional_elective::p"></div>
-      <div class="main" hidden="hidden" id="d3" th:insert="/newVersion/teacher/general_course::p"></div>
+      <iframe class="main" hidden="hidden" id="d1" th:src="@{/newVersion/teacher/pcc}"></iframe>
+      <iframe class="main" hidden="hidden" id="d2" th:src="@{/newVersion/teacher/pe}"></iframe>
+      <iframe class="main" hidden="hidden" id="d3" th:src="@{/newVersion/teacher/gc}"></iframe>
       <div class="main" hidden="hidden" id="d4" th:insert="/newVersion/teacher/studentScore::p"></div>
       <iframe class="main" hidden="hidden" id="d5" th:src="@{/newVersion/teacher/curriculum}"></iframe>
     </div>
