@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.dao.UserMapper;
 import com.example.dto.CourseDetailDTO;
+import com.example.dto.CourseVoDTO;
 import com.example.entity.*;
 import com.example.service.CourseDetailService;
 import com.example.service.CourseInfoService;
@@ -176,38 +177,133 @@ public class NewTeacherController {
         return userDetails.getUsername();
     }
 
+    private String getTeacherName()
+    {
+        String userId= getUserId();
+        if(userId==null)
+            return null;
+        TeacherInfo teacherInfo= teacherInfoService.getOne(new QueryWrapper<TeacherInfo>().eq("teacher_id",userId));
+        if(teacherInfo==null)
+            return null;
+        String teacherName= teacherInfo.getTeacherName();
+        if(StringUtils.isEmpty(teacherName))
+        {
+            return null;
+        }
+        else
+        {
+            return teacherName;
+        }
+
+    }
+
     @GetMapping("/pcc")
     public String getRequiredCourse(Model model) {
-        String uName = getUserName();
+        return "/newVersion/teacher/professional_compulsory_course";
+    }
+    @GetMapping("/pcc.json")
+    @ResponseBody
+    public String getPccJson()
+    {
+        CourseVoDTO courseVoDTO=new CourseVoDTO();
+        String uName = getTeacherName();
+        if(StringUtils.isEmpty(uName))
+        {
+            courseVoDTO.setCode(1);
+            courseVoDTO.setMsg("未绑定姓名");
+            return JSON.toJSONString(courseVoDTO);
+        }
         List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
                 info -> !info.getColumn().equals("course_type")
                         && !info.getColumn().equals("student_id"))
                 .eq("teacher_name", uName).eq("course_type", "专业必修课"));
-        model.addAttribute("courseVOList", courseVoList);
-        return "/newVersion/teacher/professional_compulsory_course";
+        if(courseVoList.isEmpty())
+        {
+            courseVoDTO.setCode(1);
+            courseVoDTO.setMsg("无数据");
+            courseVoDTO.setCount(0);
+        }
+        else
+        {
+            courseVoDTO.setCode(0);
+            courseVoDTO.setMsg("无数据");
+            courseVoDTO.setCount(courseVoList.size());
+        }
+        courseVoDTO.setData(courseVoList);
+        return JSON.toJSONString(courseVoDTO);
     }
 
     @GetMapping("/pe")
     public String getElectiveCourse(Model model) {
-        String uName = getUserName();
+        return "/newVersion/teacher/professional_compulsory_course";
+    }
+    @GetMapping("/pe.json")
+    @ResponseBody
+    public String getPeJson()
+    {
+        CourseVoDTO courseVoDTO=new CourseVoDTO();
+        String uName = getTeacherName();
+        if(StringUtils.isEmpty(uName))
+        {
+            courseVoDTO.setCode(1);
+            courseVoDTO.setMsg("未绑定姓名");
+            return JSON.toJSONString(courseVoDTO);
+        }
         List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
                 info -> !info.getColumn().equals("course_type")
                         && !info.getColumn().equals("student_id"))
                 .eq("teacher_name", uName).eq("course_type", "专业选修课"));
-        model.addAttribute("courseVOList", courseVoList);
-        return "/newVersion/teacher/professional_compulsory_course";
+        if(courseVoList.isEmpty())
+        {
+            courseVoDTO.setCode(1);
+            courseVoDTO.setMsg("无数据");
+            courseVoDTO.setCount(0);
+        }
+        else
+        {
+            courseVoDTO.setCode(0);
+            courseVoDTO.setMsg("无数据");
+            courseVoDTO.setCount(courseVoList.size());
+        }
+        courseVoDTO.setData(courseVoList);
+        return JSON.toJSONString(courseVoDTO);
     }
 
     @GetMapping("/gc")
     public String getGeneralCourse(Model model) {
-        String uName = getUserName();
+        return "/newVersion/teacher/general_course";
+
+    }
+    @GetMapping("/gc.json")
+    @ResponseBody
+    public String getGcJson()
+    {
+        CourseVoDTO courseVoDTO=new CourseVoDTO();
+        String uName = getTeacherName();
+        if(StringUtils.isEmpty(uName))
+        {
+            courseVoDTO.setCode(1);
+            courseVoDTO.setMsg("未绑定姓名");
+            return JSON.toJSONString(courseVoDTO);
+        }
         List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
                 info -> !info.getColumn().equals("course_type")
                         && !info.getColumn().equals("student_id"))
                 .eq("teacher_name", uName).eq("course_type", "通识课"));
-        model.addAttribute("courseVOList", courseVoList);
-        return "/newVersion/teacher/general_course";
-
+        if(courseVoList.isEmpty())
+        {
+            courseVoDTO.setCode(1);
+            courseVoDTO.setMsg("无数据");
+            courseVoDTO.setCount(0);
+        }
+        else
+        {
+            courseVoDTO.setCode(0);
+            courseVoDTO.setMsg("无数据");
+            courseVoDTO.setCount(courseVoList.size());
+        }
+        courseVoDTO.setData(courseVoList);
+        return JSON.toJSONString(courseVoDTO);
     }
 
     @GetMapping("/detail/{courseDetailId}")
