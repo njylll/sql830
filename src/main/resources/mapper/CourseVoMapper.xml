@@ -22,4 +22,11 @@
         course_id,course_name,teacher_name,
         teaching_location,assessment_method,course_type,course_detail_id
     </sql>
+
+    <select id="searchAllCourseName" resultType="java.lang.String">
+        select distinct course_name from course_vo
+    </select>
+    <select id="listAll" resultType="java.lang.String">
+        select distinct course_id from course_vo
+    </select>
 </mapper>
