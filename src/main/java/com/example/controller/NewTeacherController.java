@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.dao.CourseVoMapper;
 import com.example.dao.UserMapper;
 import com.example.entity.*;
 import com.example.service.CourseVoService;
@@ -43,6 +44,9 @@ public class NewTeacherController {
     private TeacherInfoServiceImpl teacherInfoService;
     @Autowired
     private CourseVoService courseVoService;
+
+    @Autowired
+    private CourseVoMapper courseVoMapper;
 
     //主页
     @GetMapping(value = {"/","/index"})
@@ -174,7 +178,7 @@ public class NewTeacherController {
         User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
         return u.getId();
     }
-    @PostMapping("/newVersion/student/pcc")
+    @PostMapping("/newVersion/teacher/pcc")
     public String searchCourse(CourseVo courseVo,
                                Model model)
     {
@@ -216,9 +220,9 @@ public class NewTeacherController {
         List<CourseVo> courseVoList = courseVoService.list(courseVoQueryWrapper);
         model.addAttribute("courseVoList",courseVoList);
 
-        List<String> courseNameList = courseVoService.searchAllCourseName();
+        List<String> courseNameList = courseVoMapper.searchAllCourseName();
         model.addAttribute("cName",courseNameList);
-        List<CourseVo> idList= courseVoService.listAll();
+        List<String> idList= courseVoMapper.listAll();
         model.addAttribute("cId",idList);
         List<CourseVo> startSchoolYear = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct startSchoolYear").orderByAsc("startSchoolYear"));
         model.addAttribute("startschoolyear",startSchoolYear);
