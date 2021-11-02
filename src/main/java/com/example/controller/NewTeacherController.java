@@ -315,6 +315,6 @@ public class NewTeacherController {
         courseDetailDTO.setCredit(courseInfo.getCredit());
         courseDetailDTO.setCreditHours(courseInfo.getCreditHours());
         model.addAttribute("courseDetail",courseDetailDTO);
-        return "/newVerison/teacher/courseDetail";
+        return "/newVersion/teacher/courseDetail";
     }
 }
