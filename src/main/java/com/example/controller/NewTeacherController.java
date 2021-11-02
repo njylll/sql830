@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.dao.CourseVoMapper;
 import com.example.dao.UserMapper;
 import com.example.dto.CourseDetailDTO;
 import com.example.dto.CourseVoDTO;
@@ -53,6 +54,8 @@ public class NewTeacherController {
     private CourseInfoService courseInfoService;
     @Autowired
     private TeacherInfoServiceImpl teacherInfoService;
+    @Autowired
+    private CourseVoMapper courseVoMapper;
     //主页
     @GetMapping(value = {"/", "/index"})
     public String toTeacherMainPage(Model model) {

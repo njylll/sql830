@@ -13,6 +13,7 @@ layui.use('table', function(){
             ,{fixed: 'right', title:'操作', toolbar: '#bt', width:200}
         ]]
     });
+
     //监听行工具事件
     table.on('tool(tb)', function(obj) {
         var data = obj.data;
@@ -44,5 +45,4 @@ layui.use('table', function(){
             });
         }
     });
-
 });

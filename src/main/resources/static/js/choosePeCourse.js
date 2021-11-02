@@ -1,6 +1,57 @@
 var chooseSet=new Set();
-layui.use('table', function(){
-    var table = layui.table;
+layui.use(['table','form', 'layedit', 'laydate'], function(){
+    let table = layui.table
+        ,form = layui.form
+        ,layer = layui.layer
+        ,layedit = layui.layedit
+        ,laydate = layui.laydate;
+
+    //刷新select
+    $.ajax({
+        url: "/newVersion/student/pccInfo.json",
+        type: "post",
+        data: {"courseType":"专业选修课"},
+        success:function (data){
+            let json=JSON.parse(data);
+            let a1=$("#courseId");
+            let a2=$("#courseName");
+            let a3=$("#teacherName");
+            let a4=$("#teachingLocation");
+            for(let i of json.courseIdList)
+            {
+                a1.append("<option value='"+i.courseId+"'>"+i.courseId+"</option>");
+            }
+            for(let i of json.courseNameList)
+            {
+                a2.append("<option value='"+i.courseName+"'>"+i.courseName+"</option>");
+            }
+            for(let i of json.teacherName)
+            {
+                a3.append("<option value='"+i.teacherName+"'>"+i.teacherName+"</option>");
+            }
+            for(let i of json.teachingLocation)
+            {
+                a4.append("<option value='"+i.teachingLocation+"'>"+i.teachingLocation+"</option>");
+            }
+            form.render('select');
+        },
+        error:function (xhr, textStatus, errorThrown){
+        }
+    })
+    //查询操作
+    form.on('select', function(data){
+        let courseId=$("#courseId").val();
+        let courseName=$("#courseName").val();
+        let teacherName=$("#teacherName").val();
+        let teachingLocation=$("#teachingLocation").val();
+        table.reload('tb', {
+            url: "/newVersion/student/pcc",
+            method: "post",
+            where: {"courseId":courseId,"courseName":courseName,"teacherName":teacherName,
+                "teachingLocation":teachingLocation,"courseType":"专业选修课"},
+        });
+
+    });
 
     table.render({
         elem: '#tb'

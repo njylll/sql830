@@ -2,14 +2,9 @@ package com.example.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.dao.StudentCourseMapper;
-import com.example.dao.StudentCourseVoMapper;
-import com.example.dao.StudentInfoMapper;
-import com.example.dao.UserMapper;
+import com.example.dao.*;
+import com.example.dto.*;
 import com.example.dto.CourseDetailDTO;
-import com.example.dto.CourseDetailVoDTO;
-import com.example.dto.CourseModuleDTO;
-import com.example.dto.CourseVoDTO;
 import com.example.entity.*;
 import com.example.service.CourseDetailService;
 import com.example.service.CourseInfoService;
@@ -66,6 +61,8 @@ public class NewStudentController {
     private CourseInfoVoServiceImpl courseInfoVoService;
     @Autowired
     private StudentInfoServiceImpl studentInfoService;
+    @Autowired
+    private CourseVoMapper courseVoMapper;
 
 
     //主页
@@ -476,13 +473,21 @@ public class NewStudentController {
         studentCourseService.saveBatch(studentCourses);
         return "ok";
     }
-    @PostMapping("/newVersion/student/pcc")
-    public String searchCourse(CourseVo courseVo,
+    //选课搜索
+    @PostMapping("/pcc")
+    @ResponseBody
+    public String searchCourse(CourseDetailVo courseVo,
                                Model model)
     {
-        QueryWrapper<CourseVo> courseVoQueryWrapper=new QueryWrapper<>();
+        QueryWrapper<CourseDetailVo> courseVoQueryWrapper=new QueryWrapper<>();
         Map<String,String> eqMap=new HashMap<>();
-
+        List<StudentCourse> studentCourses= studentCourseService.list(new QueryWrapper<StudentCourse>().eq("student_id",getUserId()));
+        List<String> details = new ArrayList<>();
+        for (StudentCourse s : studentCourses) {
+            details.add(s.getCourseDetailId());
+        }
+        if(!details.isEmpty())
+            courseVoQueryWrapper.notIn("course_detail_id",details);
         if(!StringUtils.isEmpty(courseVo.getCourseId()))
             eqMap.put("course_id",courseVo.getCourseId());
 
@@ -498,10 +503,6 @@ public class NewStudentController {
 
             eqMap.put("teaching_location",courseVo.getTeachingLocation());
         }
-        if(!StringUtils.isEmpty(courseVo.getAssessmentMethod())){
-
-            eqMap.put("assessment_method",courseVo.getAssessmentMethod());
-        }
         if(!StringUtils.isEmpty(courseVo.getCourseType())){
 
             eqMap.put("course_type",courseVo.getCourseType());
@@ -510,32 +511,42 @@ public class NewStudentController {
 
             eqMap.put("course_detail_id",courseVo.getCourseDetailId());
         }
-
-
-
-
         courseVoQueryWrapper.allEq(eqMap);
-        List<CourseVo> courseVoList = courseVoService.list(courseVoQueryWrapper);
-        model.addAttribute("courseVoList",courseVoList);
+        List<CourseDetailVo> courseVoList = courseDetailVoService.list(courseVoQueryWrapper);
+        CourseDetailVoDTO dto=new CourseDetailVoDTO();
+        if(courseVoList.isEmpty())
+        {
+            dto.setCode(1);
+            dto.setMsg("无数据");
+        }
+        else
+        {
+            dto.setCount(courseVoList.size());
+            dto.setCode(0);
+        }
+        dto.setData(courseVoList);
+        return JSON.toJSONString(dto);
+    }
 
-        List<String> courseNameList = courseVoMapper.searchAllCourseName();
-        model.addAttribute("cName",courseNameList);
-        List<String> idList= courseVoMapper.listAll();
-        model.addAttribute("cId",idList);
-        List<CourseVo> startSchoolYear = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct startSchoolYear").orderByAsc("startSchoolYear"));
-        model.addAttribute("startschoolyear",startSchoolYear);
-        List<CourseVo> endSchoolYear = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct endSchoolYear"));
-        model.addAttribute("endschoolyear",endSchoolYear);
-        List<CourseVo> teachername = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct teacher_name").orderByAsc("teacher_name"));
-        model.addAttribute("teacher_name",teachername);
-        List<CourseVo> teachingLocation = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct teaching_location"));
-        model.addAttribute("teaching_location",teachingLocation);
-        List<CourseVo> assessment_method = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct assessment_method"));
-        model.addAttribute("assessment_method",assessment_method);
+    //获取选课的查询信息
+    @PostMapping("/pccInfo.json")
+    @ResponseBody
+    public String getPccInfoJson(@RequestParam("courseType")String courseType)
+    {
+        //返回选择的信息
+        List<CourseDetailVo> courseNameList = courseDetailVoService.list(new QueryWrapper<CourseDetailVo>().select("distinct course_name").eq("course_type",courseType));
+        List<CourseDetailVo> idList= courseDetailVoService.list(new QueryWrapper<CourseDetailVo>().select("distinct course_id").eq("course_type",courseType));
+        List<CourseDetailVo> teacherName = courseDetailVoService.list(new QueryWrapper<CourseDetailVo>().select("distinct teacher_name").eq("course_type",courseType));
+        List<CourseDetailVo> teachingLocation = courseDetailVoService.list(new QueryWrapper<CourseDetailVo>().select("distinct teaching_location").eq("course_type",courseType));
 
+        ChooseCourseInfoDTO ret=new ChooseCourseInfoDTO();
+        ret.setCourseNameList(courseNameList);
+        ret.setCourseIdList(idList);
+        ret.setTeacherName(teacherName);
+        ret.setTeachingLocation(teachingLocation);
 
+        return JSON.toJSONString(ret);
 
-        return "newVersion/student/courseInfoList";
     }
 
 }

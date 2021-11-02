@@ -10,8 +10,54 @@
     <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
 </head>
 <body>
-<center><h1>专业必修课</h1></center>
+<center><h1>专业必修课</h1></center><br><br>
+
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <!--课程id-->
+        <div class="layui-inline">
+            <label class="layui-form-label">课程id</label>
+            <div class="layui-input-inline">
+                <select id="courseId" name="modules" lay-verify="required" lay-search="">
+                    <option value="">直接选择或搜索选择</option>
+                </select>
+            </div>
+        </div>
+        <!--课程名-->
+        <div class="layui-inline">
+            <label class="layui-form-label">课程名</label>
+            <div class="layui-input-inline">
+                <select id="courseName" name="modules" lay-verify="required" lay-search="">
+                    <option value="">直接选择或搜索选择</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <!--教师名-->
+        <div class="layui-inline">
+            <label class="layui-form-label">教师名</label>
+            <div class="layui-input-inline">
+                <select id="teacherName" name="modules" lay-verify="required" lay-search="">
+                    <option value="">直接选择或搜索选择</option>
+                </select>
+            </div>
+        </div>
+        <!--教室-->
+        <div class="layui-inline">
+            <label class="layui-form-label">教学地点</label>
+            <div class="layui-input-inline">
+                <select id="teachingLocation" name="modules" lay-verify="required" lay-search="">
+                    <option value="">直接选择或搜索选择</option>
+                </select>
+            </div>
+        </div><br>
+    </div>
+</form>
+
 <table class="layui-hide" lay-filter="tb" id="tb"></table><br>
+
+
 <button type="button" id="submit-bt" onclick="submit_choice()" class="layui-btn layui-btn-lg layui-btn-normal" style="margin-left: 40%">提交</button>
 
 <script th:src="@{/layui/layui_origin.js}"></script>
