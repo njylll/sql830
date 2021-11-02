@@ -2,27 +2,17 @@ package com.example.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.dao.StudentCourseMapper;
 import com.example.dao.StudentCourseVoMapper;
 import com.example.dao.StudentInfoMapper;
 import com.example.dao.UserMapper;
-import com.example.dto.CourseDetailDTO;
-import com.example.dto.CourseDetailVoDTO;
-import com.example.dto.CourseModuleDTO;
-import com.example.dto.CourseVoDTO;
 import com.example.entity.*;
-import com.example.service.CourseDetailService;
-import com.example.service.CourseInfoService;
-import com.example.service.CourseVoService;
 import com.example.service.impl.*;
 import com.mysql.cj.xdevapi.JsonParser;
 import net.bytebuddy.utility.RandomString;
-import org.apache.tomcat.util.security.PrivilegedSetTccl;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -34,8 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/newVersion/student")
@@ -47,25 +38,71 @@ public class NewStudentController {
     @Autowired
     private AliOssServiceImpl aliOssService;
     @Autowired
-    private StudentCourseServiceImpl studentCourseService;
+    private StudentInfoServiceImpl studentInfoService;
     @Autowired
     private StudentCourseVoServiceImpl studentCourseVoService;
-    @Autowired
-    private CourseDetailService courseDetailService;
-    @Autowired
-    private CourseDetailVoServiceImpl courseDetailVoService;
 
-    @Autowired
-    private CourseVoService courseVoService;
+    @PostMapping("/newVersion/student/pcc")
+    public String searchCourse(CourseVo courseVo,
+                               Model model)
+    {
+        QueryWrapper<CourseVo> courseVoQueryWrapper=new QueryWrapper<>();
+        Map<String,String> eqMap=new HashMap<>();
 
-    @Autowired
-    private  CourseInfoService courseInfoService;
-    @Autowired
-    private CourseInfoVoServiceImpl courseInfoVoService;
-    @Autowired
-    private StudentInfoServiceImpl studentInfoService;
+        if(!StringUtils.isEmpty(courseVo.getCourseId()))
+            eqMap.put("course_id",courseVo.getCourseId());
+
+        if(!StringUtils.isEmpty(courseVo.getCourseName()))
+            eqMap.put("course_name",courseVo.getCourseName());
+
+        if(!StringUtils.isEmpty(courseVo.getTeacherName())){
+
+            eqMap.put("teacher_name",courseVo.getTeacherName());
+        }
+
+        if(!StringUtils.isEmpty(courseVo.getTeachingLocation())){
+
+            eqMap.put("teaching_location",courseVo.getTeachingLocation());
+        }
+        if(!StringUtils.isEmpty(courseVo.getAssessmentMethod())){
+
+            eqMap.put("assessment_method",courseVo.getAssessmentMethod());
+        }
+        if(!StringUtils.isEmpty(courseVo.getCourseType())){
+
+            eqMap.put("course_type",courseVo.getCourseType());
+        }
+        if(!StringUtils.isEmpty(courseVo.getCourseDetailId())){
+
+            eqMap.put("course_detail_id",courseVo.getCourseDetailId());
+        }
 
 
+
+
+        courseVoQueryWrapper.allEq(eqMap);
+        List<CourseVo> courseVoList = courseVoService.list(courseVoQueryWrapper);
+        model.addAttribute("courseVoList",courseVoList);
+
+        List<String> courseNameList = courseVoService.searchAllCourseId();
+        model.addAttribute("cName",courseNameList);
+        List<CourseVo> idList= courseVoService.listAll();
+        model.addAttribute("cId",idList);
+        List<CourseVo> startSchoolYear = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct startSchoolYear").orderByAsc("startSchoolYear"));
+        model.addAttribute("startschoolyear",startSchoolYear);
+        List<CourseVo> endSchoolYear = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct endSchoolYear"));
+        model.addAttribute("endschoolyear",endSchoolYear);
+        List<CourseVo> teachername = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct teacher_name").orderByAsc("teacher_name"));
+        model.addAttribute("teacher_name",teachername);
+        List<CourseVo> teachingLocation = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct teaching_location"));
+        model.addAttribute("teaching_location",teachingLocation);
+        List<CourseVo> assessment_method = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct assessment_method"));
+        model.addAttribute("assessment_method",assessment_method);
+
+
+
+        return "newVersion/teacher/courseInfoList";
+    }
     //主页
     @GetMapping(value = {"/","/index"})
     public String toStudentMainPage(Model model)
@@ -87,17 +124,14 @@ public class NewStudentController {
                 .getPrincipal();
         User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
         model.addAttribute("avatar",u.getAvatarUrl());
-        String id;
-        if(u!=null)
-            id=u.getId();
+        model.addAttribute("sId",u.getId());
+        StudentInfo studentInfo= studentInfoService.getOne(new QueryWrapper<StudentInfo>().eq("student_id",u.getId()));
+        String sName;
+        if(studentInfo==null)
+            sName="";
         else
-            id="";
-        if(!StringUtils.isEmpty(id))
-        {
-            String sName= studentInfoService.getOne(new QueryWrapper<StudentInfo>().eq("student_id",id)).getStudentName();
-            model.addAttribute("sName", sName);
-        }
-        model.addAttribute("sId",id);
+            sName=studentInfo.getStudentName();
+        model.addAttribute("sName",sName);
         return "/newVersion/student/me";
     }
     //个人设置
@@ -107,32 +141,43 @@ public class NewStudentController {
                            @RequestParam("studentId")String studentId,
                            @RequestParam("studentName")String studentName,
                            @RequestParam("password")String password,
-                           HttpServletResponse response,
-                           HttpServletRequest request)
+                           HttpServletRequest request, HttpServletResponse response)
     {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
         User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
         String originName=u.getUsername();
+        String originId=u.getId();
+        boolean hasId=false;
         if(!StringUtils.isEmpty(username))
             u.setUsername(username);
-        //相当于取消绑定
-        u.setId(studentId);
-        if(!StringUtils.isEmpty(password))
-            u.setPassword(password);
-        userService.update(u,new QueryWrapper<User>().eq("username",originName));
-        //绑定学生
         if(!StringUtils.isEmpty(studentId))
         {
-            StudentInfo studentInfo=new StudentInfo();
-            studentInfo.setStudentId(studentId);
-            studentInfo.setStudentName(studentName);
-            studentInfo.setUuid(RandomString.make(16));
-            studentInfoService.remove(new QueryWrapper<StudentInfo>().eq("student_id",studentId));
-            studentInfoService.save(studentInfo);
+            u.setId(studentId);
+            hasId=true;
         }
-
+        if(!StringUtils.isEmpty(password))
+            u.setPassword(password);
+        //用户表id更新，学生表id同步更新
+        System.out.println(u);
+        userMapper.update(u,new QueryWrapper<User>().eq("username",originName));
+        //学生设置id的情况下，判断学生表有学生
+        if(hasId && !StringUtils.isEmpty(studentName))
+        {
+            StudentInfo newS=new StudentInfo();
+            newS.setStudentName(studentName);
+            newS.setStudentId(u.getId());//更新后的
+            //存在学生记录
+            if(studentInfoService.getOne(new QueryWrapper<StudentInfo>().eq("student_id",u.getId()))!=null)
+            {
+                studentInfoService.update(newS,new QueryWrapper<StudentInfo>().eq("student_id",u.getId()));
+            }
+            else
+            {
+                studentInfoService.save(newS);
+            }
+        }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {//清除认证
             new SecurityContextLogoutHandler().logout(request, response, auth);
@@ -192,277 +237,65 @@ public class NewStudentController {
         User u= userMapper.selectOne(new QueryWrapper<User>().eq("username",userDetails.getUsername()));
         return u.getId();
     }
+    @PostMapping("/newVersion/student/pcc")
+    public String searchCourse(CourseVo courseVo,
+                               Model model)
+    {
+        QueryWrapper<CourseVo> courseVoQueryWrapper=new QueryWrapper<>();
+        Map<String,String> eqMap=new HashMap<>();
 
-    //我的选课
-    @GetMapping("/pcc")
-    public String getRequiredCourse(Model model)
-    {
-        return "/newVersion/student/professional_compulsory_course";
-    }
+        if(!StringUtils.isEmpty(courseVo.getCourseId()))
+            eqMap.put("course_id",courseVo.getCourseId());
 
-    @GetMapping("/pe")
-    public String getElectiveCourse(Model model)
-    {
-        return "/newVersion/student/professional_elective";
-    }
+        if(!StringUtils.isEmpty(courseVo.getCourseName()))
+            eqMap.put("course_name",courseVo.getCourseName());
 
-    @GetMapping("/gc")
-    public String getLiberalCourse(Model model)
-    {
-        return "/newVersion/student/general_course";
-    }
-    @GetMapping("/pcc.json")
-    @ResponseBody
-    public String getPccJson()
-    {
-        CourseVoDTO courseVoDTO=new CourseVoDTO();
-        String uId = getUserId();
-        if(StringUtils.isEmpty(uId))
-        {
-            courseVoDTO.setCode(1);
-            courseVoDTO.setCount(0);
-            courseVoDTO.setMsg("你没有绑定学号");
-            return JSON.toJSONString(courseVoDTO);
+        if(!StringUtils.isEmpty(courseVo.getTeacherName())){
+
+            eqMap.put("teacher_name",courseVo.getTeacherName());
         }
 
-        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
-                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
-                .eq("student_id",uId).eq("course_type","专业必修课"));
-        if(courseVoList.size()==0)
-        {
-            courseVoDTO.setCode(1);
-            courseVoDTO.setCount(0);
-            courseVoDTO.setMsg("无数据");
+        if(!StringUtils.isEmpty(courseVo.getTeachingLocation())){
+
+            eqMap.put("teaching_location",courseVo.getTeachingLocation());
         }
-        else
-        {
-            courseVoDTO.setCode(0);
-            courseVoDTO.setCount(courseVoList.size());
-            courseVoDTO.setMsg("ok");
+        if(!StringUtils.isEmpty(courseVo.getAssessmentMethod())){
+
+            eqMap.put("assessment_method",courseVo.getAssessmentMethod());
         }
-        courseVoDTO.setData(courseVoList);
-        return JSON.toJSONString(courseVoDTO);
-    }
-    @GetMapping("/pe.json")
-    @ResponseBody
-    public String getPeJson()
-    {
-        CourseVoDTO courseVoDTO=new CourseVoDTO();
-        String uId = getUserId();
-        if(StringUtils.isEmpty(uId))
-        {
-            courseVoDTO.setCode(1);
-            courseVoDTO.setCount(0);
-            courseVoDTO.setMsg("你没有绑定学号");
-            return JSON.toJSONString(courseVoDTO);
+        if(!StringUtils.isEmpty(courseVo.getCourseType())){
+
+            eqMap.put("course_type",courseVo.getCourseType());
         }
-        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
-                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
-                .eq("student_id",uId).eq("course_type","专业选修课"));
-        if(courseVoList.size()==0)
-        {
-            courseVoDTO.setCode(1);
-            courseVoDTO.setCount(0);
-            courseVoDTO.setMsg("无数据");
+        if(!StringUtils.isEmpty(courseVo.getCourseDetailId())){
+
+            eqMap.put("course_detail_id",courseVo.getCourseDetailId());
         }
-        else
-        {
-            courseVoDTO.setCode(0);
-            courseVoDTO.setCount(courseVoList.size());
-            courseVoDTO.setMsg("ok");
-        }
-        courseVoDTO.setData(courseVoList);
-        return JSON.toJSONString(courseVoDTO);
-    }
-    @GetMapping("/gc.json")
-    @ResponseBody
-    public String getGcJson()
-    {
-        CourseVoDTO courseVoDTO=new CourseVoDTO();
-        String uId = getUserId();
-        if(StringUtils.isEmpty(uId))
-        {
-            courseVoDTO.setCode(1);
-            courseVoDTO.setCount(0);
-            courseVoDTO.setMsg("你没有绑定学号");
-            return JSON.toJSONString(courseVoDTO);
-        }
-        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
-                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
-                .eq("student_id",uId).eq("course_type","通识课"));
-        if(courseVoList.size()==0)
-        {
-            courseVoDTO.setCode(1);
-            courseVoDTO.setCount(0);
-            courseVoDTO.setMsg("无数据");
-        }
-        else
-        {
-            courseVoDTO.setCode(0);
-            courseVoDTO.setCount(courseVoList.size());
-            courseVoDTO.setMsg("ok");
-        }
-        courseVoDTO.setData(courseVoList);
-        return JSON.toJSONString(courseVoDTO);
-    }
-    //退选ajax
-    @PostMapping("/deleteStudentCourse")
-    @ResponseBody
-    public String deleteStudentCourse(@RequestParam("courseDetailId")String courseDetailId)
-    {
-        String studentId=getUserId();
-        studentCourseService.remove(new QueryWrapper<StudentCourse>().eq("student_id",studentId)
-                .eq("course_detail_id",courseDetailId));
-        return "ok";
-    }
 
 
 
-    @GetMapping("/detail/{courseDetailId}")
-    public  String getDetail(Model model, @PathVariable("courseDetailId") String courseDetailId)
-    {
-        CourseDetail courseDetail = courseDetailService.getOne(new QueryWrapper<CourseDetail>().eq("course_detail_id", courseDetailId));
-        CourseDetailDTO courseDetailDTO = new CourseDetailDTO();
-        BeanUtils.copyProperties(courseDetail,courseDetailDTO);
-        CourseInfo courseInfo = courseInfoService.getOne(new QueryWrapper<CourseInfo>().eq("course_id", courseDetail.getCourseId()));
-        courseDetailDTO.setCredit(courseInfo.getCredit());
-        courseDetailDTO.setCreditHours(courseInfo.getCreditHours());
-        model.addAttribute("courseDetail",courseDetailDTO);
-        return "/newVersion/student/courseDetail";
-    }
 
-    //获得课程JSON
-    @GetMapping("/PCCcourseModule.json")
-    @ResponseBody
-    public String getPccCourseInfo()
-    {
-        String userId=getUserId();
-        if(StringUtils.isEmpty(userId))
-        {
-            CourseDetailVoDTO courseDetailVoDTO=new CourseDetailVoDTO();
-            courseDetailVoDTO.setCode(5);
-            courseDetailVoDTO.setMsg("没绑定学号");
-            return JSON.toJSONString(courseDetailVoDTO);
-        }
-        List<StudentCourse> studentCourses= studentCourseService.list(new QueryWrapper<StudentCourse>().eq("student_id",userId));
-        List<String> details = new ArrayList<>();
-        for (StudentCourse s : studentCourses) {
-            details.add(s.getCourseDetailId());
-        }
-        QueryWrapper<CourseDetailVo> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("course_type","专业必修课");
-        if(!details.isEmpty())
-                queryWrapper.notIn("course_detail_id",details);
-        List<CourseDetailVo>  courseDetailVos= courseDetailVoService.list(queryWrapper);
-        CourseDetailVoDTO courseDetailVoDTO=new CourseDetailVoDTO();
-        courseDetailVoDTO.setCode(0);
-        courseDetailVoDTO.setCount(courseDetailVos.size());
-        courseDetailVoDTO.setMsg("成功");
-        courseDetailVoDTO.setData(courseDetailVos);
+        courseVoQueryWrapper.allEq(eqMap);
+        List<CourseVo> courseVoList = courseVoService.list(courseVoQueryWrapper);
+        model.addAttribute("courseVoList",courseVoList);
 
-        return JSON.toJSONString(courseDetailVoDTO);
-    }
-    @GetMapping("/PEcourseModule.json")
-    @ResponseBody
-    public String getPeCourseInfo()
-    {
-        String userId=getUserId();
-        if(StringUtils.isEmpty(userId))
-        {
-            CourseDetailVoDTO courseDetailVoDTO=new CourseDetailVoDTO();
-            courseDetailVoDTO.setCode(5);
-            courseDetailVoDTO.setMsg("没绑定学号");
-            return JSON.toJSONString(courseDetailVoDTO);
-        }
-        List<StudentCourse> studentCourses= studentCourseService.list(new QueryWrapper<StudentCourse>().eq("student_id",userId));
-        List<String> details = new ArrayList<>();
-        for (StudentCourse s : studentCourses) {
-            details.add(s.getCourseDetailId());
-        }
-        QueryWrapper<CourseDetailVo> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("course_type","专业选修课");
-        if(!details.isEmpty())
-            queryWrapper.notIn("course_detail_id",details);
-        List<CourseDetailVo>  courseDetailVos= courseDetailVoService.list(queryWrapper);
-        CourseDetailVoDTO courseDetailVoDTO=new CourseDetailVoDTO();
-        courseDetailVoDTO.setCode(0);
-        courseDetailVoDTO.setCount(courseDetailVos.size());
-        courseDetailVoDTO.setMsg("成功");
-        courseDetailVoDTO.setData(courseDetailVos);
-
-        return JSON.toJSONString(courseDetailVoDTO);
-    }
-    @GetMapping("/GCcourseModule.json")
-    @ResponseBody
-    public String getGcCourseInfo()
-    {
-        String userId=getUserId();
-        if(StringUtils.isEmpty(userId))
-        {
-            CourseDetailVoDTO courseDetailVoDTO=new CourseDetailVoDTO();
-            courseDetailVoDTO.setCode(5);
-            courseDetailVoDTO.setMsg("没绑定学号");
-            return JSON.toJSONString(courseDetailVoDTO);
-        }
-        List<StudentCourse> studentCourses= studentCourseService.list(new QueryWrapper<StudentCourse>().eq("student_id",userId));
-        List<String> details = new ArrayList<>();
-        for (StudentCourse s : studentCourses) {
-            details.add(s.getCourseDetailId());
-        }
-        QueryWrapper<CourseDetailVo> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("course_type","通识课");
-        if(!details.isEmpty())
-            queryWrapper.notIn("course_detail_id",details);
-        List<CourseDetailVo>  courseDetailVos= courseDetailVoService.list(queryWrapper);
-        CourseDetailVoDTO courseDetailVoDTO=new CourseDetailVoDTO();
-        courseDetailVoDTO.setCode(0);
-        courseDetailVoDTO.setCount(courseDetailVos.size());
-        courseDetailVoDTO.setMsg("成功");
-        courseDetailVoDTO.setData(courseDetailVos);
-
-        return JSON.toJSONString(courseDetailVoDTO);
-    }
-
-    //选PCC页面
-    @GetMapping("/choosePCC")
-    public String toChoosePcc(Model model)
-    {
-        return "/newVersion/student/choosePCC";
-    }
-    //选PE页面
-    @GetMapping("/choosePE")
-    public String toChoosePee(Model model)
-    {
-        return "/newVersion/student/choosePE";
-    }
-    //选GC页面
-    @GetMapping("/chooseGC")
-    public String toChooseGc(Model model)
-    {
-        return "/newVersion/student/chooseGC";
-    }
-    //选课
-    @PostMapping("/chooseCourse")
-    @ResponseBody
-    public String doChoose(@RequestParam("courseDetailId[]")String[] courseDetailId,
-                           @RequestParam("courseType")String courseType,
-                           HttpServletResponse response)
-    {
-        String userId=getUserId();
-        if(StringUtils.isEmpty(userId))
-        {
-            response.setStatus(403);
-            return "{\"msg\":\"你没有绑定学号！\"}";
-        }
-        List<StudentCourse> studentCourses=new ArrayList<>();
-        for (String s : courseDetailId) {
-            StudentCourse sc=new StudentCourse();
-            sc.setCourseDetailId(s);sc.setStudentId(userId);
-            studentCourses.add(sc);
-        }
-        studentCourseService.saveBatch(studentCourses);
-        return "ok";
-    }
+        List<String> courseNameList = courseVoService.searchAllCourseId();
+        model.addAttribute("cName",courseNameList);
+        List<CourseVo> idList= courseVoService.listAll();
+        model.addAttribute("cId",idList);
+        List<CourseVo> startSchoolYear = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct startSchoolYear").orderByAsc("startSchoolYear"));
+        model.addAttribute("startschoolyear",startSchoolYear);
+        List<CourseVo> endSchoolYear = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct endSchoolYear"));
+        model.addAttribute("endschoolyear",endSchoolYear);
+        List<CourseVo> teachername = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct teacher_name").orderByAsc("teacher_name"));
+        model.addAttribute("teacher_name",teachername);
+        List<CourseVo> teachingLocation = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct teaching_location"));
+        model.addAttribute("teaching_location",teachingLocation);
+        List<CourseVo> assessment_method = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct assessment_method"));
+        model.addAttribute("assessment_method",assessment_method);
 
 
+
+        return "newVersion/teacher/courseInfoList";
+    }
 }
