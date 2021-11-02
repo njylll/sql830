@@ -213,10 +213,9 @@ public class NewTeacherController {
             courseVoDTO.setMsg("未绑定姓名");
             return JSON.toJSONString(courseVoDTO);
         }
-        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
-                info -> !info.getColumn().equals("course_type")
-                        && !info.getColumn().equals("student_id"))
-                .eq("teacher_name", uName).eq("course_type", "专业必修课"));
+        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct course_detail_id,course_id," +
+                "course_name,teacher_name,teaching_location,assessment_method,course_type")
+                .eq("teacher_name",uName).eq("course_type","专业必修课"));
         if(courseVoList.isEmpty())
         {
             courseVoDTO.setCode(1);
@@ -226,10 +225,10 @@ public class NewTeacherController {
         else
         {
             courseVoDTO.setCode(0);
-            courseVoDTO.setMsg("无数据");
+            courseVoDTO.setMsg("ok");
             courseVoDTO.setCount(courseVoList.size());
+            courseVoDTO.setData(courseVoList);
         }
-        courseVoDTO.setData(courseVoList);
         return JSON.toJSONString(courseVoDTO);
     }
 
@@ -249,23 +248,24 @@ public class NewTeacherController {
             courseVoDTO.setMsg("未绑定姓名");
             return JSON.toJSONString(courseVoDTO);
         }
-        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
-                info -> !info.getColumn().equals("course_type")
-                        && !info.getColumn().equals("student_id"))
-                .eq("teacher_name", uName).eq("course_type", "专业选修课"));
+        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct course_detail_id,course_id," +
+                "course_name,teacher_name,teaching_location,assessment_method,course_type")
+                .eq("teacher_name",uName).eq("course_type","专业选修课"));
         if(courseVoList.isEmpty())
         {
             courseVoDTO.setCode(1);
             courseVoDTO.setMsg("无数据");
             courseVoDTO.setCount(0);
+
         }
         else
         {
             courseVoDTO.setCode(0);
-            courseVoDTO.setMsg("无数据");
+            courseVoDTO.setMsg("ok");
             courseVoDTO.setCount(courseVoList.size());
+            courseVoDTO.setData(courseVoList);
+
         }
-        courseVoDTO.setData(courseVoList);
         return JSON.toJSONString(courseVoDTO);
     }
 
@@ -286,10 +286,9 @@ public class NewTeacherController {
             courseVoDTO.setMsg("未绑定姓名");
             return JSON.toJSONString(courseVoDTO);
         }
-        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
-                info -> !info.getColumn().equals("course_type")
-                        && !info.getColumn().equals("student_id"))
-                .eq("teacher_name", uName).eq("course_type", "通识课"));
+        List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select("distinct course_detail_id,course_id," +
+                "course_name,teacher_name,teaching_location,assessment_method,course_type")
+                .eq("teacher_name",uName).eq("course_type","通识课"));
         if(courseVoList.isEmpty())
         {
             courseVoDTO.setCode(1);
@@ -301,8 +300,8 @@ public class NewTeacherController {
             courseVoDTO.setCode(0);
             courseVoDTO.setMsg("无数据");
             courseVoDTO.setCount(courseVoList.size());
+            courseVoDTO.setData(courseVoList);
         }
-        courseVoDTO.setData(courseVoList);
         return JSON.toJSONString(courseVoDTO);
     }
 

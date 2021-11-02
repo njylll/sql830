@@ -226,8 +226,9 @@ public class NewStudentController {
         }
 
         List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
-                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
-                .eq("student_id",uId).eq("course_type","专业必修课"));
+                info -> !info.getColumn().equals("course_type")
+                        && !info.getColumn().equals("student_id"))
+                .eq("student_id", uId).eq("course_type", "专业必修课"));
         if(courseVoList.size()==0)
         {
             courseVoDTO.setCode(1);
@@ -239,6 +240,8 @@ public class NewStudentController {
             courseVoDTO.setCode(0);
             courseVoDTO.setCount(courseVoList.size());
             courseVoDTO.setMsg("ok");
+            courseVoDTO.setData(courseVoList);
+
         }
         courseVoDTO.setData(courseVoList);
         return JSON.toJSONString(courseVoDTO);
@@ -254,11 +257,13 @@ public class NewStudentController {
             courseVoDTO.setCode(1);
             courseVoDTO.setCount(0);
             courseVoDTO.setMsg("你没有绑定学号");
+
             return JSON.toJSONString(courseVoDTO);
         }
         List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
-                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
-                .eq("student_id",uId).eq("course_type","专业选修课"));
+                info -> !info.getColumn().equals("course_type")
+                        && !info.getColumn().equals("student_id"))
+                .eq("student_id", uId).eq("course_type", "专业选修课"));
         if(courseVoList.size()==0)
         {
             courseVoDTO.setCode(1);
@@ -270,6 +275,9 @@ public class NewStudentController {
             courseVoDTO.setCode(0);
             courseVoDTO.setCount(courseVoList.size());
             courseVoDTO.setMsg("ok");
+            courseVoDTO.setData(courseVoList);
+
+
         }
         courseVoDTO.setData(courseVoList);
         return JSON.toJSONString(courseVoDTO);
@@ -288,8 +296,9 @@ public class NewStudentController {
             return JSON.toJSONString(courseVoDTO);
         }
         List<CourseVo> courseVoList = courseVoService.list(new QueryWrapper<CourseVo>().select(CourseVo.class,
-                info -> !info.getColumn().equals("course_type") && !info.getColumn().equals("student_id"))
-                .eq("student_id",uId).eq("course_type","通识课"));
+                info -> !info.getColumn().equals("course_type")
+                        && !info.getColumn().equals("student_id"))
+                .eq("student_id", uId).eq("course_type", "通识课"));
         if(courseVoList.size()==0)
         {
             courseVoDTO.setCode(1);
@@ -301,6 +310,8 @@ public class NewStudentController {
             courseVoDTO.setCode(0);
             courseVoDTO.setCount(courseVoList.size());
             courseVoDTO.setMsg("ok");
+            courseVoDTO.setData(courseVoList);
+
         }
         courseVoDTO.setData(courseVoList);
         return JSON.toJSONString(courseVoDTO);
