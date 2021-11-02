@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui_origin.css}">
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+</head>
+<body>
+<br>
+<div class="layui-row">
+    <center><h1>添加课程时间</h1></center><br>
+    <div class="layui-col-md3">
+        <div>&nbsp;</div>
+    </div>
+    <!--开始-->
+    <div class="layui-col-md5">
+        <form class="layui-form" action="">
+            <!--课程名-->
+            <div class="layui-inline">
+                <label class="layui-form-label">课程名</label>
+                <div class="layui-input-inline">
+                    <select lay-filter="courseName" id="courseName" name="courseName" lay-search="">
+                        <option value="">直接选择或搜索选择</option>
+                        <option th:each="name,status:${courseNames}" th:text="${name.courseName}" th:value="${name.courseName}"></option>
+                    </select>
+                </div>
+            </div><br><br>
+            <!--课程详情id-->
+            <div class="layui-inline">
+                <label class="layui-form-label">课程详情id</label>
+                <div class="layui-input-inline">
+                    <select lay-filter="courseDetailId" id="courseDetailId" name="courseName" lay-search="">
+                        <option value="">直接选择或搜索选择</option>
+                    </select>
+                </div>
+            </div><br><br>
+            <!--开始周-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">开始周</label>
+                <div class="layui-input-block">
+                    <input id="startWeek" type="number" style="width: 150px" name="startWeek" autocomplete="off" placeholder="开始周" class="layui-input">
+                </div>
+            </div>
+            <!--结束周-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">结束周</label>
+                <div class="layui-input-block">
+                    <input id="endWeek" type="number" style="width: 150px" name="endWeek" autocomplete="off" placeholder="结束周" class="layui-input">
+                </div>
+            </div>
+            <!--日次-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">日次</label>
+                <div class="layui-input-block">
+                    <input id="dayTime" type="number" style="width: 150px" name="dayTime" autocomplete="off" placeholder="日次" class="layui-input">
+                </div>
+            </div>
+            <!--开始节次-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">开始节次</label>
+                <div class="layui-input-block">
+                    <input id="sectionStart" type="number" style="width: 150px" name="sectionStart" autocomplete="off" placeholder="开始节次" class="layui-input">
+                </div>
+            </div>
+            <!--结束节次-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">结束节次</label>
+                <div class="layui-input-block">
+                    <input id="sectionEnd" type="number" style="width: 150px" name="sectionEnd" autocomplete="off" placeholder="结束节次" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" onclick="doCreateTime()" class="layui-btn" >立即提交</button>
+                    <button id="reset-bt" type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="layui-col-md3" >
+        <div>&nbsp;</div>
+    </div>
+</div>
+<script th:src="@{/layui/layui_origin.js}"></script>
+<script th:src="@{/js/create_time.js}"></script>
+</body>
+</html>

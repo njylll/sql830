@@ -1,12 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui_origin.css}">
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
 </head>
 <body>
-<div th:fragment="pcc">
-    <div th:fragment="p"></div>
+<br>
+<div class="layui-row">
+    <div class="layui-col-md3">
+        <div>&nbsp;</div>
+    </div>
+    <!--开始-->
+    <div class="layui-col-md6">
+        <center><h1>专业必修课创建</h1></center><br><br>
+        <form class="layui-form" action="">
+            <!--课程名-->
+            <label class="layui-form-label">课程名</label>
+            <div class="layui-input-inline" style="width: 200px">
+                <select id="courseId" name="courseId" lay-search="">
+                    <option value="">直接选择或搜索选择</option>
+                    <option th:each="module,status:${courseModules}" th:text="${module.courseName}" th:value="${module.courseId}"></option>
+                </select>
+            </div><br><br>
+            <!--日期-->
+            <label class="layui-form-label">开始日期</label>
+            <div class="layui-input-inline" style="width: 200px">
+                    <input type="text" name="startYear" id="startYear" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+            </div><br><br>
+            <!--结束日期-->
+            <label class="layui-form-label">结束日期</label>
+            <div class="layui-input-inline" style="width: 200px">
+                    <input type="text" name="endYear" id="endYear" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+            </div><br><br>
+            <!--学期-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">学期</label>
+                <div class="layui-input-block" style="width: 100px">
+                    <select id="term" name="term">
+                        <option value=""></option>
+                        <option value="1">上学期</option>
+                        <option value="2">下学期</option>
+                    </select>
+                </div>
+            </div>
+            <!--教师-->
+            <label class="layui-form-label">授课教师</label>
+            <div class="layui-input-inline" style="width: 200px">
+                <select id="teacherName" name="teacherName" lay-search="">
+                    <option value="">直接选择或搜索选择</option>
+                    <option th:each="t,status:${teachers}" th:text="${t.teacherName}" th:value="${t.teacherName}"></option>
+                </select>
+            </div><br><br>
+            <!--教室-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">教室</label>
+                <div class="layui-input-block">
+                    <input id="location" type="text" style="width: 200px" name="location" autocomplete="off" placeholder="授课地点" class="layui-input">
+                </div>
+            </div><br>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" onclick="submit_pcc()" class="layui-btn" >立即提交</button>
+                    <button id="reset-bt" type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="layui-col-md3" >
+        <div>&nbsp;</div>
+    </div>
 </div>
+<script th:src="@{/layui/layui_origin.js}"></script>
+<script th:src="@{/js/create_course.js}"></script>
 </body>
 </html>

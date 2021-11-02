@@ -1,10 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui_origin.css}">
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
 </head>
 <body>
-<div th:fragment="p"></div>
+<br>
+<div class="layui-row">
+    <div class="layui-col-md3">
+        <div>&nbsp;</div>
+    </div>
+    <!--开始-->
+    <div class="layui-col-md6">
+        <center><h1>邀请码创建</h1></center>
+        <br><br>
+        <div class="layui-inline">
+            <div class="layui-form-item">
+                <label class="layui-form-label">教师邀请码数量</label>
+                <div class="layui-input-block" style="width: 120px">
+                    <input  type="number" id="tCode" name="tCode"  autocomplete="off" placeholder="教师数量" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">super教师邀请码数量</label>
+                <div class="layui-input-block" style="width: 120px">
+                    <input type="number" id="sCode" name="sCode"  autocomplete="off" placeholder="super教师数量" class="layui-input">
+                </div>
+            </div><br>
+            <button type="button" id="code-bt" class="layui-btn layui-btn-lg" style="margin-left: 70px">生成</button>
+        </form>
+    </div><br>
+    <div class="layui-col-md3" >
+        <div>&nbsp;</div>
+    </div>
+</div>
+<script th:src="@{/layui/layui_origin.js}"></script>
+<script th:src="@{/js/inviteCode.js}"></script>
 </body>
 </html>

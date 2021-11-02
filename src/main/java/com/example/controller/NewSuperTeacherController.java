@@ -1,19 +1,25 @@
 package com.example.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.dao.CourseInfoMapper;
 import com.example.dao.UserMapper;
 import com.example.dto.CourseModuleDTO;
-import com.example.entity.CourseInfo;
-import com.example.entity.CourseInfoVo;
-import com.example.entity.StudentCourseVo;
-import com.example.entity.User;
+import com.example.dto.CourseTimeVoDTO;
+import com.example.entity.*;
+import com.example.service.InviteCodeService;
 import com.example.service.impl.*;
+import com.example.util.InviteCode;
+import javafx.util.converter.LocalDateStringConverter;
 import net.bytebuddy.utility.RandomString;
+import org.hashids.Hashids;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -21,9 +27,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.resource.HttpResource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/newVersion/superTeacher")
@@ -40,6 +54,21 @@ public class NewSuperTeacherController {
     private CourseInfoServiceImpl courseInfoService;
     @Autowired
     private CourseInfoMapper courseInfoMapper;
+    @Autowired
+    private CollegeInfoServiceImpl collegeInfoService;
+    @Autowired
+    private TeacherInfoServiceImpl teacherInfoService;
+    @Autowired
+    private CourseDetailServiceImpl courseDetailService;
+    @Autowired
+    private CourseDetailVoServiceImpl courseDetailVoService;
+    @Autowired
+    private CourseTimeServiceImpl courseTimeService;
+    @Autowired
+    private CourseTimeVoServiceImpl courseTimeVoService;
+
+    @Autowired
+    private InviteCodeService inviteCodeService;
 
     @GetMapping(value = {"/","/index"})
     public String toSuperTeacherMainPage(Model model)
@@ -74,7 +103,9 @@ public class NewSuperTeacherController {
     @ResponseBody
     public String doEditMe(@RequestParam("username")String username,
                            @RequestParam("studentId")String studentId,
-                           @RequestParam("password")String password)
+                           @RequestParam("password")String password,
+                           HttpServletResponse response,
+                           HttpServletRequest request)
     {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
@@ -83,11 +114,15 @@ public class NewSuperTeacherController {
         String originName=u.getUsername();
         if(!StringUtils.isEmpty(username))
             u.setUsername(username);
-        if(!StringUtils.isEmpty(studentId))
-            u.setId(studentId);
+        //相当于取消绑定
+        u.setId(studentId);
         if(!StringUtils.isEmpty(password))
             u.setPassword(password);
         userService.update(u,new QueryWrapper<User>().eq("username",originName));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {//清除认证
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
         return "{\"message\":修改成功，请重新登陆}";
     }
 
@@ -197,6 +232,276 @@ public class NewSuperTeacherController {
         return "ok";
     }
 
+    //创建新模板页面
+    @GetMapping("/createModule")
+    public String toCreateModulePage(Model model)
+    {
+        List<CollegeInfo> collegeInfos = collegeInfoService.list(new QueryWrapper<CollegeInfo>().select("distinct college_name,college_id"));
+        model.addAttribute("collegeInfos",collegeInfos);
+        return "/newVersion/superTeacher/createModule";
+    }
+    //ajax创建新模板
+    @PostMapping("/createModule")
+    @ResponseBody
+    public String doCreateModule(@RequestParam("courseId")String courseId,
+                                 @RequestParam("courseName")String courseName,
+                                 @RequestParam("collegeId")String collegeId,
+                                 @RequestParam("creditHour")int creditHour,
+                                 @RequestParam("credit")double credit,
+                                 @RequestParam("courseType")String courseType,
+                                 HttpServletResponse response)
+    {
+        //存在相同id
+        if(courseInfoService.getOne(new QueryWrapper<CourseInfo>().eq("course_id",courseId))!=null)
+        {
+            response.setStatus(403);
+            return "{\"msg\":\"存在相同id\"}";
+        }
+        CourseInfo info=new CourseInfo();
+        info.setCourseId(courseId);info.setCourseName(courseName);info.setResponsibleCollegeId(collegeId);
+        info.setCreditHours((byte) creditHour);
+        info.setCredit(credit);
+        if (!StringUtils.isEmpty(courseType))
+        {
+            switch (courseType) {
+                case "pcc":
+                    info.setCourseType("专业必修课");
+                    break;
+                case "pe":
+                    info.setCourseType("专业选修课");
+                    break;
+                case "gc":
+                    info.setCourseType("通识课");
+                    break;
+            }
+        }
+        courseInfoService.save(info);
+        return "ok";
+    }
+
+    //pcc创建课程界面
+    @GetMapping("/pcc")
+    public String toPccPage(Model model)
+    {
+        List<CourseInfoVo> courseInfoVos = courseInfoVoService.list(new QueryWrapper<CourseInfoVo>().eq("course_type","专业必修课"));
+        List<TeacherInfo> teacherInfos= teacherInfoService.list();
+        model.addAttribute("courseModules",courseInfoVos);
+        model.addAttribute("teachers",teacherInfos);
+        return "/newVersion/superTeacher/professional_compulsory_course";
+    }
+    //pe创建课程界面
+    @GetMapping("/pe")
+    public String toPePage(Model model)
+    {
+        List<CourseInfoVo> courseInfoVos = courseInfoVoService.list(new QueryWrapper<CourseInfoVo>().eq("course_type","专业选修课"));
+        List<TeacherInfo> teacherInfos= teacherInfoService.list();
+        model.addAttribute("courseModules",courseInfoVos);
+        model.addAttribute("teachers",teacherInfos);
+        return "/newVersion/superTeacher/professional_elective";
+    }
+    //gc创建课程界面
+    @GetMapping("/gc")
+    public String toGcPage(Model model)
+    {
+        List<CourseInfoVo> courseInfoVos = courseInfoVoService.list(new QueryWrapper<CourseInfoVo>().eq("course_type","通识课"));
+        List<TeacherInfo> teacherInfos= teacherInfoService.list();
+        model.addAttribute("courseModules",courseInfoVos);
+        model.addAttribute("teachers",teacherInfos);
+        return "/newVersion/superTeacher/general_course";
+    }
+    //ajax创建课程
+    @PostMapping("/pcc")
+    @ResponseBody
+    public String doPccCreate(@RequestParam(value = "courseId",required = false)String courseId,
+                              @RequestParam(value = "start",required = false) String start,
+                              @RequestParam(value = "end",required = false) String end,
+                              @RequestParam(value = "term",required = false)int term,
+                              @RequestParam(value = "teacherName",required = false)String teacherName,
+                              @RequestParam(value = "location",required = false)String location)
+    {
+        CourseDetail courseDetail=new CourseDetail();
+        courseDetail.setCourseId(courseId);
+        String rdStr=RandomString.make(16);
+        courseDetail.setCourseDetailId(rdStr);
+        courseDetail.setCourseCondition("正常");
+        courseDetail.setTeacherName(teacherName);
+        courseDetail.setStartSchoolYear(LocalDate.parse(start,DateTimeFormatter.ISO_DATE));
+        courseDetail.setEndSchoolYear(LocalDate.parse(end,DateTimeFormatter.ISO_DATE));
+        courseDetail.setStartTerm((byte) term);
+        courseDetail.setTeachingLocation(location);
+
+        courseDetailService.save(courseDetail);
+        CourseTime courseTime=new CourseTime();
+        courseTime.setCourseDetailId(rdStr);
+        courseTime.setCourseTimeId(RandomString.make(16));
+        //保存时间
+        courseTimeService.save(courseTime);
+
+        return "ok";
+    }
+
+    //课程详情界面
+    @GetMapping("/editCourseDetail")
+    public String toEditCourseDetailPage()
+    {
+        return "/newVersion/superTeacher/editCourseDetail";
+    }
+    //课程详情json
+    @GetMapping("/courseDetail.json")
+    @ResponseBody
+    public String getCourseDetailJson()
+    {
+        List<CourseDetailVo> courseDetailVos= courseDetailVoService.list();
+        CourseDetailDTO courseDetailDTO=new CourseDetailDTO();
+        courseDetailDTO.setCode(0);
+        courseDetailDTO.setCount(courseDetailVos.size());
+        courseDetailDTO.setData(courseDetailVos);
+        courseDetailDTO.setMsg("成功");
+        return JSON.toJSONStringWithDateFormat(courseDetailDTO, "yyyy-MM-dd", SerializerFeature.WriteDateUseDateFormat);
+    }
+    //ajax删除课程详情
+    @PostMapping("/deleteCourseDetail")
+    @ResponseBody
+    public String deleteCourseDetail(@RequestParam("courseDetailId")String courseDetailId)
+    {
+        courseDetailService.remove(new QueryWrapper<CourseDetail>().eq("course_detail_id",courseDetailId));
+        return "ok";
+    }
+
+    //ajax修改课程
+    @PostMapping("/editCourseDetail")
+    @ResponseBody
+    public String editCourseDetail(CourseDetailVo vo)
+    {
+        CourseDetail courseDetail=new CourseDetail();
+        courseDetail.setCourseId(vo.getCourseId());
+        courseDetail.setCourseDetailId(vo.getCourseDetailId());
+        courseDetail.setStartSchoolYear(vo.getStartSchoolYear());
+        courseDetail.setEndSchoolYear(vo.getEndSchoolYear());
+        courseDetail.setStartTerm(vo.getStartTerm());
+        courseDetail.setCourseCondition(vo.getCourseCondition());
+        courseDetail.setTeacherName(vo.getTeacherName());
+        courseDetail.setTeachingLocation(vo.getTeachingLocation());
+        courseDetailService.update(courseDetail,new QueryWrapper<CourseDetail>().eq("course_detail_id",vo.getCourseDetailId()));
+        return "ok";
+    }
+
+    //安排时间页面
+    @GetMapping("/editCourseTime")
+    public String toTimePage()
+    {
+        return "/newVersion/superTeacher/courseTime";
+    }
+
+    //课程时间JSON
+    @GetMapping("/courseTime.json")
+    @ResponseBody
+    public String getCourseTimeJson()
+    {
+        List<CourseTimeVo> timeVos = courseTimeVoService.list();
+        CourseTimeVoDTO courseTimeVoDTO=new CourseTimeVoDTO();
+        if(timeVos.size()==0)
+        {
+            courseTimeVoDTO.setCode(1);
+            courseTimeVoDTO.setCount(0);
+            courseTimeVoDTO.setMsg("无数据");
+        }
+        else
+        {
+            courseTimeVoDTO.setCode(0);
+            courseTimeVoDTO.setCount(timeVos.size());
+            courseTimeVoDTO.setMsg("ok");
+        }
+        courseTimeVoDTO.setData(timeVos);
+        return JSON.toJSONStringWithDateFormat(courseTimeVoDTO, "yyyy-MM-dd", SerializerFeature.WriteDateUseDateFormat);
+    }
+
+    //添加时间页面
+    @GetMapping("/createCourseTime")
+    public String toCreateTimePage(Model model)
+    {
+        List<CourseDetailVo> courseDetailVos =courseDetailVoService.list(new QueryWrapper<CourseDetailVo>().select("distinct course_name"));
+        model.addAttribute("courseNames",courseDetailVos);
+        return "/newVersion/superTeacher/createCourseTime";
+    }
+    //删除时间
+    @PostMapping("/deleteCourseTime")
+    @ResponseBody
+    public String deleteTime(@RequestParam("courseTimeId") String courseTimeId)
+    {
+        courseTimeService.remove(new QueryWrapper<CourseTime>().eq("course_time_id",courseTimeId));
+        return "ok";
+    }
+    @PostMapping("/editCourseTime")
+    @ResponseBody
+    public String doEditTime(CourseTimeVo vo)
+    {
+        CourseTime courseTime=new CourseTime();
+        courseTime.setCourseTimeId(vo.getCourseTimeId());
+        courseTime.setCourseDetailId(vo.getCourseDetailId());
+        courseTime.setStartWeek(vo.getStartWeek());
+        courseTime.setEndWeek(vo.getEndWeek());
+        courseTime.setDayTime(vo.getDayTime());
+        courseTime.setSectionStart(vo.getSectionStart());
+        courseTime.setSectionEnd(vo.getSectionEnd());
+        courseTimeService.update(courseTime,new QueryWrapper<CourseTime>().eq("course_time_id",vo.getCourseTimeId()));
+
+        return "ok";
+    }
+
+    //添加课程时间
+    @PostMapping("/createCourseTime")
+    @ResponseBody
+    public String doCreateTime(CourseTime courseTime)
+    {
+        courseTime.setCourseTimeId(RandomString.make(16));
+        courseTimeService.save(courseTime);
+        return "ok";
+    }
+    //搜索课程时间表里的课程详情id
+    @PostMapping("/searchCourseDetailId")
+    @ResponseBody
+    public String searchDetailId(@RequestParam("courseName")String courseName)
+    {
+        List<CourseDetailVo> detailVos = courseDetailVoService.list(new QueryWrapper<CourseDetailVo>().eq("course_name",courseName));
+        List<String> details=new ArrayList<>();
+        for (CourseDetailVo detailVo : detailVos) {
+            details.add(detailVo.getCourseDetailId());
+        }
+        return JSON.toJSONString(details);
+    }
+
+
+    @GetMapping("/generateCode")
+    public String toCodePage()
+    {
+        return "newVersion/superTeacher/generateCode";
+    }
+
+    @PostMapping("/generateCode")
+    @ResponseBody
+    public String generateCode(@RequestParam("tNum") int tNum, @RequestParam("sNum") int sNum)
+    {
+        HashMap<String, ArrayList<String>> codeMap = new HashMap<>();
+        ArrayList<String> tCode = new ArrayList<>();
+        ArrayList<String> stCode = new ArrayList<>();
+        while(tNum > 0) {
+            String code = InviteCode.getInviteCode();
+            inviteCodeService.save(code,"teacher");
+            tCode.add(code);
+            tNum--;
+        }
+        while(sNum > 0) {
+            String code = InviteCode.getInviteCode();
+            inviteCodeService.save(code,"super_teacher");
+            stCode.add(code);
+            sNum--;
+        }
+
+        codeMap.put("tCode",tCode);
+        codeMap.put("stCode",stCode);
+        return JSON.toJSONString(codeMap);
+    }
 
     private String getUserId()
     {

@@ -2,6 +2,7 @@ $("#me-submit").click(function (){
     let uName=$("#user-name").val();
     let uId=$("#user-id").val();
     let uPass=$("#user-password").val();
+    let tName=$("#user-real-name").val();
     if(uName.length<5)
     {
         layer.msg("昵称不得小于5个字符！");
@@ -17,10 +18,15 @@ $("#me-submit").click(function (){
         layer.msg("密码不得小于5个字符！");
         return;
     }
+    if((uId==null||uId=="")&&(tName!=null||tName!=""))
+    {
+        layer.msg("没绑定学工号前无法绑定姓名");
+        return;
+    }
     $.ajax({
         url:"/newVersion/teacher/me",
         type:"post",
-        data: {"username":uName,"studentId":uId,"password":uPass},
+        data: {"username":uName,"teacherId":uId,"password":uPass,"teacherName":tName},
         success:function (data){
             layer.msg("修改成功，请重新登陆！2s自动跳转");
             //定义开始的秒数
