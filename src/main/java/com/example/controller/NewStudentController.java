@@ -437,18 +437,45 @@ public class NewStudentController {
     @GetMapping("/choosePCC")
     public String toChoosePcc(Model model)
     {
+        String userId=getUserId();
+        if(StringUtils.isEmpty(userId))
+        {
+            model.addAttribute("isAuthenticated",false);
+        }
+        else
+        {
+            model.addAttribute("isAuthenticated",true);
+        }
         return "/newVersion/student/choosePCC";
     }
     //选PE页面
     @GetMapping("/choosePE")
     public String toChoosePee(Model model)
     {
+        String userId=getUserId();
+        if(StringUtils.isEmpty(userId))
+        {
+            model.addAttribute("isAuthenticated",false);
+        }
+        else
+        {
+            model.addAttribute("isAuthenticated",true);
+        }
         return "/newVersion/student/choosePE";
     }
     //选GC页面
     @GetMapping("/chooseGC")
     public String toChooseGc(Model model)
     {
+        String userId=getUserId();
+        if(StringUtils.isEmpty(userId))
+        {
+            model.addAttribute("isAuthenticated",false);
+        }
+        else
+        {
+            model.addAttribute("isAuthenticated",true);
+        }
         return "/newVersion/student/chooseGC";
     }
     //选课

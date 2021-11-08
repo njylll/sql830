@@ -3,6 +3,7 @@ $("#me-submit").click(function (){
     let uId=$("#user-id").val();
     let uPass=$("#user-password").val();
     let sName=$("#user-real-name").val();
+    let ok=false;
     if(uName.length<5)
     {
         layer.msg("昵称不得小于5个字符！");
@@ -23,6 +24,7 @@ $("#me-submit").click(function (){
         layer.msg("没绑定学号前无法绑定姓名");
         return;
     }
+
     $.ajax({
         url:"/newVersion/student/me",
         type:"post",
@@ -44,7 +46,7 @@ $("#me-submit").click(function (){
             setInterval(showtime,1000);
         },
         error:function (xhr, textStatus, errorThrown) {
-
+            layer.msg("修改失败！可能是学号重复");
         }
     })
 })

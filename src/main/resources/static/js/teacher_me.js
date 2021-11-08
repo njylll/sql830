@@ -44,7 +44,7 @@ $("#me-submit").click(function (){
             setInterval(showtime,1000);
         },
         error:function (xhr, textStatus, errorThrown) {
-
+            layer.msg("修改失败！可能是学工号重复");
         }
     })
 })

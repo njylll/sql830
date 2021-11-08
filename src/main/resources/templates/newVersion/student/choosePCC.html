@@ -12,7 +12,7 @@
 <body>
 <center><h1>专业必修课</h1></center><br><br>
 
-<form class="layui-form" action="">
+<form th:if="${isAuthenticated==true}" class="layui-form" action="">
     <div class="layui-form-item">
         <!--课程id-->
         <div class="layui-inline">
@@ -58,7 +58,7 @@
 <table class="layui-hide" lay-filter="tb" id="tb"></table><br>
 
 
-<button type="button" id="submit-bt" onclick="submit_choice()" class="layui-btn layui-btn-lg layui-btn-normal" style="margin-left: 40%">提交</button>
+<button th:if="${isAuthenticated==true}" type="button" id="submit-bt" onclick="submit_choice()" class="layui-btn layui-btn-lg layui-btn-normal" style="margin-left: 40%">提交</button>
 
 <script th:src="@{/layui/layui_origin.js}"></script>
 <script th:src="@{/js/choosePccCourse.js}"></script>

@@ -239,7 +239,7 @@ public class NewTeacherController {
 
     @GetMapping("/pe")
     public String getElectiveCourse(Model model) {
-        return "/newVersion/teacher/professional_compulsory_course";
+        return "/newVersion/teacher/professional_elective";
     }
     @GetMapping("/pe.json")
     @ResponseBody

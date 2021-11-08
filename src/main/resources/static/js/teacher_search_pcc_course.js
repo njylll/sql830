@@ -10,7 +10,6 @@ layui.use('table', function(){
             ,{field:'courseName', width:120, sort: true,title:"课程名"}
             ,{field:'teacherName',sort: true,title:"教师"}
             ,{field:'teachingLocation',sort: true,title:"教室"}
-            ,{fixed: 'right', title:'操作', toolbar: '#bt', width:200}
         ]]
     });
     //监听行工具事件
