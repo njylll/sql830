@@ -49,7 +49,7 @@ public class LoginController {
     @GetMapping("/newVersion")
     public String toLogin1()
     {
-        return "/newVersion/login";
+        return "redirect:/newVersion/login";
     }
 
     @GetMapping("/newVersion/login")

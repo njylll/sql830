@@ -271,6 +271,7 @@ public class NewTeacherController {
             courseVoDTO.setData(courseVoList);
 
         }
+        System.out.println(JSON.toJSONString(courseVoDTO));
         return JSON.toJSONString(courseVoDTO);
     }
 
